@@ -15,6 +15,8 @@ import sys
 import pandas as pd
 df = pd.read_csv(sys.argv[1])
 cols = [c for c in ("method", "model", "target", "fitness_fn") if c in df.columns]
+# target/fitness_fn are only meaningful for SHS / SHS-ACO rows; show "-" elsewhere
+df[cols] = df[cols].fillna("-")
 g = (df.groupby(cols, dropna=False)
        .agg(seeds=("seed", "count"), f1_mean=("f1", "mean"),
             mean_runtime_s=("runtime_s", "mean"))
