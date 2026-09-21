@@ -19,7 +19,8 @@ import time
 from pathlib import Path
 
 import pandas as pd
-from sklearn.ensemble import GradientBoostingClassifier
+from sklearn.ensemble import (GradientBoostingClassifier,
+                              HistGradientBoostingClassifier)
 from sklearn.model_selection import train_test_split
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
@@ -34,8 +35,17 @@ METHODS = (["baseline", "smote-enn", "smote-tomek"]
            + [f"shs-aco-{o}" for o in OVERSAMPLERS])
 
 
+def make_model(name, seed):
+    """gb = classic GradientBoosting (thesis classifier); histgb = the
+    histogram-based variant, 10-100x faster at this scale (P0 equivalence
+    check decides whether it may replace gb inside the ACO fitness loop)."""
+    if name == "histgb":
+        return HistGradientBoostingClassifier(random_state=seed)
+    return GradientBoostingClassifier(random_state=seed)
+
+
 def apply_method(method, X_tr, y_tr, n_target, seed, args):
-    model = GradientBoostingClassifier(random_state=seed)
+    model = make_model(args.model, seed)
     if method == "baseline":
         return X_tr, y_tr
     if method in OVERSAMPLERS:
@@ -72,6 +82,8 @@ def main():
     tgt.add_argument("--target-count", type=int,
                      help="absolute minority target (thesis-style, SHS only)")
     p.add_argument("--fitness", default="f1", choices=["f1", "gmean", "bas"])
+    p.add_argument("--model", default="gb", choices=["gb", "histgb"],
+                   help="classifier for training and the ACO fitness loop")
     p.add_argument("--init-pheromone", type=float, default=0.3)
     p.add_argument("--rho", type=float, default=0.8)
     p.add_argument("--ants", type=int, default=20)
@@ -101,15 +113,17 @@ def main():
                     else ratio_to_target(y_tr, args.target_ratio))
         t0 = time.time()
         X_bal, y_bal = apply_method(args.method, X_tr, y_tr, n_target, seed, args)
-        model = GradientBoostingClassifier(random_state=seed)
+        model = make_model(args.model, seed)
         model.fit(X_bal, y_bal)
         runtime = time.time() - t0
 
         m = evaluate(y_te, model.predict(X_te), model.predict_proba(X_te)[:, 1])
         row = {"dataset": args.dataset, "method": args.method, "seed": seed,
+               "model": args.model,
                "target": n_target if args.method.startswith("shs") else "",
                "fitness_fn": args.fitness if args.method.startswith("shs-aco") else "",
                "legacy": args.legacy, "stratified": args.stratified,
+               "replacement": not args.no_replacement,
                "runtime_s": round(runtime, 2), **m}
         rows.append(row)
         print(f"[{args.dataset}/{args.method}] seed={seed} "

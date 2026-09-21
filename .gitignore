@@ -8,3 +8,4 @@ data/processed/*
 data/raw/GPCR_AB.csv
 data/raw/IC_AB.csv
 data/raw/E_AB.csv.gz
+logs/
