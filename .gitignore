@@ -4,3 +4,7 @@ __pycache__/
 .DS_Store
 data/processed/*
 !data/processed/.gitkeep
+# large generated pairwise datasets — rebuild with scripts/build_dataset.py
+data/raw/GPCR_AB.csv
+data/raw/IC_AB.csv
+data/raw/E_AB.csv.gz

@@ -15,7 +15,7 @@ DATASETS = {
     "nr": "NR_AB.csv",
     "gpcr": "GPCR_AB.csv",
     "ic": "IC_AB.csv",
-    "enzyme": "E_AB.csv",
+    "enzyme": "E_AB.csv.gz",
 }
 
 _META_COLS = ["Unnamed: 0", "drug_no", "protein_no", "label"]
@@ -28,8 +28,8 @@ def load_dataset(name, data_dir="data/raw"):
     path = Path(data_dir) / DATASETS[name]
     if not path.exists():
         raise FileNotFoundError(
-            f"{path} not found. Prepare it per data/raw/README.md "
-            f"(source: SRX-DTI repository).")
+            f"{path} not found. Regenerate it with: "
+            f"python scripts/build_dataset.py {name}")
     df = pd.read_csv(path)
     y = df["label"].astype(int)
     X = df.drop(columns=[c for c in _META_COLS if c in df.columns])

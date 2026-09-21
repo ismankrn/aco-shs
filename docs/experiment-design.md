@@ -93,10 +93,17 @@ optionally add XGBoost as a secondary classifier if reviewers ask.
 ## 7. Computational budget
 
 One ACO run ≈ (1 + K×N_effective) × cv model fits ≈ up to 1,000 GB fits.
-On NR (~980 train rows, 676 features) ≈ minutes; Enzyme will dominate (its GB fit
-is several× slower and the pool is larger). Mitigations: run per-dataset scripts in
-parallel; consider `HistGradientBoostingClassifier` for a speed-equivalence check;
-cache resampled datasets under `data/processed/` if reruns are needed.
+Measured single GB fits: NR ≈ 1.3 s, GPCR ≈ 26 s — so full ACO ≈ 1.5–2 h/seed on
+NR but ≈ 8 h/seed on GPCR and worse on IC/Enzyme with classic
+`GradientBoostingClassifier`. Mitigations, in order of preference:
+1. Run a GB vs `HistGradientBoostingClassifier` equivalence check on NR early
+   (P0); HistGB is 10–100× faster at this scale and would make the full grid
+   tractable — if results match, use HistGB inside the ACO fitness loop (and
+   report both on the final models).
+2. Run per-dataset/seed jobs in parallel (each is single-threaded).
+3. If Enzyme remains infeasible, reduce its ACO budget (K=10, N=5) and report
+   it as a scalability observation.
+Cache resampled datasets under `data/processed/` if reruns are needed.
 
 ## 8. Threats to validity (address in the paper)
 
