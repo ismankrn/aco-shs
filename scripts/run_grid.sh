@@ -96,13 +96,25 @@ echo "Phase ${1}: $N jobs, $WORKERS workers, model=$MODEL. Logs: logs/"
 mkdir -p logs results
 nl -ba "$CMDS"
 
-xargs -P "$WORKERS" -I{} bash -c '
-  cmd={}
-  tag=$(echo "$cmd" | tr -cs "[:alnum:]" "-" | cut -c1-120)
+# plain bash job pool (macOS xargs -I has a 255-byte replstr limit)
+run_job() {
+  local cmd="$1"
+  local tag
+  tag=$(echo "$cmd" | tr -cs '[:alnum:]' '-' | cut -c1-120)
   echo "[start] $cmd"
-  eval "$cmd" > "logs/$tag.log" 2>&1 \
-    && echo "[done ] $cmd" || echo "[FAIL ] $cmd (see logs/$tag.log)"
-' < "$CMDS"
+  if eval "$cmd" > "logs/$tag.log" 2>&1; then
+    echo "[done ] $cmd"
+  else
+    echo "[FAIL ] $cmd (see logs/$tag.log)"
+  fi
+}
+
+while IFS= read -r cmd; do
+  [ -z "$cmd" ] && continue
+  while [ "$(jobs -rp | wc -l)" -ge "$WORKERS" ]; do sleep 2; done
+  run_job "$cmd" &
+done < "$CMDS"
+wait
 
 rm -f "$CMDS"
 echo "Phase ${1} finished. Aggregate with:"
