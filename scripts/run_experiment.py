@@ -35,6 +35,18 @@ METHODS = (["baseline", "smote-enn", "smote-tomek"]
            + [f"shs-aco-{o}" for o in OVERSAMPLERS])
 
 
+def append_row(out_path, row):
+    """Append one result row under an exclusive lock; write the header only
+    if the file is empty. Safe for parallel run_grid.sh jobs."""
+    import fcntl
+    df = pd.DataFrame([row])
+    with open(out_path, "a") as fh:
+        fcntl.flock(fh, fcntl.LOCK_EX)
+        fh.write(df.to_csv(index=False, header=(fh.tell() == 0)))
+        fh.flush()
+        fcntl.flock(fh, fcntl.LOCK_UN)
+
+
 def make_model(name, seed):
     """gb = classic GradientBoosting (thesis classifier); histgb = the
     histogram-based variant, 10-100x faster at this scale (P0 equivalence
@@ -105,7 +117,7 @@ def main():
     out_path = Path(args.out)
     out_path.parent.mkdir(parents=True, exist_ok=True)
 
-    rows = []
+    n_written = 0
     for seed in args.seeds:
         X_tr, X_te, y_tr, y_te = train_test_split(
             X, y, test_size=0.30, stratify=y, random_state=seed)
@@ -125,15 +137,15 @@ def main():
                "legacy": args.legacy, "stratified": args.stratified,
                "replacement": not args.no_replacement,
                "runtime_s": round(runtime, 2), **m}
-        rows.append(row)
+        # append immediately (with an exclusive lock: parallel grid jobs share
+        # this file) so an interrupted job keeps its finished seeds
+        append_row(out_path, row)
+        n_written += 1
         print(f"[{args.dataset}/{args.method}] seed={seed} "
               f"F1={m['f1']:.4f} G-Mean={m['gmean']:.4f} BAS={m['bas']:.4f} "
-              f"AUPRC={m['auprc']:.4f} ({runtime:.1f}s)")
+              f"AUPRC={m['auprc']:.4f} ({runtime:.1f}s)", flush=True)
 
-    df = pd.DataFrame(rows)
-    header = not out_path.exists()
-    df.to_csv(out_path, mode="a", header=header, index=False)
-    print(f"Appended {len(df)} rows to {out_path}")
+    print(f"Appended {n_written} rows to {out_path}")
 
 
 if __name__ == "__main__":

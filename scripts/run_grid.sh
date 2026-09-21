@@ -29,7 +29,7 @@ RATIO_ADASYN="${RATIO_ADASYN:-1.25}"
 # oversubscribes cores, so pin each process to one thread.
 export OMP_NUM_THREADS=1
 
-RUN="python3 scripts/run_experiment.py"
+RUN="python3 -u scripts/run_experiment.py"
 CMDS=$(mktemp)
 
 case "${1:-}" in
