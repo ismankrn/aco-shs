@@ -1,0 +1,41 @@
+# Reference grid for the full study (see docs/experiment-design.md).
+# run_experiment.py takes one (dataset, method) per invocation; loop this grid
+# from a shell script or a scheduler.
+
+datasets: [nr, gpcr, ic, enzyme]
+
+methods:
+  cheap:      # 10 seeds
+    - baseline
+    - ros
+    - smote
+    - adasyn
+    - smote-enn
+    - smote-tomek
+    - shs-rus-ros
+    - shs-rus-smote
+    - shs-rus-adasyn
+  expensive:  # >=5 seeds (ACO budget)
+    - shs-aco-ros
+    - shs-aco-smote
+    - shs-aco-adasyn
+
+seeds:
+  cheap: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  expensive: [0, 1, 2, 3, 4]
+
+target_ratios: [1.0, 1.25, 1.5]   # pilot on NR picks one per method (phase P2)
+
+aco:
+  init_pheromone: 0.3
+  rho: 0.8
+  ants: 20
+  iters: 10
+  max_idle: 5
+  cv: 5
+  fitness: [f1, gmean, bas]       # ablation (phase P1)
+
+ablation_p1:   # 2x2x2 on nr, shs-aco-smote
+  legacy_pheromone: [true, false]
+  stratified: [true, false]
+  replacement: [true, false]
