@@ -64,8 +64,9 @@ p1)
       done
     done
   done
-  # fitness-function ablation on the refined variant
-  for fit in f1 gmean bas; do
+  # fitness-function ablation on the refined variant (f1 = the default
+  # ablation corner, already covered above)
+  for fit in gmean bas; do
     for s in $SEEDS_ACO; do
       echo "$RUN --dataset nr --method shs-aco-smote --target-ratio 1.25 --model $MODEL --verbose --fitness $fit --seeds $s --out $OUT" >> "$CMDS"
     done
