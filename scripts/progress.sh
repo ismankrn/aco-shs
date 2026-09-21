@@ -33,5 +33,7 @@ echo
 echo "== Last line of each job log:"
 for f in logs/*.log; do
   [ -e "$f" ] || continue
-  printf "%-68.68s | %s\n" "$(basename "$f" .log)" "$(tail -1 "$f")"
+  name=$(basename "$f" .log | sed 's/^python3\(-u\)\{0,1\}-scripts-run-experiment-py-dataset-//; s/-out-results.*//')
+  last=$(tail -1 "$f")
+  printf "%-78.78s | %s\n" "$name" "${last:-(belum ada output)}"
 done
