@@ -36,7 +36,7 @@ case "${1:-}" in
 p0)
   OUT=results/runs_p0.csv
   # reproduction of the thesis configuration (legacy ACO rules)
-  echo "$RUN --dataset nr --method shs-aco-smote --target-count 1500 --legacy --no-stratified --model gb --seeds $SEEDS_ACO --out $OUT" >> "$CMDS"
+  echo "$RUN --dataset nr --method shs-aco-smote --target-count 1500 --legacy --no-stratified --model gb --verbose --seeds $SEEDS_ACO --out $OUT" >> "$CMDS"
   # GB vs HistGB equivalence on cheap methods, paired seeds
   for m in baseline smote adasyn; do
     for model in gb histgb; do
@@ -44,8 +44,8 @@ p0)
     done
   done
   # equivalence inside the ACO loop as well
-  echo "$RUN --dataset nr --method shs-aco-smote --target-ratio 1.25 --model histgb --seeds $SEEDS_ACO --out $OUT" >> "$CMDS"
-  echo "$RUN --dataset nr --method shs-aco-smote --target-ratio 1.25 --model gb --seeds $SEEDS_ACO --out $OUT" >> "$CMDS"
+  echo "$RUN --dataset nr --method shs-aco-smote --target-ratio 1.25 --model histgb --verbose --seeds $SEEDS_ACO --out $OUT" >> "$CMDS"
+  echo "$RUN --dataset nr --method shs-aco-smote --target-ratio 1.25 --model gb --verbose --seeds $SEEDS_ACO --out $OUT" >> "$CMDS"
   ;;
 p1)
   OUT=results/runs_p1.csv
@@ -53,21 +53,21 @@ p1)
   for legacy in "" "--legacy"; do
     for strat in "" "--no-stratified"; do
       for repl in "" "--no-replacement"; do
-        echo "$RUN --dataset nr --method shs-aco-smote --target-ratio 1.25 --model $MODEL $legacy $strat $repl --seeds $SEEDS_ACO --out $OUT" >> "$CMDS"
+        echo "$RUN --dataset nr --method shs-aco-smote --target-ratio 1.25 --model $MODEL --verbose $legacy $strat $repl --seeds $SEEDS_ACO --out $OUT" >> "$CMDS"
       done
     done
   done
   # fitness-function ablation on the refined variant
   for fit in f1 gmean bas; do
-    echo "$RUN --dataset nr --method shs-aco-smote --target-ratio 1.25 --model $MODEL --fitness $fit --seeds $SEEDS_ACO --out $OUT" >> "$CMDS"
+    echo "$RUN --dataset nr --method shs-aco-smote --target-ratio 1.25 --model $MODEL --verbose --fitness $fit --seeds $SEEDS_ACO --out $OUT" >> "$CMDS"
   done
   ;;
 p2)
   OUT=results/runs_p2.csv
   for m in shs-rus-ros shs-rus-smote shs-rus-adasyn shs-aco-ros shs-aco-smote shs-aco-adasyn; do
-    seeds="$SEEDS_CHEAP"; [[ $m == shs-aco-* ]] && seeds="$SEEDS_ACO"
+    seeds="$SEEDS_CHEAP"; v=""; [[ $m == shs-aco-* ]] && { seeds="$SEEDS_ACO"; v="--verbose"; }
     for r in 1.0 1.25 1.5; do
-      echo "$RUN --dataset nr --method $m --target-ratio $r --model $MODEL --seeds $seeds --out $OUT" >> "$CMDS"
+      echo "$RUN --dataset nr --method $m --target-ratio $r --model $MODEL $v --seeds $seeds --out $OUT" >> "$CMDS"
     done
   done
   ;;
@@ -81,7 +81,7 @@ p3)
       r_var="RATIO_$(echo "$o" | tr '[:lower:]' '[:upper:]')"
       r="${!r_var}"
       echo "$RUN --dataset $ds --method shs-rus-$o --target-ratio $r --model $MODEL --seeds $SEEDS_CHEAP --out $OUT" >> "$CMDS"
-      echo "$RUN --dataset $ds --method shs-aco-$o --target-ratio $r --model $MODEL --seeds $SEEDS_ACO --out $OUT" >> "$CMDS"
+      echo "$RUN --dataset $ds --method shs-aco-$o --target-ratio $r --model $MODEL --verbose --seeds $SEEDS_ACO --out $OUT" >> "$CMDS"
     done
   done
   ;;
