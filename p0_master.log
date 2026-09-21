@@ -1,0 +1,66 @@
+Phase p0:       21 jobs, 8 workers, model=gb. Logs: logs/
+     1	python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-count 1500 --legacy --no-stratified --model gb --verbose --seeds 0 --out results/runs_p0.csv
+     2	python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-count 1500 --legacy --no-stratified --model gb --verbose --seeds 1 --out results/runs_p0.csv
+     3	python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-count 1500 --legacy --no-stratified --model gb --verbose --seeds 2 --out results/runs_p0.csv
+     4	python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-count 1500 --legacy --no-stratified --model gb --verbose --seeds 3 --out results/runs_p0.csv
+     5	python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-count 1500 --legacy --no-stratified --model gb --verbose --seeds 4 --out results/runs_p0.csv
+     6	python3 -u scripts/run_experiment.py --dataset nr --method baseline --model gb --seeds 0 1 2 3 4 5 6 7 8 9 --out results/runs_p0.csv
+     7	python3 -u scripts/run_experiment.py --dataset nr --method baseline --model histgb --seeds 0 1 2 3 4 5 6 7 8 9 --out results/runs_p0.csv
+     8	python3 -u scripts/run_experiment.py --dataset nr --method smote --model gb --seeds 0 1 2 3 4 5 6 7 8 9 --out results/runs_p0.csv
+     9	python3 -u scripts/run_experiment.py --dataset nr --method smote --model histgb --seeds 0 1 2 3 4 5 6 7 8 9 --out results/runs_p0.csv
+    10	python3 -u scripts/run_experiment.py --dataset nr --method adasyn --model gb --seeds 0 1 2 3 4 5 6 7 8 9 --out results/runs_p0.csv
+    11	python3 -u scripts/run_experiment.py --dataset nr --method adasyn --model histgb --seeds 0 1 2 3 4 5 6 7 8 9 --out results/runs_p0.csv
+    12	python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model histgb --verbose --seeds 0 --out results/runs_p0.csv
+    13	python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model histgb --verbose --seeds 1 --out results/runs_p0.csv
+    14	python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model histgb --verbose --seeds 2 --out results/runs_p0.csv
+    15	python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model histgb --verbose --seeds 3 --out results/runs_p0.csv
+    16	python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model histgb --verbose --seeds 4 --out results/runs_p0.csv
+    17	python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model gb --verbose --seeds 0 --out results/runs_p0.csv
+    18	python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model gb --verbose --seeds 1 --out results/runs_p0.csv
+    19	python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model gb --verbose --seeds 2 --out results/runs_p0.csv
+    20	python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model gb --verbose --seeds 3 --out results/runs_p0.csv
+    21	python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model gb --verbose --seeds 4 --out results/runs_p0.csv
+[start] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-count 1500 --legacy --no-stratified --model gb --verbose --seeds 0 --out results/runs_p0.csv
+[start] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-count 1500 --legacy --no-stratified --model gb --verbose --seeds 1 --out results/runs_p0.csv
+[start] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-count 1500 --legacy --no-stratified --model gb --verbose --seeds 2 --out results/runs_p0.csv
+[start] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-count 1500 --legacy --no-stratified --model gb --verbose --seeds 3 --out results/runs_p0.csv
+[start] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-count 1500 --legacy --no-stratified --model gb --verbose --seeds 4 --out results/runs_p0.csv
+[start] python3 -u scripts/run_experiment.py --dataset nr --method baseline --model gb --seeds 0 1 2 3 4 5 6 7 8 9 --out results/runs_p0.csv
+[start] python3 -u scripts/run_experiment.py --dataset nr --method baseline --model histgb --seeds 0 1 2 3 4 5 6 7 8 9 --out results/runs_p0.csv
+[start] python3 -u scripts/run_experiment.py --dataset nr --method smote --model gb --seeds 0 1 2 3 4 5 6 7 8 9 --out results/runs_p0.csv
+[done ] python3 -u scripts/run_experiment.py --dataset nr --method baseline --model gb --seeds 0 1 2 3 4 5 6 7 8 9 --out results/runs_p0.csv
+[start] python3 -u scripts/run_experiment.py --dataset nr --method smote --model histgb --seeds 0 1 2 3 4 5 6 7 8 9 --out results/runs_p0.csv
+[done ] python3 -u scripts/run_experiment.py --dataset nr --method baseline --model histgb --seeds 0 1 2 3 4 5 6 7 8 9 --out results/runs_p0.csv
+[start] python3 -u scripts/run_experiment.py --dataset nr --method adasyn --model gb --seeds 0 1 2 3 4 5 6 7 8 9 --out results/runs_p0.csv
+[done ] python3 -u scripts/run_experiment.py --dataset nr --method smote --model histgb --seeds 0 1 2 3 4 5 6 7 8 9 --out results/runs_p0.csv
+[start] python3 -u scripts/run_experiment.py --dataset nr --method adasyn --model histgb --seeds 0 1 2 3 4 5 6 7 8 9 --out results/runs_p0.csv
+[done ] python3 -u scripts/run_experiment.py --dataset nr --method smote --model gb --seeds 0 1 2 3 4 5 6 7 8 9 --out results/runs_p0.csv
+[start] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model histgb --verbose --seeds 0 --out results/runs_p0.csv
+[done ] python3 -u scripts/run_experiment.py --dataset nr --method adasyn --model gb --seeds 0 1 2 3 4 5 6 7 8 9 --out results/runs_p0.csv
+[start] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model histgb --verbose --seeds 1 --out results/runs_p0.csv
+[done ] python3 -u scripts/run_experiment.py --dataset nr --method adasyn --model histgb --seeds 0 1 2 3 4 5 6 7 8 9 --out results/runs_p0.csv
+[start] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model histgb --verbose --seeds 2 --out results/runs_p0.csv
+[done ] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model histgb --verbose --seeds 2 --out results/runs_p0.csv
+[start] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model histgb --verbose --seeds 3 --out results/runs_p0.csv
+[done ] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model histgb --verbose --seeds 1 --out results/runs_p0.csv
+[done ] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model histgb --verbose --seeds 0 --out results/runs_p0.csv
+[start] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model histgb --verbose --seeds 4 --out results/runs_p0.csv
+[start] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model gb --verbose --seeds 0 --out results/runs_p0.csv
+[done ] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-count 1500 --legacy --no-stratified --model gb --verbose --seeds 4 --out results/runs_p0.csv
+[start] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model gb --verbose --seeds 1 --out results/runs_p0.csv
+[done ] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-count 1500 --legacy --no-stratified --model gb --verbose --seeds 0 --out results/runs_p0.csv
+[start] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model gb --verbose --seeds 2 --out results/runs_p0.csv
+[done ] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model histgb --verbose --seeds 3 --out results/runs_p0.csv
+[start] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model gb --verbose --seeds 3 --out results/runs_p0.csv
+[done ] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-count 1500 --legacy --no-stratified --model gb --verbose --seeds 3 --out results/runs_p0.csv
+[start] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model gb --verbose --seeds 4 --out results/runs_p0.csv
+[done ] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-count 1500 --legacy --no-stratified --model gb --verbose --seeds 1 --out results/runs_p0.csv
+[done ] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-count 1500 --legacy --no-stratified --model gb --verbose --seeds 2 --out results/runs_p0.csv
+[done ] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model histgb --verbose --seeds 4 --out results/runs_p0.csv
+[done ] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model gb --verbose --seeds 0 --out results/runs_p0.csv
+[done ] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model gb --verbose --seeds 1 --out results/runs_p0.csv
+[done ] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model gb --verbose --seeds 2 --out results/runs_p0.csv
+[done ] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model gb --verbose --seeds 4 --out results/runs_p0.csv
+[done ] python3 -u scripts/run_experiment.py --dataset nr --method shs-aco-smote --target-ratio 1.25 --model gb --verbose --seeds 3 --out results/runs_p0.csv
+Phase p0 finished. Aggregate with:
+  python3 scripts/aggregate_results.py --runs results/runs_p0.csv
