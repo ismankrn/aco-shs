@@ -6,11 +6,13 @@
 
 cd "$(dirname "$0")/.."
 PHASE="${1:-p0}"
+PY=python3
+[ -x .venv/bin/python ] && PY=.venv/bin/python
 CSV="results/runs_${PHASE}.csv"
 
 if [ -f "$CSV" ]; then
   echo "== Completed seeds per job ($CSV):"
-  python3 - "$CSV" <<'EOF'
+  "$PY" - "$CSV" <<'EOF'
 import sys
 import pandas as pd
 df = pd.read_csv(sys.argv[1])
