@@ -116,8 +116,9 @@ nl -ba "$CMDS"
 # plain bash job pool (macOS xargs -I has a 255-byte replstr limit)
 run_job() {
   local cmd="$1"
-  local tag
-  tag=$(echo "$cmd" | tr -cs '[:alnum:]' '-' | cut -c1-120)
+  local tag sum
+  sum=$(printf %s "$cmd" | cksum | cut -d" " -f1)
+  tag="$(echo "$cmd" | tr -cs '[:alnum:]' '-' | cut -c1-110)$sum"
   echo "[start] $cmd"
   if eval "$cmd" > "logs/$tag.log" 2>&1; then
     echo "[done ] $cmd"
