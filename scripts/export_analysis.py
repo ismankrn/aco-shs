@@ -26,7 +26,7 @@ from scipy import stats
 
 METRICS = ["f1", "gmean", "bas", "auprc", "accuracy"]
 CFG_COLS = ["dataset", "method", "model", "target", "fitness_fn",
-            "legacy", "stratified", "replacement"]
+            "legacy", "stratified", "replacement", "rho", "ants"]
 
 FONT = "Arial"
 HDR_FILL = PatternFill("solid", fgColor="1F4E79")

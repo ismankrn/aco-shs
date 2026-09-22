@@ -86,6 +86,22 @@ p2)
     done
   done
   ;;
+p2b)
+  OUT=results/runs_p2b.csv
+  # one-factor-at-a-time sensitivity around tuned defaults (rho=0.8, K=20),
+  # on shs-aco-smote at the P2-winning ratio (edit RATIO_SENS after P2)
+  RATIO_SENS="${RATIO_SENS:-1.25}"
+  for rho in 0.5 0.95; do
+    for s in $SEEDS_ACO; do
+      echo "$RUN --dataset nr --method shs-aco-smote --target-ratio $RATIO_SENS --model $MODEL --verbose --rho $rho --seeds $s --out $OUT" >> "$CMDS"
+    done
+  done
+  for ants in 10 40; do
+    for s in $SEEDS_ACO; do
+      echo "$RUN --dataset nr --method shs-aco-smote --target-ratio $RATIO_SENS --model $MODEL --verbose --ants $ants --seeds $s --out $OUT" >> "$CMDS"
+    done
+  done
+  ;;
 p3)
   OUT=results/runs_p3.csv
   for ds in nr gpcr ic enzyme; do
@@ -103,7 +119,7 @@ p3)
   done
   ;;
 *)
-  echo "usage: bash scripts/run_grid.sh {p0|p1|p2|p3}" >&2
+  echo "usage: bash scripts/run_grid.sh {p0|p1|p2|p2b|p3}" >&2
   rm -f "$CMDS"; exit 1
   ;;
 esac

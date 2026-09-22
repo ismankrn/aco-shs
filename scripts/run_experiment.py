@@ -136,6 +136,7 @@ def main():
                "fitness_fn": args.fitness if args.method.startswith("shs-aco") else "",
                "legacy": args.legacy, "stratified": args.stratified,
                "replacement": not args.no_replacement,
+               "rho": args.rho, "ants": args.ants, "iters": args.iters,
                "runtime_s": round(runtime, 2), **m}
         # append immediately (with an exclusive lock: parallel grid jobs share
         # this file) so an interrupted job keeps its finished seeds
