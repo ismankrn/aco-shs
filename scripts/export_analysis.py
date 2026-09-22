@@ -132,8 +132,9 @@ def main():
                         title="Uji ekuivalensi model (Wilcoxon berpasangan, F1)")
 
     # --- Reproduksi (legacy rows) ---
-    if "legacy" in df.columns and df["legacy"].any():
-        rep = df[df["legacy"]].copy()
+    if "legacy" in df.columns and "target" in df.columns and \
+            ((df["legacy"]) & (df["target"] == 1500)).any():
+        rep = df[(df["legacy"]) & (df["target"] == 1500)].copy()
         keep = ["dataset", "method", "model", "target", "seed",
                 "tp", "fp", "tn", "fn"] + METRICS + ["runtime_s"]
         rep = rep[[c for c in keep if c in rep.columns]].sort_values("seed")

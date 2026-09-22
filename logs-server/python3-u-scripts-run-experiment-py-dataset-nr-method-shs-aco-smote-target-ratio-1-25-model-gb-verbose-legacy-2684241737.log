@@ -1,0 +1,12 @@
+[ACO] iter 1/10: best_found=0.6373 best=0.3707
+[ACO] iter 2/10: best_found=0.6215 best=0.6373
+[ACO] iter 3/10: best_found=0.5880 best=0.6373
+[ACO] iter 4/10: best_found=0.6120 best=0.6373
+[ACO] iter 5/10: best_found=0.6425 best=0.6373
+[ACO] iter 6/10: best_found=0.6280 best=0.6425
+[ACO] iter 7/10: best_found=0.6003 best=0.6425
+[ACO] iter 8/10: best_found=0.6053 best=0.6425
+[ACO] iter 9/10: best_found=0.6007 best=0.6425
+[ACO] iter 10/10: best_found=0.6151 best=0.6425
+[nr/shs-aco-smote] seed=0 F1=0.2553 G-Mean=0.4630 BAS=0.5934 AUPRC=0.2632 (6955.1s)
+Appended 1 rows to results/runs_p1.csv
