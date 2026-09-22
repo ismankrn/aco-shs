@@ -16,7 +16,7 @@ if [ -f "$CSV" ]; then
 import sys
 import pandas as pd
 df = pd.read_csv(sys.argv[1])
-cols = [c for c in ("method", "model", "target", "fitness_fn") if c in df.columns]
+cols = [c for c in ("method", "model", "target", "fitness_fn", "legacy", "stratified", "replacement") if c in df.columns]
 # target/fitness_fn are only meaningful for SHS / SHS-ACO rows; show "-" elsewhere
 df[cols] = df[cols].fillna("-")
 g = (df.groupby(cols, dropna=False)
