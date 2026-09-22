@@ -101,6 +101,10 @@ p2b)
       echo "$RUN --dataset nr --method shs-aco-smote --target-ratio $RATIO_SENS --model $MODEL --verbose --ants $ants --seeds $s --out $OUT" >> "$CMDS"
     done
   done
+  # budget-matched SA comparator (reviewer defense: informed selection vs ACO)
+  for s in $SEEDS_ACO; do
+    echo "$RUN --dataset nr --method shs-sa-smote --target-ratio $RATIO_SENS --model $MODEL --verbose --seeds $s --out $OUT" >> "$CMDS"
+  done
   ;;
 p3)
   OUT=results/runs_p3.csv

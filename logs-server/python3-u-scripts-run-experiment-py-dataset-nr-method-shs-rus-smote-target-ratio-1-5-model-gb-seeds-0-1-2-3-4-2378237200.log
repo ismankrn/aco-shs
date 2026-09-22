@@ -1,0 +1,11 @@
+[nr/shs-rus-smote] seed=0 F1=0.3077 G-Mean=0.5325 BAS=0.6266 AUPRC=0.2604 (7.7s)
+[nr/shs-rus-smote] seed=1 F1=0.4000 G-Mean=0.5707 BAS=0.6553 AUPRC=0.4109 (8.1s)
+[nr/shs-rus-smote] seed=2 F1=0.3182 G-Mean=0.5027 BAS=0.6170 AUPRC=0.3333 (8.3s)
+[nr/shs-rus-smote] seed=3 F1=0.3243 G-Mean=0.4690 BAS=0.6060 AUPRC=0.3395 (8.2s)
+[nr/shs-rus-smote] seed=4 F1=0.2791 G-Mean=0.4654 BAS=0.5985 AUPRC=0.2907 (7.5s)
+[nr/shs-rus-smote] seed=5 F1=0.3889 G-Mean=0.5079 BAS=0.6271 AUPRC=0.4106 (7.8s)
+[nr/shs-rus-smote] seed=6 F1=0.4783 G-Mean=0.6318 BAS=0.6936 AUPRC=0.2860 (8.0s)
+[nr/shs-rus-smote] seed=7 F1=0.2727 G-Mean=0.4648 BAS=0.5972 AUPRC=0.2554 (7.8s)
+[nr/shs-rus-smote] seed=8 F1=0.4000 G-Mean=0.5409 BAS=0.6418 AUPRC=0.4139 (7.7s)
+[nr/shs-rus-smote] seed=9 F1=0.2500 G-Mean=0.4260 BAS=0.5825 AUPRC=0.2857 (8.0s)
+Appended 10 rows to results/runs_p2.csv

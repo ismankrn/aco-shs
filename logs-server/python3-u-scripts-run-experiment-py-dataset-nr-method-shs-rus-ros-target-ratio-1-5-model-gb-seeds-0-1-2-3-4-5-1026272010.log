@@ -1,0 +1,11 @@
+[nr/shs-rus-ros] seed=0 F1=0.4118 G-Mean=0.6950 BAS=0.7251 AUPRC=0.3434 (3.6s)
+[nr/shs-rus-ros] seed=1 F1=0.5263 G-Mean=0.8285 BAS=0.8337 AUPRC=0.4435 (3.4s)
+[nr/shs-rus-ros] seed=2 F1=0.4638 G-Mean=0.7440 BAS=0.7634 AUPRC=0.4415 (3.6s)
+[nr/shs-rus-ros] seed=3 F1=0.5333 G-Mean=0.7531 BAS=0.7748 AUPRC=0.4161 (3.7s)
+[nr/shs-rus-ros] seed=4 F1=0.3548 G-Mean=0.6186 BAS=0.6733 AUPRC=0.3131 (3.4s)
+[nr/shs-rus-ros] seed=5 F1=0.4789 G-Mean=0.7659 BAS=0.7806 AUPRC=0.4643 (3.4s)
+[nr/shs-rus-ros] seed=6 F1=0.4375 G-Mean=0.6988 BAS=0.7301 AUPRC=0.4526 (3.6s)
+[nr/shs-rus-ros] seed=7 F1=0.4375 G-Mean=0.6988 BAS=0.7301 AUPRC=0.3222 (3.6s)
+[nr/shs-rus-ros] seed=8 F1=0.5070 G-Mean=0.7892 BAS=0.8004 AUPRC=0.4493 (3.5s)
+[nr/shs-rus-ros] seed=9 F1=0.4348 G-Mean=0.7194 BAS=0.7436 AUPRC=0.2889 (3.5s)
+Appended 10 rows to results/runs_p2.csv

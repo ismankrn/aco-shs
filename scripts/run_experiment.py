@@ -25,14 +25,16 @@ from sklearn.model_selection import train_test_split
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from shs import (ACOUndersampler, combined_hybrid, evaluate, load_dataset,
-                 oversample, ratio_to_target, shs_rus, synthetic_pool)
+from shs import (ACOUndersampler, SAUndersampler, combined_hybrid, evaluate,
+                 load_dataset, oversample, ratio_to_target, shs_rus,
+                 synthetic_pool)
 
 OVERSAMPLERS = ("ros", "smote", "adasyn")
 METHODS = (["baseline", "smote-enn", "smote-tomek"]
            + list(OVERSAMPLERS)
            + [f"shs-rus-{o}" for o in OVERSAMPLERS]
-           + [f"shs-aco-{o}" for o in OVERSAMPLERS])
+           + [f"shs-aco-{o}" for o in OVERSAMPLERS]
+           + [f"shs-sa-{o}" for o in OVERSAMPLERS])
 
 
 def append_row(out_path, row):
@@ -79,6 +81,15 @@ def apply_method(method, X_tr, y_tr, n_target, seed, args):
             stratified=args.stratified, replacement=not args.no_replacement,
             legacy_pheromone=args.legacy, random_state=seed, verbose=args.verbose)
         return aco.fit_resample(X_tr, y_tr, pool_X, pool_y, model)
+    if method.startswith("shs-sa-"):
+        pool_X, pool_y = synthetic_pool(X_tr, y_tr, method.removeprefix("shs-sa-"),
+                                        n_target, random_state=seed)
+        sa = SAUndersampler(
+            budget=args.ants * args.iters,  # budget-matched to the ACO arm
+            cv=args.cv, fitness=args.fitness,
+            stratified=args.stratified, replacement=not args.no_replacement,
+            random_state=seed, verbose=args.verbose)
+        return sa.fit_resample(X_tr, y_tr, pool_X, pool_y, model)
     raise ValueError(method)
 
 

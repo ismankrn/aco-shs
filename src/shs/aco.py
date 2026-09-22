@@ -24,6 +24,26 @@ from sklearn.model_selection import KFold, StratifiedKFold
 from .metrics import fitness_score
 
 
+def cv_fitness(model, X_train, y_train, extra_X=None, extra_y=None,
+               cv=5, fitness="f1", stratified=True, random_state=None):
+    """Mean fitness over CV folds of the ORIGINAL training data; candidate
+    synthetic rows are added to each fold's training part only. Shared by the
+    ACO and SA undersamplers so their comparison is budget- and metric-fair."""
+    splitter_cls = StratifiedKFold if stratified else KFold
+    kf = splitter_cls(n_splits=cv, shuffle=True, random_state=random_state)
+    scores = []
+    for tr_idx, te_idx in kf.split(X_train, y_train if stratified else None):
+        X_tr, y_tr = X_train.iloc[tr_idx], y_train.iloc[tr_idx]
+        if extra_X is not None:
+            X_tr = pd.concat([X_tr, extra_X], ignore_index=True)
+            y_tr = pd.concat([y_tr, extra_y], ignore_index=True)
+        est = clone(model)
+        est.fit(X_tr, y_tr)
+        y_pred = est.predict(X_train.iloc[te_idx])
+        scores.append(fitness_score(fitness, y_train.iloc[te_idx], y_pred))
+    return float(np.mean(scores))
+
+
 class ACOUndersampler:
     """Select the most informative synthetic instances from an oversampling pool.
 
@@ -53,24 +73,10 @@ class ACOUndersampler:
     # ------------------------------------------------------------------ #
 
     def _cv_fitness(self, model, X_train, y_train, extra_X=None, extra_y=None):
-        """Mean fitness over CV folds of the ORIGINAL training data.
-
-        The candidate synthetic rows (`extra_*`) are added to each fold's
-        training part only; validation is always on original samples.
-        """
-        splitter_cls = StratifiedKFold if self.stratified else KFold
-        kf = splitter_cls(n_splits=self.cv, shuffle=True, random_state=self.random_state)
-        scores = []
-        for tr_idx, te_idx in kf.split(X_train, y_train if self.stratified else None):
-            X_tr, y_tr = X_train.iloc[tr_idx], y_train.iloc[tr_idx]
-            if extra_X is not None:
-                X_tr = pd.concat([X_tr, extra_X], ignore_index=True)
-                y_tr = pd.concat([y_tr, extra_y], ignore_index=True)
-            est = clone(model)
-            est.fit(X_tr, y_tr)
-            y_pred = est.predict(X_train.iloc[te_idx])
-            scores.append(fitness_score(self.fitness, y_train.iloc[te_idx], y_pred))
-        return float(np.mean(scores))
+        return cv_fitness(model, X_train, y_train, extra_X, extra_y,
+                          cv=self.cv, fitness=self.fitness,
+                          stratified=self.stratified,
+                          random_state=self.random_state)
 
     # ------------------------------------------------------------------ #
 
