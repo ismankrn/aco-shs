@@ -64,3 +64,32 @@ fitness = F1. Justified by methodological correctness since performance is
 statistically indistinguishable across all variants.
 
 Runtime: ~1.8-2.0 h per ACO seed on CPX42 (8 workers); full phase ~12 h wall.
+
+## P2 — target-ratio pilot on NR — completed 2026-09-23
+
+135 runs (6 SHS methods x 3 ratios). Winning ratios (mean F1, best in bold
+per arm): shs-rus: ros 1.25 (0.4725), smote 1.25 (0.3759), adasyn 1.0
+(0.3805). shs-aco: ros 1.5 (0.4751), smote 1.5 (0.3431), adasyn 1.5 (0.3603).
+Clean interaction: ACO's best is always the largest pool (informed selection
+exploits surplus), RUS's best is small/moderate pools (random selection is
+hurt by it). Headline shift vs paper 1: under repeated evaluation the ROS
+arms dominate NR (F1 44-48%) over SMOTE (31-38%).
+
+## P2b — ACO parameter sensitivity + SA comparator — completed 2026-09-24
+
+25 runs on shs-aco-smote ratio 1.5. Paired Wilcoxon vs default (rho=0.8,
+K=20, F1 0.3431): rho=0.5 p=1.0; rho=0.95 p=0.63; K=10 p=1.0; K=40 p=0.31;
+SA (budget-matched 200 evals) p=0.63. Conclusions:
+- ACO is insensitive to rho and K in reasonable ranges (robustness).
+- K=10 matches default quality at HALF the runtime (52 vs 107 min/seed);
+  K=40 trends worse at 2x cost. Practical note for the paper.
+- **SA is statistically equivalent to ACO** (SA 0.3565 vs ACO 0.3431,
+  SA wins 3/5 seeds): the value lies in informed selection itself, not the
+  specific metaheuristic. SA joins P3's SMOTE arm to settle this across
+  datasets.
+
+### Decisions for P3
+- Per-arm ratios: RUS ros/smote/adasyn = 1.25/1.25/1.0; ACO (and SA-smote)
+  = 1.5 for all arms.
+- Keep K=20 (consistency with P2-chosen ratios); K=10 documented as fallback.
+- Pending: GB-vs-HistGB mini-equivalence on GPCR, then CPX42 -> CPX62.
