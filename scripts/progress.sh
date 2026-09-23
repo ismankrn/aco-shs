@@ -32,8 +32,8 @@ fi
 echo
 echo "== Active run_experiment.py processes: $(pgrep -f run_experiment.py | wc -l | tr -d ' ')"
 echo
-echo "== Last line of each job log:"
-for f in logs/*.log; do
+echo "== Last line of each job log (terbaru dulu, maks 15):"
+for f in $(ls -t logs/*.log 2>/dev/null | head -15); do
   [ -e "$f" ] || continue
   name=$(basename "$f" .log | sed 's/^python3\(-u\)\{0,1\}-scripts-run-experiment-py-dataset-//; s/-out-results.*//')
   last=$(tail -1 "$f")

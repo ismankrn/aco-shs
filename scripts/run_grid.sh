@@ -131,6 +131,7 @@ esac
 N=$(wc -l < "$CMDS")
 echo "Phase ${1}: $N jobs, $WORKERS workers, model=$MODEL. Logs: logs/"
 mkdir -p logs results
+rm -f logs/*.log
 nl -ba "$CMDS"
 
 # plain bash job pool (macOS xargs -I has a 255-byte replstr limit)
