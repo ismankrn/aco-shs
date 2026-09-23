@@ -144,6 +144,25 @@ def main():
                         "G-Mean=0.5075, BAS=0.6241").font = Font(
             name=FONT, size=10, italic=True)
 
+    # --- Runtime ---
+    rt = (d.groupby(cols, dropna=False)
+            .agg(seeds=("seed", "count"),
+                 runtime_mean_s=("runtime_s", "mean"),
+                 runtime_std_s=("runtime_s", "std"),
+                 runtime_min_s=("runtime_s", "min"),
+                 runtime_max_s=("runtime_s", "max"))
+            .reset_index())
+    base_rt = rt.loc[rt["runtime_mean_s"].idxmin(), "runtime_mean_s"]
+    rt["relatif_thd_tercepat"] = (rt["runtime_mean_s"] / base_rt).round(1)
+    rt = rt.sort_values("runtime_mean_s")
+    ws = wb.create_sheet("Runtime")
+    nxt = write_table(ws, rt, title="Runtime per konfigurasi (detik per seed)")
+    ws.cell(nxt, 1, "Catatan: runtime = sampling (termasuk pencarian ACO/SA) + "
+                    "pelatihan model final. Bandingkan hanya antar run pada mesin "
+                    "yang sama (P0 = MacBook M3; P1/P2 = Hetzner CPX42; "
+                    "8 worker paralel berbagi core).").font = Font(
+        name=FONT, size=10, italic=True)
+
     write_table(wb.create_sheet("Semua run"), d)
 
     out = Path(args.out)
