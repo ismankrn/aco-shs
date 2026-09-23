@@ -20,10 +20,14 @@ MODEL="${MODEL:-gb}"                 # gb | histgb (decide after P0)
 SEEDS_CHEAP="0 1 2 3 4 5 6 7 8 9"
 SEEDS_ACO="0 1 2 3 4"
 
-# Best oversampling ratio per SHS method -- EDIT after inspecting P2 results.
-RATIO_ROS="${RATIO_ROS:-1.25}"
-RATIO_SMOTE="${RATIO_SMOTE:-1.25}"
-RATIO_ADASYN="${RATIO_ADASYN:-1.25}"
+# P2-winning oversampling ratios, separated per undersampling arm.
+RATIO_RUS_ROS="${RATIO_RUS_ROS:-1.25}"
+RATIO_RUS_SMOTE="${RATIO_RUS_SMOTE:-1.25}"
+RATIO_RUS_ADASYN="${RATIO_RUS_ADASYN:-1.0}"
+RATIO_ACO_ROS="${RATIO_ACO_ROS:-1.5}"
+RATIO_ACO_SMOTE="${RATIO_ACO_SMOTE:-1.5}"
+RATIO_ACO_ADASYN="${RATIO_ACO_ADASYN:-1.5}"
+FITNESS_MODEL="${FITNESS_MODEL:-same}"   # histgb after the hgb check passes
 
 # HistGB parallelizes internally via OpenMP; with many workers that
 # oversubscribes cores, so pin each process to one thread.
@@ -113,17 +117,31 @@ p3)
       echo "$RUN --dataset $ds --method $m --model $MODEL --seeds $SEEDS_CHEAP --out $OUT" >> "$CMDS"
     done
     for o in ros smote adasyn; do
-      r_var="RATIO_$(echo "$o" | tr '[:lower:]' '[:upper:]')"
-      r="${!r_var}"
-      echo "$RUN --dataset $ds --method shs-rus-$o --target-ratio $r --model $MODEL --seeds $SEEDS_CHEAP --out $OUT" >> "$CMDS"
+      ru_var="RATIO_RUS_$(echo "$o" | tr '[:lower:]' '[:upper:]')"
+      ra_var="RATIO_ACO_$(echo "$o" | tr '[:lower:]' '[:upper:]')"
+      echo "$RUN --dataset $ds --method shs-rus-$o --target-ratio ${!ru_var} --model $MODEL --seeds $SEEDS_CHEAP --out $OUT" >> "$CMDS"
       for s in $SEEDS_ACO; do
-        echo "$RUN --dataset $ds --method shs-aco-$o --target-ratio $r --model $MODEL --verbose --seeds $s --out $OUT" >> "$CMDS"
+        echo "$RUN --dataset $ds --method shs-aco-$o --target-ratio ${!ra_var} --model $MODEL --fitness-model $FITNESS_MODEL --verbose --seeds $s --out $OUT" >> "$CMDS"
       done
+    done
+    for s in $SEEDS_ACO; do
+      echo "$RUN --dataset $ds --method shs-sa-smote --target-ratio $RATIO_ACO_SMOTE --model $MODEL --fitness-model $FITNESS_MODEL --verbose --seeds $s --out $OUT" >> "$CMDS"
     done
   done
   ;;
+hgb)
+  OUT=results/runs_hgb.csv
+  # hybrid-mode validation on NR: HistGB inside the fitness loop, GB final
+  for s in $SEEDS_ACO; do
+    echo "$RUN --dataset nr --method shs-aco-smote --target-ratio 1.5 --model gb --fitness-model histgb --verbose --seeds $s --out $OUT" >> "$CMDS"
+  done
+  # timing + behavior probe on GPCR (2 seeds)
+  for s in 0 1; do
+    echo "$RUN --dataset gpcr --method shs-aco-smote --target-ratio 1.5 --model gb --fitness-model histgb --verbose --seeds $s --out $OUT" >> "$CMDS"
+  done
+  ;;
 *)
-  echo "usage: bash scripts/run_grid.sh {p0|p1|p2|p2b|p3}" >&2
+  echo "usage: bash scripts/run_grid.sh {p0|p1|p2|p2b|p3|hgb}" >&2
   rm -f "$CMDS"; exit 1
   ;;
 esac
