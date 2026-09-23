@@ -112,7 +112,8 @@ p2b)
   ;;
 p3)
   OUT=results/runs_p3.csv
-  for ds in nr gpcr ic enzyme; do
+  DS_LIST="${2:-nr gpcr ic enzyme}"   # optional 2nd arg: run one dataset
+  for ds in $DS_LIST; do
     for m in baseline ros smote adasyn smote-enn smote-tomek; do
       echo "$RUN --dataset $ds --method $m --model $MODEL --seeds $SEEDS_CHEAP --out $OUT" >> "$CMDS"
     done
@@ -141,7 +142,7 @@ hgb)
   done
   ;;
 *)
-  echo "usage: bash scripts/run_grid.sh {p0|p1|p2|p2b|p3|hgb}" >&2
+  echo "usage: bash scripts/run_grid.sh {p0|p1|p2|p2b|p3|hgb} [p3-dataset]" >&2
   rm -f "$CMDS"; exit 1
   ;;
 esac

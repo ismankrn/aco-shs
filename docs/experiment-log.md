@@ -93,3 +93,12 @@ SA (budget-matched 200 evals) p=0.63. Conclusions:
   = 1.5 for all arms.
 - Keep K=20 (consistency with P2-chosen ratios); K=10 documented as fallback.
 - Pending: GB-vs-HistGB mini-equivalence on GPCR, then CPX42 -> CPX62.
+
+## HistGB check + fit-time calibration — 2026-09-24
+
+Hybrid mode (HistGB fitness, GB final) on NR: worse in 5/5 seeds vs pure GB
+(0.3177 vs 0.3431, p=0.125) -> avoid where GB is affordable. Single-fit times
+(server, OMP=1): IC gb 96 s / histgb 13.6 s; Enzyme gb 810 s / histgb 82.7 s.
+**P3 policy:** K=10 (P2b-validated), pure GB fitness for NR/GPCR/IC; Enzyme
+uses HistGB fitness (GB final) as the only feasible option — uniform within
+the dataset, reported transparently. Enzyme runs with reduced workers (RAM).
