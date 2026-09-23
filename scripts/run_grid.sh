@@ -27,7 +27,8 @@ RATIO_RUS_ADASYN="${RATIO_RUS_ADASYN:-1.0}"
 RATIO_ACO_ROS="${RATIO_ACO_ROS:-1.5}"
 RATIO_ACO_SMOTE="${RATIO_ACO_SMOTE:-1.5}"
 RATIO_ACO_ADASYN="${RATIO_ACO_ADASYN:-1.5}"
-FITNESS_MODEL="${FITNESS_MODEL:-same}"   # histgb after the hgb check passes
+FITNESS_MODEL="${FITNESS_MODEL:-same}"   # histgb for enzyme (see experiment-log)
+ANTS="${ANTS:-10}"                       # P2b: K=10 matches K=20 at half cost
 
 # HistGB parallelizes internally via OpenMP; with many workers that
 # oversubscribes cores, so pin each process to one thread.
@@ -122,11 +123,11 @@ p3)
       ra_var="RATIO_ACO_$(echo "$o" | tr '[:lower:]' '[:upper:]')"
       echo "$RUN --dataset $ds --method shs-rus-$o --target-ratio ${!ru_var} --model $MODEL --seeds $SEEDS_CHEAP --out $OUT" >> "$CMDS"
       for s in $SEEDS_ACO; do
-        echo "$RUN --dataset $ds --method shs-aco-$o --target-ratio ${!ra_var} --model $MODEL --fitness-model $FITNESS_MODEL --verbose --seeds $s --out $OUT" >> "$CMDS"
+        echo "$RUN --dataset $ds --method shs-aco-$o --target-ratio ${!ra_var} --model $MODEL --fitness-model $FITNESS_MODEL --ants $ANTS --verbose --seeds $s --out $OUT" >> "$CMDS"
       done
     done
     for s in $SEEDS_ACO; do
-      echo "$RUN --dataset $ds --method shs-sa-smote --target-ratio $RATIO_ACO_SMOTE --model $MODEL --fitness-model $FITNESS_MODEL --verbose --seeds $s --out $OUT" >> "$CMDS"
+      echo "$RUN --dataset $ds --method shs-sa-smote --target-ratio $RATIO_ACO_SMOTE --model $MODEL --fitness-model $FITNESS_MODEL --ants $ANTS --verbose --seeds $s --out $OUT" >> "$CMDS"
     done
   done
   ;;
