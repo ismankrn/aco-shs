@@ -29,6 +29,8 @@ RATIO_ACO_SMOTE="${RATIO_ACO_SMOTE:-1.5}"
 RATIO_ACO_ADASYN="${RATIO_ACO_ADASYN:-1.5}"
 FITNESS_MODEL="${FITNESS_MODEL:-same}"   # histgb for enzyme (see experiment-log)
 ANTS="${ANTS:-10}"                       # P2b: K=10 matches K=20 at half cost
+ITERS="${ITERS:-10}"                     # enzyme fallback: 5 (design doc)
+P3_ARMS="${P3_ARMS:-all}"                # all | cheap | expensive (RAM tuning)
 
 # HistGB parallelizes internally via OpenMP; with many workers that
 # oversubscribes cores, so pin each process to one thread.
@@ -115,20 +117,26 @@ p3)
   OUT=results/runs_p3.csv
   DS_LIST="${2:-nr gpcr ic enzyme}"   # optional 2nd arg: run one dataset
   for ds in $DS_LIST; do
-    for m in baseline ros smote adasyn smote-enn smote-tomek; do
-      echo "$RUN --dataset $ds --method $m --model $MODEL --seeds $SEEDS_CHEAP --out $OUT" >> "$CMDS"
-    done
-    for o in ros smote adasyn; do
-      ru_var="RATIO_RUS_$(echo "$o" | tr '[:lower:]' '[:upper:]')"
-      ra_var="RATIO_ACO_$(echo "$o" | tr '[:lower:]' '[:upper:]')"
-      echo "$RUN --dataset $ds --method shs-rus-$o --target-ratio ${!ru_var} --model $MODEL --seeds $SEEDS_CHEAP --out $OUT" >> "$CMDS"
-      for s in $SEEDS_ACO; do
-        echo "$RUN --dataset $ds --method shs-aco-$o --target-ratio ${!ra_var} --model $MODEL --fitness-model $FITNESS_MODEL --ants $ANTS --verbose --seeds $s --out $OUT" >> "$CMDS"
+    if [ "$P3_ARMS" != "expensive" ]; then
+      for m in baseline ros smote adasyn smote-enn smote-tomek; do
+        echo "$RUN --dataset $ds --method $m --model $MODEL --seeds $SEEDS_CHEAP --out $OUT" >> "$CMDS"
       done
-    done
-    for s in $SEEDS_ACO; do
-      echo "$RUN --dataset $ds --method shs-sa-smote --target-ratio $RATIO_ACO_SMOTE --model $MODEL --fitness-model $FITNESS_MODEL --ants $ANTS --verbose --seeds $s --out $OUT" >> "$CMDS"
-    done
+      for o in ros smote adasyn; do
+        ru_var="RATIO_RUS_$(echo "$o" | tr '[:lower:]' '[:upper:]')"
+        echo "$RUN --dataset $ds --method shs-rus-$o --target-ratio ${!ru_var} --model $MODEL --seeds $SEEDS_CHEAP --out $OUT" >> "$CMDS"
+      done
+    fi
+    if [ "$P3_ARMS" != "cheap" ]; then
+      for o in ros smote adasyn; do
+        ra_var="RATIO_ACO_$(echo "$o" | tr '[:lower:]' '[:upper:]')"
+        for s in $SEEDS_ACO; do
+          echo "$RUN --dataset $ds --method shs-aco-$o --target-ratio ${!ra_var} --model $MODEL --fitness-model $FITNESS_MODEL --ants $ANTS --iters $ITERS --verbose --seeds $s --out $OUT" >> "$CMDS"
+        done
+      done
+      for s in $SEEDS_ACO; do
+        echo "$RUN --dataset $ds --method shs-sa-smote --target-ratio $RATIO_ACO_SMOTE --model $MODEL --fitness-model $FITNESS_MODEL --ants $ANTS --iters $ITERS --verbose --seeds $s --out $OUT" >> "$CMDS"
+      done
+    fi
   done
   ;;
 hgb)
