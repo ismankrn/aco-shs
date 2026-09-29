@@ -8,6 +8,7 @@ cross-dataset comparability prefer `ratio_to_target()`).
 
 import pandas as pd
 from imblearn.combine import SMOTEENN, SMOTETomek
+from imblearn.under_sampling import EditedNearestNeighbours, TomekLinks
 from imblearn.over_sampling import ADASYN, SMOTE, RandomOverSampler
 from imblearn.under_sampling import RandomUnderSampler
 
@@ -61,11 +62,13 @@ def combined_hybrid(X, y, name, random_state=None):
     if name == "smote-enn":
         sampler = SMOTEENN(random_state=random_state,
                            smote=SMOTE(random_state=random_state,
-                                       k_neighbors=SMOTE_K_NEIGHBORS))
+                                       k_neighbors=SMOTE_K_NEIGHBORS),
+                           enn=EditedNearestNeighbours(n_jobs=-1))
     elif name == "smote-tomek":
         sampler = SMOTETomek(random_state=random_state,
                              smote=SMOTE(random_state=random_state,
-                                         k_neighbors=SMOTE_K_NEIGHBORS))
+                                         k_neighbors=SMOTE_K_NEIGHBORS),
+                             tomek=TomekLinks(n_jobs=-1))
     else:
         raise ValueError(f"Unknown hybrid '{name}'")
     return sampler.fit_resample(X.reset_index(drop=True), y.reset_index(drop=True))
