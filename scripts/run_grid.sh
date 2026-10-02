@@ -162,6 +162,9 @@ mkdir -p logs results
 rm -f logs/*.log
 nl -ba "$CMDS"
 
+# protect the pool itself from the kernel OOM killer (jobs are sacrificial)
+command -v choom >/dev/null && choom -n -1000 -p $$ 2>/dev/null
+
 # plain bash job pool (macOS xargs -I has a 255-byte replstr limit)
 run_job() {
   local cmd="$1"
@@ -178,10 +181,12 @@ run_job() {
   fi
 }
 
+STAGGER="${STAGGER:-0}"   # seconds between job starts (isolate memory spikes)
 while IFS= read -r cmd; do
   [ -z "$cmd" ] && continue
   while [ "$(jobs -rp | wc -l)" -ge "$WORKERS" ]; do sleep 2; done
   run_job "$cmd" &
+  [ "$STAGGER" -gt 0 ] && sleep "$STAGGER"
 done < "$CMDS"
 wait
 
