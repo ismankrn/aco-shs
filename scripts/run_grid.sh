@@ -169,6 +169,8 @@ run_job() {
   sum=$(printf %s "$cmd" | cksum | cut -d" " -f1)
   tag="$(echo "$cmd" | tr -cs '[:alnum:]' '-' | cut -c1-110)$sum"
   echo "[start] $cmd"
+  # make the job the kernel's preferred OOM victim (not tmux/the pool)
+  command -v choom >/dev/null && cmd="choom -n 500 -- $cmd"
   if eval "$cmd" > "logs/$tag.log" 2>&1; then
     echo "[done ] $cmd"
   else
