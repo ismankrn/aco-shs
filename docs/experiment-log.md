@@ -102,3 +102,36 @@ Hybrid mode (HistGB fitness, GB final) on NR: worse in 5/5 seeds vs pure GB
 **P3 policy:** K=10 (P2b-validated), pure GB fitness for NR/GPCR/IC; Enzyme
 uses HistGB fitness (GB final) as the only feasible option — uniform within
 the dataset, reported transparently. Enzyme runs with reduced workers (RAM).
+
+## P3 — full comparison, 4 datasets — COMPLETED 2026-10-08
+
+440 runs (13 methods x 4 datasets), zero duplicates. Headline results (F1 means):
+
+| dataset | winner | F1 | baseline | notes |
+|---|---|---|---|---|
+| NR | ros / shs-rus-ros | 0.457-0.473 | 0.324 | sampling pays hugely (+15 pp) |
+| GPCR | shs-sa-smote | 0.365 | 0.193 | SMOTE family leads; selection ~neutral |
+| IC | shs-aco-adasyn | 0.346 | 0.160 | ACO adds (thin) on top of ADASYN |
+| Enzyme | baseline | 0.185 | — | NO sampling method beats baseline |
+
+Key findings:
+1. **No universal winner**: each dataset crowns a different oversampler
+   (ROS -> SMOTE -> ADASYN -> none), tracking minority-data richness
+   (63 / 444 / 1,033 / 2,048 real positives). The benefit of sampling and of
+   informed selection decays monotonically along this gradient.
+2. **ACO abstention property (unplanned, verified)**: on Enzyme, ACO's
+   fitness never found a synthetic subset beating the raw data, so its
+   fallback returned the ORIGINAL training set in 15/15 runs — confusion
+   matrices identical to baseline. SA, lacking an abstention option, was
+   forced to oversample and landed slightly below baseline. Informed
+   selection with a null action doubles as a safety valve.
+3. **ROS ceiling**: informed selection cannot rescue ROS on any large
+   dataset (GPCR/IC ~equal to plain ROS; Enzyme rescued only via abstention).
+4. **SA vs ACO**: no significant difference on any dataset (p=0.125-0.812);
+   SA wins GPCR nominally, ACO wins IC/Enzyme nominally. Metaheuristic
+   choice is secondary — but the abstention asymmetry favors the ACO design.
+5. **Friedman across datasets** (13 methods, 20 blocks, chi2=42.5, p=2.7e-5):
+   top mean ranks are shs-aco-adasyn (4.85) and shs-aco-smote (5.00), ahead
+   of smote-tomek (5.62); bottom: baseline/ros/rus-ros (~9.4). If forced to
+   pick one method blind, SHS-ACO is the safest — but per-dataset tailoring
+   beats any single choice.

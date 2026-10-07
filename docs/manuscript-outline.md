@@ -261,3 +261,22 @@ di bagian akhir. Angka yang tercantum sudah final dari results/*.csv.
 
 Perkiraan total referensi: ±30–35 (di atas minimum; tinjauan pustaka Introduction bisa menarik
 lagi 3–5 dari daftar paper 1 bila perlu).
+
+---
+
+## LAMPIRAN (2026-10-08): angka final P3 — mengganti semua tanda [P3]
+
+- Tabel inti 13x4 & semua statistik: results/analysis/P3_rekap.xlsx + docs/experiment-log.md §P3
+- Juara per dataset: NR ros/rus-ros 0,457-0,473; GPCR sa-smote 0,365; IC aco-adasyn 0,346;
+  Enzyme baseline 0,185 (tak terkalahkan)
+- Gradien inti Discussion terkonfirmasi 4 titik: manfaat sampling & seleksi menurun monoton
+  dengan kekayaan positif asli (63/444/1.033/2.048)
+- Temuan baru untuk §Results & §Discussion: **properti abstensi ACO** — di Enzyme, ACO menolak
+  menambah sintetis di 15/15 run (output identik baseline, terverifikasi confusion matrix);
+  SA tanpa opsi abstain terpaksa oversampling dan sedikit di bawah baseline -> seleksi
+  terinformasi + aksi-nol = katup pengaman; rekomendasi desain eksplisit
+- SA vs ACO: tak signifikan di semua dataset (p 0,125-0,812) -> klaim "optimizer sekunder" final
+- Friedman 13 metode, 20 blok: chi2=42,5 p=2,7e-5; rank teratas aco-adasyn 4,85, aco-smote 5,00,
+  smote-tomek 5,62; terbawah baseline/ros/rus-ros ±9,4
+- Runtime final (sheet Runtime P3_rekap): RUS/hybrid murah 2 dtk-2,5 mnt/seed; ACO/SA 22 mnt-20 jam/seed
+  (500-1.700x); enzyme ACO ±11-14 jam/seed dengan fitness HistGB K=10 N=5
