@@ -1,0 +1,10 @@
+\begin{tabular}{lcccccc}
+\toprule
+Dataset & Best method & F1 & Runner-up & $p$ (vs runner-up) & F1 baseline & $p$ (vs baseline) \\
+\midrule
+NR & SHS-RUS (ROS) & 0.4725 & ROS & 0.8203 & 0.3235 & 0.0059 \\
+GPCR & SHS-SA (SMOTE) & 0.3645 & SMOTE-Tomek & 0.6250 & 0.1925 & 0.0625 \\
+IC & SHS-ACO (ADASYN) & 0.3461 & SHS-RUS (ADASYN) & 0.4375 & 0.1600 & 0.0625 \\
+Enzyme & Baseline (no resampling) & 0.1854 & SHS-ACO (ADASYN) & -- & 0.1854 & -- \\
+\bottomrule
+\end{tabular}

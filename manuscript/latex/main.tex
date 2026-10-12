@@ -1,0 +1,573 @@
+% =========================================================================
+% Paper 2 — SHS with informed undersampling across four DTI datasets
+% Target: PeerJ Computer Science (initial submission is format-free;
+% struktur bagian sudah mengikuti PeerJ CS. Untuk pindah ke template
+% resmi wlpeerj di Overleaf, salin isi bagian per bagian — tabel dan
+% figur tidak perlu diubah).
+%
+% PRINSIP: blok abu-abu "POIN" = inti satu kalimat per bullet (dari
+% docs/manuscript-outline.md). Penulis menulis kalimatnya sendiri, lalu
+% menghapus blok POIN. Angka pada tabel dihasilkan otomatis oleh
+% scripts/export_latex_tables.py — jangan diedit manual.
+%
+% Build: latexmk -pdf main.tex   (di folder manuscript/latex/)
+% =========================================================================
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage[numbers,sort&compress]{natbib}
+\usepackage{authblk}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{amsmath}
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage[labelfont=bf,font=small]{caption}
+\usepackage{lineno}
+\usepackage[hidelinks]{hyperref}
+
+\graphicspath{{../}}  % figur hasil scripts/make_figures.py di manuscript/
+
+% Blok poin-per-kalimat: tampil abu-abu di PDF, dihapus setelah kalimat jadi.
+\newenvironment{poin}
+  {\begin{quote}\color{gray!60!black}\small
+   \textbf{POIN (satu bullet = satu kalimat; tulis kalimatnya, hapus blok ini):}
+   \begin{itemize}[nosep,leftmargin=1.2em]}
+  {\end{itemize}\end{quote}}
+
+\newcommand{\todocap}[1]{\textcolor{red!70!black}{[CAPTION — poin: #1]}}
+
+\title{%
+  % --- Pilih / tulis sendiri judul final (maks ~15 kata). Kandidat: ---
+  % 1. Fokus kerangka: sequential hybrid sampling + informed undersampling,
+  %    evaluasi 4 dataset DTI
+  % 2. Fokus temuan: kapan seleksi terinformasi (ACO/SA) atas pool sintetis
+  %    berguna, kapan tidak
+  % 3. Fokus metodologi: evaluasi multi-seed membalikkan kesimpulan
+  %    split-tunggal pada DTI imbalanced
+  \textcolor{red!70!black}{[JUDUL — pilih salah satu kandidat di komentar]}%
+}
+
+\author[1]{Rizky Nurhaliza Harahap}
+\author[1,2,*]{Isman Kurniawan}
+\affil[1]{School of Computing, Telkom University, Bandung, Indonesia}
+\affil[2]{Research Center of Human Centric Engineering, Telkom University,
+          Bandung, Indonesia}  % sesuaikan/hapus afiliasi kedua bila perlu
+\affil[*]{Corresponding author: ismankrn@telkomuniversity.ac.id}
+\date{}
+
+\begin{document}
+\maketitle
+\linenumbers  % PeerJ meminta nomor baris saat review
+
+% =========================================================================
+\begin{abstract}
+\begin{poin}
+  \item Konteks: prediksi DTI penting untuk penemuan obat; dataset DTI
+        sangat imbalanced.
+  \item Masalah: studi sebelumnya (termasuk paper 1) mengevaluasi dengan
+        split tunggal $\rightarrow$ rapuh.
+  \item Metode: kerangka SHS (oversampling melebihi mayoritas $\rightarrow$
+        undersampling terinformasi ACO/SA); evaluasi 4 dataset Yamanishi,
+        protokol multi-seed, uji statistik berpasangan.
+  \item Kontribusi tambahan: koreksi implementasi ACO paper 1 + ablasi
+        menyeluruh + pembanding SA budget-matched.
+  \item Hasil 1: hasil paper 1 tereproduksi tetapi sensitif seed
+        (F1 $0{,}361 \pm 0{,}071$; angka tesis = ujung optimis).
+  \item Hasil 2: ACO robust terhadap aturan/parameter; SA setara ACO
+        $\rightarrow$ nilai ada pada seleksi terinformasi.
+  \item Hasil 3: manfaat SHS bergantung dataset — nyata di NR, menyusut di
+        dataset besar; di Enzyme tidak ada metode yang mengalahkan baseline
+        dan ACO ``abstain''.
+  \item Hasil 4: biaya komputasi seleksi terinformasi 500--1.700$\times$
+        seleksi acak $\rightarrow$ trade-off eksplisit.
+  \item Kesimpulan: peta kapan SHS layak dipakai + protokol evaluasi yang
+        direkomendasikan.
+\end{poin}
+\end{abstract}
+
+% =========================================================================
+\section{Introduction}
+
+% --- Par. 1: konteks DTI (ringkas; jangan ulang paper 1 panjang-panjang) ---
+\begin{poin}
+  \item DTI = interaksi obat--protein target; kunci drug
+        discovery/repositioning \citep{azlimkhan2023comparative,
+        bagherian2021machine}.
+  \item Eksperimen laboratorium mahal/lambat $\rightarrow$ prediksi
+        komputasional \citep{you2018drug}.
+  \item Karakter data: negatif tak terverifikasi + imbalance ekstrem
+        (NR: 6\% positif) \citep{shi2019predicting}.
+\end{poin}
+
+% --- Par. 2: penanganan imbalance & posisi SHS ---
+\begin{poin}
+  \item Tiga keluarga data-level: oversampling, undersampling, hybrid
+        \citep{wongvorachan2023comparison, mohammed2020machine}.
+  \item Oversampling klasik: ROS/SMOTE/ADASYN \citep{chawla2002smote,
+        he2008adasyn}; hybrid mapan: SMOTE-ENN, SMOTE-Tomek
+        \citep{batista2004study}.
+  \item SHS (paper 1): oversampling \emph{melebihi} mayoritas $\rightarrow$
+        undersampling memangkas kembali; pembeda vs hybrid biasa.
+  \item Seleksi terinformasi via metaheuristik: ACOSampling
+        \citep{yu2013acosampling}, SAUS \citep{chennuru2022simulated},
+        FF-SMOTE \citep{kaur2019ffsmote}.
+\end{poin}
+
+% --- Par. 3: celah yang ditinggalkan paper 1 (motivasi inti) ---
+\begin{poin}
+  \item Paper 1: satu dataset (NR), satu split, tanpa uji statistik, tanpa
+        pembanding hybrid mapan.
+  \item Tidak diketahui: generalisasi lintas dataset, sensitivitas seed,
+        apakah ACO spesifik atau seleksi terinformasi generik.
+  \item Framing positif: ``extend and stress-test'' — bukan menjatuhkan
+        paper 1.
+\end{poin}
+
+% --- Par. 4: pertanyaan riset ---
+\begin{poin}
+  \item RQ1 generalisasi 4 dataset; RQ2 vs hybrid mapan; RQ3 koreksi \&
+        ablasi implementasi ACO; RQ4 fungsi fitness; RQ5 ACO vs SA
+        budget-matched.
+\end{poin}
+
+% --- Par. 5: kontribusi (bullet list di paper) ---
+\begin{poin}
+  \item Protokol evaluasi berulang + statistik berpasangan untuk SHS-DTI
+        (pertama untuk keluarga metode ini).
+  \item Koreksi implementasi tervalidasi reproduksi + temuan robustness.
+  \item Pembanding SA budget-matched $\rightarrow$ klaim ``informed
+        selection, not the metaheuristic''.
+  \item Temuan properti abstensi ACO sebagai katup pengaman.
+  \item Peta praktis: pasangan oversampler$\times$selektor$\times$rasio per
+        karakter dataset + biaya runtime.
+  \item Kode \& data publik (GitHub) $\rightarrow$ reproducibility penuh.
+\end{poin}
+
+% =========================================================================
+\section{Materials \& Methods}
+
+\subsection{Datasets}
+\begin{poin}
+  \item Empat dataset gold-standard Yamanishi
+        \citep{yamanishi2008prediction}: NR, GPCR, IC, Enzyme.
+  \item Fitur dari pipeline SRX-DTI \citep{khojasteh2023improving}: FP2
+        fingerprint obat 256-bit + AAC 20 + DPC 400 protein.
+  \item Min-max per kolom dalam dataset; pasangan = produk kartesius penuh.
+  \item Label 1 = interaksi gold standard; label 0 = pasangan tak berlabel
+        (asumsi negatif — caveat standar).
+  \item Rujuk Tabel~\ref{tab:datasets}; kolom \emph{train positives}
+        (63/444/1.033/2.048) adalah gradien yang dirujuk di Discussion.
+  \item NR identik byte dengan data paper 1 (kontinuitas terverifikasi md5).
+  \item Tanpa feature selection — mengisolasi efek sampling.
+\end{poin}
+
+\begin{table}[htbp]
+\centering
+\caption{\todocap{statistik Yamanishi + split 70/30 stratified; kolom train
+positives = gradien kekayaan minoritas}}
+\label{tab:datasets}
+\resizebox{\textwidth}{!}{\input{tables/t_datasets}}
+\end{table}
+
+\subsection{Sequential hybrid sampling framework}
+\begin{poin}
+  \item Definisi: (i) oversample minoritas melebihi mayoritas ke target =
+        rasio $\times$ $n_{\text{mayoritas}}$; (ii) undersample pool
+        sintetis kembali ke seimbang.
+  \item Beda vs hybrid klasik (SMOTE-ENN/Tomek): SHS memilih \emph{subset}
+        sintetis via optimasi, bukan membersihkan noise pasca-hoc.
+  \item Rasio $\in \{1{,}0;\ 1{,}25;\ 1{,}5\}$ — berbasis rasio agar
+        portabel lintas dataset; 1,0 = kontrol degenerate.
+  \item Oversampler: ROS, SMOTE $k$=11 \citep{chawla2002smote}, ADASYN
+        \citep{he2008adasyn}; selektor: RUS (acak) vs ACO vs SA
+        (terinformasi).
+  \item Figur kerangka: Gambar~\ref{fig:framework}.
+\end{poin}
+
+\begin{figure}[htbp]
+\centering
+% TODO: gambar ulang diagram kerangka SHS (adaptasi figur paper 1).
+\fbox{\parbox[c][5cm][c]{0.85\textwidth}{\centering
+  \textcolor{red!70!black}{[PLACEHOLDER — diagram kerangka SHS:\\
+  data latih $\rightarrow$ oversampling ke rasio$\times n_{maj}$
+  $\rightarrow$ pool sintetis $\rightarrow$ seleksi RUS/ACO/SA
+  $\rightarrow$ data seimbang $\rightarrow$ GB]}}}
+\caption{\todocap{alur SHS dua tahap + tiga selektor}}
+\label{fig:framework}
+\end{figure}
+
+\subsection{ACO undersampler}
+\begin{poin}
+  \item Solusi = multiset indeks berukuran
+        ($n_{\text{mayoritas}}-n_{\text{minoritas}}$) atas pool sintetis.
+  \item Probabilitas seleksi $P_i = \tau_i / \sum_j \tau_j$ (roulette
+        wheel) \citep{dorigo2006ant}.
+  \item Update pheromone standar:
+        $\tau^{\text{new}} = (1-\rho)\,\tau^{\text{old}} + \Delta$;
+        $\Delta$ = akumulasi fitness semut pemilih.
+  \item Fitness = F1 rata-rata 5-fold CV stratified pada data latih asli;
+        sintetis hanya masuk fold-train.
+  \item Parameter: $\tau_0$=0,3; $\rho$=0,8; $K$ semut; $N$=10 iterasi;
+        early-stop idle 5.
+  \item Properti abstensi: bila tak ada semut yang mengalahkan fitness data
+        asli, ACO mengembalikan data latih tanpa modifikasi.
+\end{poin}
+
+\subsubsection{Corrections to the paper-1 implementation}
+\begin{poin}
+  \item Tiga divergensi kode-vs-persamaan ditemukan di implementasi asli:
+        (a) update pheromone kode $(1-\rho\tau)+\Delta$ $\neq$ persamaan
+        publikasi; (b) CV fitness tanpa stratifikasi; (c) seleksi
+        with-replacement.
+  \item Ketiganya diablasi penuh $2\times2\times2$ (hasil
+        \S\ref{sec:ablation}: tidak ada yang signifikan $\rightarrow$
+        robust).
+  \item Konfigurasi final: rumus standar + stratified + with-replacement.
+\end{poin}
+
+\subsection{Budget-matched SA comparator}
+\begin{poin}
+  \item Motivasi: memisahkan ``manfaat seleksi terinformasi'' dari
+        ``manfaat ACO spesifik'' \citep{chennuru2022simulated}.
+  \item SA klasik \citep{kirkpatrick1983optimization}: satu solusi
+        berjalan; tetangga = resample 5\% posisi; penerimaan Boltzmann
+        $\exp(\Delta/T)$.
+  \item Cooling geometrik $T$: 0,05 $\rightarrow$ 0,001 sepanjang budget.
+  \item Budget evaluasi fitness = $K \times N$ milik ACO (identik); fungsi
+        fitness \& ruang solusi identik.
+  \item Klaim fairness: satu-satunya perbedaan = strategi pencarian.
+\end{poin}
+
+\subsection{Compared methods}
+\begin{poin}
+  \item 13 metode per dataset: baseline GB; ROS/SMOTE/ADASYN klasik;
+        SMOTE-ENN, SMOTE-Tomek \citep{batista2004study}; SHS-RUS $\times$3;
+        SHS-ACO $\times$3; SHS-SA (SMOTE).
+  \item Classifier seragam: Gradient Boosting \citep{friedman2001greedy}.
+  \item Alasan tidak menambah classifier lain: isolasi efek sampling.
+\end{poin}
+
+\subsection{Experimental design}
+\begin{poin}
+  \item P0 reproduksi: konfigurasi persis paper 1, 5 seed.
+  \item P0b ekuivalensi GB vs HistGB (10 seed berpasangan).
+  \item P1 ablasi $2\times2\times2$ koreksi ACO + fitness \{F1, G-Mean,
+        BAS\} (NR, 5 seed, Wilcoxon berpasangan).
+  \item P2 pilot rasio \{1,0; 1,25; 1,5\} $\times$ 6 metode SHS (NR).
+  \item P2b sensitivitas $\rho$ \{0,5; 0,95\}, $K$ \{10; 40\} + duel SA.
+  \item P3 perbandingan penuh 13 metode $\times$ 4 dataset; seed 0--9
+        metode murah, 0--4 ACO/SA.
+  \item Split stratified 70/30 per seed; sampling hanya pada train; seed
+        identik antar metode (berpasangan).
+  \item Keputusan berbasis pilot: $K$=10 (setara $K$=20 pada separuh
+        biaya); rasio per lengan (RUS 1,25/1,25/1,0; ACO/SA 1,5).
+  \item Enzyme: fitness internal memakai HistGB \citep{ke2017lightgbm}
+        (fit GB 810\,s vs HistGB 82,7\,s); classifier final tetap GB;
+        seragam dalam dataset.
+  \item Kompute: server cloud 12 vCPU; \texttt{OMP\_NUM\_THREADS}=1; job
+        per-seed paralel.
+\end{poin}
+
+\subsection{Metrics and statistical tests}
+\begin{poin}
+  \item Metrik: F1 (primer), G-Mean, BAS \citep{cahyana2019improving};
+        + AUPRC (threshold-free) \citep{saito2015precision}.
+  \item Semua dari confusion matrix pada test set tak tersentuh.
+  \item Per dataset: Wilcoxon signed-rank berpasangan (seed sama),
+        $\alpha$=0,05.
+  \item Lintas dataset: Friedman + post-hoc Nemenyi pada blok
+        dataset$\times$seed, mean ranks \citep{demsar2006statistical}.
+  \item Runtime dilaporkan per metode (mesin sama, disclaimer paralelisme).
+\end{poin}
+
+\subsection{Implementation and reproducibility}
+\begin{poin}
+  \item Python 3.12; scikit-learn \citep{pedregosa2011scikit},
+        imbalanced-learn \citep{lemaitre2017imbalanced}.
+  \item Semua run ber-seed penuh $\rightarrow$ deterministik (baris identik
+        lintas mesin/waktu).
+  \item Kode, pipeline data, seluruh CSV hasil: repositori publik
+        (\url{https://github.com/ismankrn/aco-shs}; buat rilis/tag saat
+        submit).
+\end{poin}
+
+% =========================================================================
+\section{Results}
+
+\subsection{Reproduction and seed sensitivity}
+\begin{poin}
+  \item Konfigurasi paper 1: F1 = $0{,}3606 \pm 0{,}0707$ (5 seed), rentang
+        0,2667--0,4314 (Tabel~\ref{tab:repro}).
+  \item 2/5 seed tepat di 0,4314 $\approx$ angka publikasi 0,4324
+        $\rightarrow$ tereproduksi, tapi ujung optimis.
+  \item 1 TP $\approx$ 4,3 poin recall di NR (27 positif test)
+        $\rightarrow$ argumen protokol berulang.
+\end{poin}
+
+\begin{table}[htbp]
+\centering
+\caption{\todocap{reproduksi konfigurasi tesis per seed; referensi split
+tunggal F1=0,4324}}
+\label{tab:repro}
+\input{tables/t_reproduction}
+\end{table}
+
+\subsection{ACO ablation and sensitivity}
+\label{sec:ablation}
+\begin{poin}
+  \item Per faktor ($n$=20 pasangan): legacy $p$=0,925; stratified
+        $p$=0,554; replacement $p$=0,112 (Tabel~\ref{tab:ablation}).
+  \item Refined vs thesis-like: $p$=1,0 $\rightarrow$ koreksi tidak
+        mengubah hasil (robustness).
+  \item Fitness: F1 0,3381 $\approx$ G-Mean 0,3389; BAS lebih buruk 0,3081.
+  \item $\rho$ \{0,5--0,95\} \& $K$ \{10--40\} tak signifikan; $K$=10 =
+        kualitas $K$=20 pada separuh biaya (Tabel~\ref{tab:sensitivity}).
+  \item Dari log konvergensi: fitness mendatar di iterasi $\sim$6--8
+        $\rightarrow$ $N$=10 cukup (Gambar~\ref{fig:convergence}).
+\end{poin}
+
+\begin{table}[htbp]
+\centering
+\caption{\todocap{ablasi 2$\times$2$\times$2 + fungsi fitness; variant A/B =
+False/True per faktor}}
+\label{tab:ablation}
+\resizebox{\textwidth}{!}{\input{tables/t_ablation}}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{\todocap{sensitivitas $\rho$/$K$ + SA budget-matched; NR,
+SHS-ACO-SMOTE rasio 1,5}}
+\label{tab:sensitivity}
+\input{tables/t_sensitivity}
+\end{table}
+
+\subsection{Pool ratio $\times$ selector interaction}
+\begin{poin}
+  \item ACO terbaik selalu di rasio 1,5 (ketiga oversampler); RUS terbaik
+        di 1,0--1,25 (Tabel~\ref{tab:ratio}, Gambar~\ref{fig:ratio}).
+  \item Interpretasi mekanistik: surplus = ruang pilihan bagi selektor
+        terinformasi, noise bagi selektor acak.
+\end{poin}
+
+\begin{table}[htbp]
+\centering
+\caption{\todocap{F1 per rasio pool (NR, 5 seed); tebal = rasio terbaik per
+metode}}
+\label{tab:ratio}
+\resizebox{\textwidth}{!}{\input{tables/t_ratio}}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{F2_ratio_interaction.pdf}
+\caption{\todocap{solid = SHS-ACO, putus-putus = SHS-RUS; warna = arm
+oversampler; ACO naik dengan ukuran pool, RUS sebaliknya}}
+\label{fig:ratio}
+\end{figure}
+
+\subsection{Main comparison across four datasets}
+\begin{poin}
+  \item Tabel inti: Tabel~\ref{tab:main} (G-Mean/BAS/AUPRC di suplemen).
+  \item NR: keluarga ROS dominan (RUS-ROS 0,473) $\gg$ SMOTE; GPCR: ROS
+        runtuh, SHS-SA-SMOTE 0,365 memimpin tipis atas SMOTE-Tomek 0,361;
+        IC: SHS-ACO-ADASYN 0,346; Enzyme: baseline 0,185 tak terkalahkan.
+  \item Tidak ada juara universal; juara oversampler bergeser
+        ROS $\rightarrow$ SMOTE $\rightarrow$ ADASYN $\rightarrow$ tanpa
+        sampling mengikuti kekayaan positif asli
+        (Gambar~\ref{fig:gradient}).
+  \item Uji per dataset: Tabel~\ref{tab:tests}; $n$=5 memberi $p$ minimum
+        0,0625 (GPCR/IC mencapainya).
+  \item Friedman $\chi^2$=42,5, $p$=2,7$\times10^{-5}$; rank teratas
+        SHS-ACO-ADASYN 4,85 dan SHS-ACO-SMOTE 5,00; CD Nemenyi = 4,08:
+        hanya baseline/ROS/SHS-RUS-ROS terpisah dari yang terbaik
+        (Gambar~\ref{fig:ranks}).
+\end{poin}
+
+\begin{table}[htbp]
+\centering
+\caption{\todocap{tabel inti F1 mean$\pm$SD, 13 metode $\times$ 4 dataset;
+tebal = terbaik per dataset}}
+\label{tab:main}
+\resizebox{\textwidth}{!}{\input{tables/t_main_f1}}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{\todocap{pemenang per dataset + Wilcoxon berpasangan; '--' Enzyme =
+skor identik karena abstensi}}
+\label{tab:tests}
+\resizebox{\textwidth}{!}{\input{tables/t_tests}}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.9\textwidth]{F1_gradient.pdf}
+\caption{\todocap{$\Delta$F1 metode terbaik per keluarga vs baseline; sumbu-x
+log positif asli train; label atas = oversampler juara; titik ACO-Enzyme =
+abstensi}}
+\label{fig:gradient}
+\end{figure}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.8\textwidth]{F4_friedman_ranks.pdf}
+\caption{\todocap{mean rank Friedman 20 blok; garis putus = best + CD
+Nemenyi $\alpha$=0,05; kiri garis = tak terbedakan dari terbaik}}
+\label{fig:ranks}
+\end{figure}
+
+\subsection{The ACO abstention property}
+\begin{poin}
+  \item Di Enzyme, fitness ACO tak pernah menemukan subset sintetis yang
+        mengalahkan data asli $\rightarrow$ fallback mengembalikan data
+        latih asli di 15/15 run (Tabel~\ref{tab:abstention}).
+  \item Verifikasi: confusion matrix identik dengan baseline di semua
+        15 run (3 arm $\times$ 5 seed).
+  \item SA tanpa opsi abstain terpaksa oversampling $\rightarrow$ sedikit
+        di bawah baseline (0,171 vs 0,185).
+  \item Interpretasi: seleksi terinformasi + aksi-nol = katup pengaman;
+        rekomendasi desain eksplisit.
+\end{poin}
+
+\begin{table}[htbp]
+\centering
+\caption{\todocap{verifikasi abstensi per seed di Enzyme; 'identical' =
+confusion matrix sama dengan baseline}}
+\label{tab:abstention}
+\resizebox{\textwidth}{!}{\input{tables/t_abstention}}
+\end{table}
+
+\subsection{ACO versus SA}
+\begin{poin}
+  \item Tak signifikan di semua dataset ($p$ 0,125--0,812;
+        Tabel~\ref{tab:savsaco}); SA menang GPCR nominal, ACO menang
+        IC/Enzyme nominal.
+  \item Konvergensi budget-matched: keduanya melompat di $\sim$20 evaluasi
+        pertama lalu mendatar; akhir 0,601 vs 0,595
+        (Gambar~\ref{fig:convergence}).
+  \item Kesimpulan: pilihan metaheuristik sekunder; asimetri abstensi yang
+        membedakan desain ACO.
+\end{poin}
+
+\begin{table}[htbp]
+\centering
+\caption{\todocap{SA vs ACO per dataset, arm SMOTE, seed berpasangan}}
+\label{tab:savsaco}
+\resizebox{\textwidth}{!}{\input{tables/t_sa_vs_aco}}
+\end{table}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.75\textwidth]{F3_convergence.pdf}
+\caption{\todocap{best-so-far fitness CV internal vs evaluasi, NR budget 200;
+garis tipis = seed; garis putus = fitness data asli (ambang abstensi)}}
+\label{fig:convergence}
+\end{figure}
+
+\subsection{Computational cost}
+\begin{poin}
+  \item RUS/hybrid murah 2\,s--2,5\,min/seed vs ACO/SA
+        22\,min--20\,h/seed: 500--1.700$\times$ (Tabel~\ref{tab:runtime}).
+  \item SA $\approx$ ACO (budget sama); $K$=10 separuh biaya $K$=20.
+  \item Sandingkan dengan $\Delta$F1 tipis $\rightarrow$ kerangka keputusan
+        biaya-manfaat di Discussion.
+\end{poin}
+
+\begin{table}[htbp]
+\centering
+\caption{\todocap{runtime per seed (sampling + training final), relatif thd
+baseline; mesin identik}}
+\label{tab:runtime}
+\resizebox{\textwidth}{!}{\input{tables/t_runtime}}
+\end{table}
+
+% =========================================================================
+\section{Discussion}
+\begin{poin}
+  \item Temuan payung: evaluasi split-tunggal menyesatkan — kesimpulan
+        paper 1 (SMOTE+ACO juara) tidak bertahan di bawah protokol
+        berulang maupun lintas dataset.
+  \item ``Ceiling hypothesis'': karakter oversampler $\times$ dataset
+        menentukan langit-langit; selektor menentukan seberapa dekat ke
+        langit-langit.
+  \item Manfaat seleksi terinformasi menyusut saat positif asli cukup
+        banyak (selisih selektor: $+0{,}015 \rightarrow +0{,}006
+        \rightarrow +0{,}005 \rightarrow$ abstain); hipotesis: kualitas
+        sintetis lebih seragam $\rightarrow$ memilih tidak menambah nilai.
+  \item Catatan jujur: $\Delta$F1 keluarga thd baseline bertahan
+        0,13--0,19 sampai IC lalu \emph{runtuh} di Enzyme (bukan penurunan
+        monoton) — yang monoton adalah selisih seleksi dan pergeseran
+        juara.
+  \item ACO vs SA setara $\rightarrow$ jawaban langsung ``mengapa ACO'';
+        yang membedakan adalah aksi abstain, bukan pencariannya
+        \citep{kirkpatrick1983optimization, chennuru2022simulated}.
+  \item Robustness menyeluruh (aturan, parameter, optimizer) = kabar baik
+        praktisi; koreksi kode-vs-persamaan dilaporkan sebagai praktik
+        transparansi.
+  \item Trade-off biaya: kapan 15 jam komputasi layak untuk $\leq$1 poin
+        F1? — kerangka keputusan untuk pembaca.
+  \item Threats to validity: asumsi negatif; 5 seed untuk lengan mahal
+        ($p$ minimum 0,0625); HistGB fitness khusus Enzyme; satu
+        classifier; satu domain (DTI).
+  \item Future work: classifier lain, dataset non-DTI, surrogate fitness
+        murah, GA/PSO (disebut, tidak diuji).
+\end{poin}
+
+% =========================================================================
+\section{Conclusions}
+\begin{poin}
+  \item SHS valid tetapi kondisional — peta kapan-apa (dataset
+        kecil/ekstrem: ya; besar: oversampler sederhana cukup; sangat
+        kaya: jangan sampling, dan ACO tahu kapan tidak).
+  \item Seleksi terinformasi $>$ acak pada kondisi yang tepat;
+        metaheuristiknya bebas dipilih.
+  \item Protokol evaluasi berulang + statistik = rekomendasi baku untuk
+        riset sampling-DTI ke depan.
+  \item Kode/data terbuka.
+\end{poin}
+
+% =========================================================================
+\section*{Acknowledgements}
+% TODO: dana/fasilitas (mis. Telkom University), bantuan komputasi.
+
+\section*{Data Availability}
+% Poin: kode + CSV hasil + skrip regenerasi fitur di
+% https://github.com/ismankrn/aco-shs (buat tag/rilis + DOI Zenodo saat
+% submit); fitur sumber dari repo SRX-DTI [khojasteh2023improving].
+
+\section*{Author Contributions}
+% RNH: eksperimen awal (paper 1), kurasi data, draf.
+% IK: konseptualisasi, supervisi, validasi, penulisan — review & editing,
+%     corresponding author. (Sesuaikan dengan CRediT.)
+
+\bibliographystyle{unsrtnat}
+\bibliography{references}
+
+% =========================================================================
+\appendix
+\section{Supplemental tables}
+% Pindahkan ke file suplemen terpisah saat submission PeerJ.
+
+\begin{table}[htbp]
+\centering
+\caption{G-Mean (mean $\pm$ SD), 13 methods $\times$ 4 datasets.}
+\resizebox{\textwidth}{!}{\input{tables/s_gmean}}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{Balanced accuracy (mean $\pm$ SD), 13 methods $\times$ 4 datasets.}
+\resizebox{\textwidth}{!}{\input{tables/s_bas}}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{AUPRC (mean $\pm$ SD), 13 methods $\times$ 4 datasets.}
+\resizebox{\textwidth}{!}{\input{tables/s_auprc}}
+\end{table}
+
+\end{document}

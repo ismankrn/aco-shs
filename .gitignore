@@ -12,3 +12,12 @@ logs/
 *_master.log
 sync_server.log
 logs-server/
+# LaTeX build artifacts
+manuscript/latex/*.aux
+manuscript/latex/*.bbl
+manuscript/latex/*.blg
+manuscript/latex/*.fdb_latexmk
+manuscript/latex/*.fls
+manuscript/latex/*.log
+manuscript/latex/*.out
+manuscript/latex/main.pdf
