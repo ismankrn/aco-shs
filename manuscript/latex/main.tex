@@ -50,8 +50,8 @@
   \textcolor{red!70!black}{[JUDUL — pilih salah satu kandidat di komentar]}%
 }
 
-\author[1]{Rizky Nurhaliza Harahap}
 \author[1,2,*]{Isman Kurniawan}
+\author[1]{Rizky Nurhaliza Harahap}
 \affil[1]{School of Computing, Telkom University, Bandung, Indonesia}
 \affil[2]{Research Center of Human Centric Engineering, Telkom University,
           Bandung, Indonesia}  % sesuaikan/hapus afiliasi kedua bila perlu
@@ -150,24 +150,40 @@
 \section{Materials \& Methods}
 
 \subsection{Datasets}
-\begin{poin}
-  \item Empat dataset gold-standard Yamanishi
-        \citep{yamanishi2008prediction}: NR, GPCR, IC, Enzyme.
-  \item Fitur dari pipeline SRX-DTI \citep{khojasteh2023improving}: FP2
-        fingerprint obat 256-bit + AAC 20 + DPC 400 protein.
-  \item Min-max per kolom dalam dataset; pasangan = produk kartesius penuh.
-  \item Label 1 = interaksi gold standard; label 0 = pasangan tak berlabel
-        (asumsi negatif — caveat standar).
-  \item Rujuk Tabel~\ref{tab:datasets}; kolom \emph{train positives}
-        (63/444/1.033/2.048) adalah gradien yang dirujuk di Discussion.
-  \item NR identik byte dengan data paper 1 (kontinuitas terverifikasi md5).
-  \item Tanpa feature selection — mengisolasi efek sampling.
-\end{poin}
+% [Draf narasi — menunggu validasi penulis]
+We use the four gold-standard DTI datasets introduced by
+\citet{yamanishi2008prediction}, each covering a different class of target
+proteins: nuclear receptors (NR), G-protein-coupled receptors (GPCR), ion
+channels (IC), and enzymes (Enzyme). Drug--target pair features were
+generated with the SRX-DTI pipeline \citep{khojasteh2023improving}, in
+which each drug is represented by a 256-bit FP2 molecular fingerprint and
+each protein by its amino acid composition (AAC, 20 features) and
+dipeptide composition (DPC, 400 features), yielding 676 features per
+pair. All feature columns were min--max normalized within each dataset,
+and the instance set is the full Cartesian product of drugs and target
+proteins. Pairs listed in the gold standard were labeled positive, and
+all remaining pairs were treated as negative---the standard assumption in
+this field, with the usual caveat that unlabeled pairs may contain
+undiscovered interactions. Table~\ref{tab:datasets} summarizes the four
+datasets: the positive rate ranges from 6.41\% (NR) down to 0.99\%
+(Enzyme), and the number of \emph{real} positive pairs available in the
+training split grows from 63 (NR) to 2{,}048 (Enzyme)---a 32-fold
+minority-richness gradient that we refer to throughout the Discussion.
+The NR dataset is byte-identical to the one used in our previous study
+(verified by checksum), ensuring direct continuity between the two
+papers. No feature selection was applied: following the design of the
+previous study, we deliberately keep the feature representation fixed so
+that any performance difference is attributable to the sampling
+strategies under comparison.
 
 \begin{table}[htbp]
 \centering
-\caption{\todocap{statistik Yamanishi + split 70/30 stratified; kolom train
-positives = gradien kekayaan minoritas}}
+\caption{Statistics of the four Yamanishi gold-standard datasets with
+SRX-DTI features. Pairs form the full drug~$\times$~protein Cartesian
+product; train/test counts follow the stratified 70/30 split, which is
+regenerated per seed and identical across methods. The number of real
+positive training pairs (63--2{,}048) defines the minority-richness
+gradient referred to throughout this paper.}
 \label{tab:datasets}
 \resizebox{\textwidth}{!}{\input{tables/t_datasets}}
 \end{table}
