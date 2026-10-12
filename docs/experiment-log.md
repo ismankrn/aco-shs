@@ -135,3 +135,8 @@ Key findings:
    of smote-tomek (5.62); bottom: baseline/ros/rus-ros (~9.4). If forced to
    pick one method blind, SHS-ACO is the safest — but per-dataset tailoring
    beats any single choice.
+6. **Nemenyi post-hoc** (computed for figure F4): q_0.05(k=13) = 3.313,
+   CD = 4.08 ranks. Only baseline (9.43), ROS (9.43) and SHS-RUS-ROS (9.45)
+   are separable from the top-ranked SHS-ACO-ADASYN (4.85 + 4.08 = 8.93);
+   the ten SMOTE/ADASYN-based methods are mutually indistinguishable at
+   this N — consistent with the per-dataset Wilcoxon picture.
