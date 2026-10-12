@@ -21,3 +21,6 @@ manuscript/latex/*.fls
 manuscript/latex/*.log
 manuscript/latex/*.out
 manuscript/latex/main.pdf
+manuscript/latex/figures/*.aux
+manuscript/latex/figures/*.log
+manuscript/latex/figures/*.pdf
