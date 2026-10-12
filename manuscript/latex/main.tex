@@ -185,19 +185,31 @@ stratified 70/30 split.}
 \end{table}
 
 \subsection{Sequential hybrid sampling framework}
-\begin{poin}
-  \item Definisi: (i) oversample minoritas melebihi mayoritas ke target =
-        rasio $\times$ $n_{\text{mayoritas}}$; (ii) undersample pool
-        sintetis kembali ke seimbang.
-  \item Beda vs hybrid klasik (SMOTE-ENN/Tomek): SHS memilih \emph{subset}
-        sintetis via optimasi, bukan membersihkan noise pasca-hoc.
-  \item Rasio $\in \{1{,}0;\ 1{,}25;\ 1{,}5\}$ — berbasis rasio agar
-        portabel lintas dataset; 1,0 = kontrol degenerate.
-  \item Oversampler: ROS, SMOTE $k$=11 \citep{chawla2002smote}, ADASYN
-        \citep{he2008adasyn}; selektor: RUS (acak) vs ACO vs SA
-        (terinformasi).
-  \item Figur kerangka: Gambar~\ref{fig:framework}.
-\end{poin}
+% [Draf narasi — menunggu validasi penulis]
+The sequential hybrid sampling (SHS) framework balances the training data
+in two stages, as illustrated in Figure~\ref{fig:framework}. In the first
+stage, the minority class was oversampled beyond the majority size to
+produce a pool of synthetic candidates, in which the pool size was set to
+$r \times n_{\text{maj}}$, where $r$ denotes the pool ratio and
+$n_{\text{maj}}$ denotes the number of majority instances in the training
+set. In the second stage, the pool was undersampled back to a balanced
+size by selecting a subset of the candidates. This design differs from
+classical hybrid methods such as SMOTE-ENN and SMOTE-Tomek
+\citep{batista2004study}, which clean noisy instances after oversampling.
+In contrast, SHS selects the subset of synthetic candidates by using an
+optimization procedure. We considered three pool ratios, i.e., 1.0, 1.25,
+and 1.5. The ratio-based formulation was adopted instead of the absolute
+pool size used in the previous study so that the framework is portable
+across datasets. The ratio of 1.0 serves as a degenerate control, in
+which the pool size is close to the required number of samples and the
+selector has almost no choice. Three oversamplers were employed to build
+the pool, i.e., random oversampling (ROS), SMOTE with $k=11$
+\citep{chawla2002smote}, and ADASYN \citep{he2008adasyn}. Three selectors
+were compared to perform the undersampling, i.e., random undersampling
+(RUS) as an uninformed baseline, along with ant colony optimization (ACO)
+and simulated annealing (SA) as informed selectors. Each combination is
+denoted as SHS-\emph{selector} (\emph{oversampler}) in the remainder of
+this paper.
 
 \begin{figure}[htbp]
 \centering
@@ -207,7 +219,7 @@ stratified 70/30 split.}
   data latih $\rightarrow$ oversampling ke rasio$\times n_{maj}$
   $\rightarrow$ pool sintetis $\rightarrow$ seleksi RUS/ACO/SA
   $\rightarrow$ data seimbang $\rightarrow$ GB]}}}
-\caption{\todocap{alur SHS dua tahap + tiga selektor}}
+\caption{The workflow of the sequential hybrid sampling framework.}
 \label{fig:framework}
 \end{figure}
 
