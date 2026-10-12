@@ -113,6 +113,103 @@ def fig_gradient():
     print("written: F1_gradient.pdf/png")
 
 
+def fig_ratio():
+    """F2: oversampling-pool ratio x selector interaction on NR (P2)."""
+    p2 = pd.read_csv("results/runs_p2.csv")
+    n_majority = 919  # NR train negatives
+    p2["ratio"] = (p2.target / n_majority).round(2)
+    arm_color = {"ros": "#D55E00", "smote": "#0072B2", "adasyn": "#009E73"}
+    sel_style = {"rus": dict(ls="--", marker="o", mfc="white"),
+                 "aco": dict(ls="-", marker="o")}
+
+    fig, ax = plt.subplots(figsize=(5.4, 3.9))
+    for sel in ("rus", "aco"):
+        for arm in ("ros", "smote", "adasyn"):
+            g = (p2[p2.method == f"shs-{sel}-{arm}"]
+                 .groupby("ratio").f1.mean().sort_index())
+            ax.plot(g.index, g.values, color=arm_color[arm], lw=1.6, ms=5,
+                    label=f"SHS-{sel.upper()} ({arm.upper()})",
+                    **sel_style[sel])
+
+    ax.set_xticks([1.0, 1.25, 1.5])
+    ax.set_xlabel("Synthetic pool size ratio "
+                  "(pool size / majority training size)")
+    ax.set_ylabel("F1 (mean of 5 seeds)")
+    ax.legend(frameon=False, fontsize="x-small", ncol=2, loc="lower center",
+              bbox_to_anchor=(0.5, 1.0))
+    fig.tight_layout()
+    for ext in ("pdf", "png"):
+        fig.savefig(OUT / f"F2_ratio_interaction.{ext}")
+    plt.close(fig)
+    print("written: F2_ratio_interaction.pdf/png")
+
+
+FAMILY_COLOR = {}
+for _name, _methods, _color, _ in FAMILIES:
+    for _m in _methods:
+        FAMILY_COLOR[_m] = _color
+FAMILY_COLOR["baseline"] = "#000000"
+
+
+def fig_friedman():
+    """F4: Friedman mean ranks with the Nemenyi critical difference."""
+    from scipy.stats import friedmanchisquare, studentized_range
+
+    p3 = pd.read_csv("results/runs_p3.csv")
+    piv = p3.pivot_table(index=["dataset", "seed"], columns="method",
+                         values="f1").dropna()
+    methods = list(piv.columns)
+    k, n = len(methods), len(piv)
+    chi2, p = friedmanchisquare(*[piv[m] for m in methods])
+    ranks = piv.rank(axis=1, ascending=False).mean().sort_values()
+    # Nemenyi CD: q_alpha = studentized range (k groups, df=inf) / sqrt(2).
+    q_alpha = studentized_range.ppf(0.95, k, np.inf) / np.sqrt(2)
+    cd = q_alpha * np.sqrt(k * (k + 1) / (6.0 * n))
+
+    label = {"baseline": "Baseline", "ros": "ROS", "smote": "SMOTE",
+             "adasyn": "ADASYN", "smote-enn": "SMOTE-ENN",
+             "smote-tomek": "SMOTE-Tomek", "shs-rus-ros": "SHS-RUS (ROS)",
+             "shs-rus-smote": "SHS-RUS (SMOTE)",
+             "shs-rus-adasyn": "SHS-RUS (ADASYN)",
+             "shs-aco-ros": "SHS-ACO (ROS)",
+             "shs-aco-smote": "SHS-ACO (SMOTE)",
+             "shs-aco-adasyn": "SHS-ACO (ADASYN)",
+             "shs-sa-smote": "SHS-SA (SMOTE)"}
+
+    fig, ax = plt.subplots(figsize=(5.4, 4.0))
+    ypos = np.arange(len(ranks))[::-1]  # best on top
+    for y, (m, r) in zip(ypos, ranks.items()):
+        color = FAMILY_COLOR[m]
+        ax.hlines(y, 0, r, color=color, lw=1.1, alpha=0.5)
+        ax.plot(r, y, "o", color=color, ms=6)
+        ax.annotate(f"{r:.2f}", (r, y), textcoords="offset points",
+                    xytext=(7, -3), fontsize=7.5, color="#333333")
+
+    # Methods whose rank is within CD of the best are statistically
+    # indistinguishable from it (Nemenyi, alpha = 0.05).
+    best = ranks.iloc[0]
+    ax.axvline(best + cd, color="#777777", lw=0.9, ls="--")
+    ax.text(best + cd + 0.15, ypos[0] + 0.3,
+            f"best rank + CD\n(CD = {cd:.2f}, Nemenyi $\\alpha$=0.05)",
+            fontsize=7.5, color="#555555", va="top")
+
+    ax.set_yticks(ypos)
+    ax.set_yticklabels([label[m] for m in ranks.index], fontsize=8)
+    ax.set_xlim(0, 13)
+    ax.set_xlabel(f"Mean Friedman rank over {n} dataset × seed blocks "
+                  "(lower is better)")
+    ax.set_title(f"Friedman $\\chi^2$ = {chi2:.1f}, p = {p:.1e}", fontsize=9,
+                 loc="left")
+    fig.tight_layout()
+    for ext in ("pdf", "png"):
+        fig.savefig(OUT / f"F4_friedman_ranks.{ext}")
+    plt.close(fig)
+    print("written: F4_friedman_ranks.pdf/png")
+    print(f"  k={k}, N={n}, q_alpha={q_alpha:.3f}, CD={cd:.3f}")
+    within = ranks[ranks <= best + cd]
+    print(f"  within CD of best: {', '.join(within.index)}")
+
+
 RE_ACO = re.compile(r"\[ACO\] iter (\d+)/(\d+): best_found=([0-9.]+) "
                     r"best=([0-9.]+)")
 RE_SA = re.compile(r"\[SA\] eval (\d+)/(\d+): .*best=([0-9.]+)")
@@ -195,4 +292,6 @@ def fig_convergence():
 if __name__ == "__main__":
     OUT.mkdir(exist_ok=True)
     fig_gradient()
+    fig_ratio()
     fig_convergence()
+    fig_friedman()
