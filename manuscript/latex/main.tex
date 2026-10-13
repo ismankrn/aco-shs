@@ -736,24 +736,36 @@ identical denotes a confusion matrix equal to that of the baseline.}
 \end{table}
 
 \subsection{ACO versus SA}
-\begin{poin}
-  \item Tak signifikan di semua dataset ($p$ 0,125--0,812;
-        Tabel~\ref{tab:savsaco}); SA menang GPCR nominal, ACO menang
-        IC/Enzyme nominal.
-  \item Konvergensi budget-matched: keduanya melompat di $\sim$20 evaluasi
-        pertama lalu mendatar; akhir 0,601 vs 0,595
-        (Gambar~\ref{fig:convergence}).
-  \item Kesimpulan: pilihan metaheuristik sekunder; asimetri abstensi yang
-        membedakan desain ACO.
-  \item ANALISIS: jawaban langsung untuk pertanyaan ``mengapa ACO'' —
-        yang membedakan adalah aksi abstain, bukan strategi pencariannya
-        \citep{kirkpatrick1983optimization, chennuru2022simulated};
-        praktisi boleh memilih metaheuristik yang lebih sederhana.
-\end{poin}
+% [Draf narasi — menunggu validasi penulis]
+The direct comparison between ACO and SA on the SMOTE arm is summarized
+in Table~\ref{tab:savsaco}. The difference is not significant on any
+dataset ($p$ between 0.125 and 0.8125 over five paired seeds). SA leads
+nominally on GPCR (0.3645 against 0.3516), while ACO leads nominally on
+NR, IC, and Enzyme, in which the Enzyme gap of $+0.0133$ stems entirely
+from the abstention described in Section~\ref{sec:abstention}.
+
+The internal view of the search is consistent with the external one.
+Under the matched budget, both searches improve rapidly within the first
+20 evaluations and then flatten, reaching nearly identical final fitness
+values of 0.601 for ACO and 0.595 for SA
+(Figure~\ref{fig:convergence}a). Neither search is starved by the
+budget, so that the equivalence cannot be attributed to an unfinished
+search.
+
+These results answer the question of why ACO should be preferred over
+other metaheuristics. In terms of search quality, it should not be,
+since a budget-matched SA \citep{kirkpatrick1983optimization,
+chennuru2022simulated} is statistically indistinguishable. The value of
+SHS therefore lies in informed selection itself rather than in a
+particular metaheuristic, and a practitioner may choose the simpler or
+more familiar optimizer. The distinguishing feature is the abstention
+action rather than the search strategy, and any metaheuristic equipped
+with the same null action would likely inherit this advantage.
 
 \begin{table}[htbp]
 \centering
-\caption{\todocap{SA vs ACO per dataset, arm SMOTE, seed berpasangan}}
+\caption{The budget-matched comparison between SHS-ACO (SMOTE) and
+SHS-SA (SMOTE) on the four datasets.}
 \label{tab:savsaco}
 \adjustbox{max width=\textwidth}{\input{tables/t_sa_vs_aco}}
 \end{table}
