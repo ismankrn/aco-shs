@@ -362,25 +362,55 @@ classifier in order to isolate the effect of the sampling strategies.
 
 \subsection{Experimental design}
 \label{sec:design}
-\begin{poin}
-  \item P0 reproduksi: konfigurasi persis paper 1, 5 seed.
-  \item P0b ekuivalensi GB vs HistGB (10 seed berpasangan).
-  \item P1 ablasi $2\times2\times2$ koreksi ACO + fitness \{F1, G-Mean,
-        BAS\} (NR, 5 seed, Wilcoxon berpasangan).
-  \item P2 pilot rasio \{1,0; 1,25; 1,5\} $\times$ 6 metode SHS (NR).
-  \item P2b sensitivitas $\rho$ \{0,5; 0,95\}, $K$ \{10; 40\} + duel SA.
-  \item P3 perbandingan penuh 13 metode $\times$ 4 dataset; seed 0--9
-        metode murah, 0--4 ACO/SA.
-  \item Split stratified 70/30 per seed; sampling hanya pada train; seed
-        identik antar metode (berpasangan).
-  \item Keputusan berbasis pilot: $K$=10 (setara $K$=20 pada separuh
-        biaya); rasio per lengan (RUS 1,25/1,25/1,0; ACO/SA 1,5).
-  \item Enzyme: fitness internal memakai HistGB \citep{ke2017lightgbm}
-        (fit GB 810\,s vs HistGB 82,7\,s); classifier final tetap GB;
-        seragam dalam dataset.
-  \item Kompute: server cloud 12 vCPU; \texttt{OMP\_NUM\_THREADS}=1; job
-        per-seed paralel.
-\end{poin}
+% [Draf narasi — menunggu validasi penulis]
+The experiments were organized into staged phases, in which the design
+decisions of the later phases were based on the results of the earlier
+phases. In the reproduction phase, the exact configuration of the
+previous study was rerun with five different random seeds to quantify
+the sensitivity of a single-split evaluation. We also examined the
+equivalence between GB and the histogram-based gradient boosting
+(HistGB) on ten paired seeds. In the ablation phase, three
+implementation factors of the ACO undersampler were examined in a full
+$2\times2\times2$ factorial design on NR with five seeds, i.e., the
+pheromone update rule (the standard rule in Eq.~(\ref{eq:pheromone})
+against the variant implemented in the previous study), the
+stratification of the fitness cross-validation, and the selection with
+or without replacement. Three fitness functions, i.e., F1, G-Mean, and
+balanced accuracy, were also compared in this phase. In the pilot phase,
+the three pool ratios were evaluated on the six SHS-RUS and SHS-ACO
+variants on NR to select the final ratio of each arm. The sensitivity of
+the ACO parameters, i.e., $\rho \in \{0.5, 0.95\}$ and
+$K \in \{10, 40\}$, was then examined along with the budget-matched SA
+comparator. In the final phase, all 13 methods were compared on the four
+datasets.
+
+In every run, the dataset was split into 70\% training and 30\% test
+sets by using stratified sampling, and the split was regenerated for
+each seed. All sampling was applied to the training set only. The same
+seeds were used across all methods, so that the comparisons are paired
+at the seed level. The baseline, the oversamplers, the hybrids, and the
+SHS-RUS variants were run with ten seeds, while the ACO and SA variants
+were run with five seeds due to their computational cost.
+
+Two decisions of the final phase were based on the pilots. First, the
+number of ants was set to $K = 10$, since the pilot showed that it
+matches the quality of $K = 20$ at half the cost
+(Section~\ref{sec:ablation}). Second, the pool ratios were set per arm,
+i.e., 1.25, 1.25, and 1.0 for SHS-RUS with ROS, SMOTE, and ADASYN,
+respectively, and 1.5 for all ACO and SA arms, following the pattern
+that the informed selectors benefit from a larger pool
+(Section~\ref{sec:ratio}).
+
+On the Enzyme dataset, a single GB fit takes approximately 810~s, so
+that the cross-validated fitness evaluation of ACO and SA becomes
+infeasible. Therefore, the internal fitness on Enzyme was evaluated by
+using HistGB \citep{ke2017lightgbm}, which takes 82.7~s per fit, while
+GB was retained as the final classifier. This substitution was applied
+uniformly to all ACO and SA runs on Enzyme, so that the internal
+comparison remains fair. All experiments were executed on a cloud server
+with 12 vCPUs. Each seed was run as a separate job in parallel with
+\texttt{OMP\_NUM\_THREADS} set to 1, so that the reported runtimes are
+comparable within the same machine.
 
 \subsection{Metrics and statistical tests}
 \begin{poin}
@@ -457,6 +487,7 @@ SHS-ACO-SMOTE rasio 1,5}}
 \end{table}
 
 \subsection{Pool ratio $\times$ selector interaction}
+\label{sec:ratio}
 \begin{poin}
   \item ACO terbaik selalu di rasio 1,5 (ketiga oversampler); RUS terbaik
         di 1,0--1,25 (Tabel~\ref{tab:ratio}, Gambar~\ref{fig:ratio}).
