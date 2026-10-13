@@ -512,16 +512,17 @@ configuration on NR over five seeds.}
 \begin{poin}
   \item Per faktor ($n$=20 pasangan): legacy $p$=0,925; stratified
         $p$=0,554; replacement $p$=0,112 (Tabel~\ref{tab:ablation}).
-  \item Refined vs thesis-like: $p$=1,0 $\rightarrow$ koreksi tidak
-        mengubah hasil (robustness).
+  \item Konfigurasi standar vs varian alternatif (multiplicative +
+        plain KFold): $p$=1,0 $\rightarrow$ pilihan desain tidak mengubah
+        hasil (robustness).
   \item Fitness: F1 0,3381 $\approx$ G-Mean 0,3389; BAS lebih buruk 0,3081.
   \item $\rho$ \{0,5--0,95\} \& $K$ \{10--40\} tak signifikan; $K$=10 =
         kualitas $K$=20 pada separuh biaya (Tabel~\ref{tab:sensitivity}).
   \item Dari log konvergensi: fitness mendatar di iterasi $\sim$6--8
         $\rightarrow$ $N$=10 cukup (Gambar~\ref{fig:convergence}).
-  \item ANALISIS: robustness menyeluruh (aturan, parameter) = kabar baik
-        praktisi; koreksi kode-vs-persamaan dilaporkan sebagai praktik
-        transparansi, bukan ancaman validitas.
+  \item ANALISIS: robustness menyeluruh (aturan update, stratifikasi,
+        replacement, parameter) = kabar baik praktisi — hasil tidak
+        bergantung pada detail implementasi ACO.
 \end{poin}
 
 \begin{table}[htbp]
