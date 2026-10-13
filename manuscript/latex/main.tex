@@ -656,10 +656,11 @@ concern raised in Section~\ref{sec:seed} and underlines the need for repeated,
 multi-dataset evaluation in this field. Second, the results suggest a
 two-level explanation, in which the pairing between the oversampler and
 the dataset sets the attainable performance ceiling, while the selector
-only determines how closely that ceiling is approached. The informed
-selection increment on top of the best plain oversampler shrinks
+only determines how closely that ceiling is approached. The increment of the
+selection stage on top of the best plain oversampler shrinks
 monotonically, i.e., $+0.015$ on NR, $+0.006$ on GPCR, and $+0.005$ on
-IC, and turns into abstention on Enzyme. We hypothesize that the quality
+IC, and turns into abstention on Enzyme; notably, on NR this increment
+is already achieved by the random selector. We hypothesize that the quality
 of the synthetic candidates becomes more uniform when more real
 positives are available, so that choosing among them adds little value.
 Third, from a practical point of view, the oversampler should be matched
@@ -771,19 +772,37 @@ SHS-SA (SMOTE) on the four datasets.}
 \end{table}
 
 \subsection{Computational cost}
-\begin{poin}
-  \item RUS/hybrid murah 2\,s--2,5\,min/seed vs ACO/SA
-        22\,min--20\,h/seed: 500--1.700$\times$ (Tabel~\ref{tab:runtime}).
-  \item SA $\approx$ ACO (budget sama); $K$=10 separuh biaya $K$=20.
-  \item ANALISIS (trade-off): kapan belasan jam komputasi layak untuk
-        $\leq$1 poin F1? — berikan kerangka keputusan eksplisit bagi
-        pembaca (kecil/ekstrem: layak; besar: tidak).
-\end{poin}
+% [Draf narasi — menunggu validasi penulis]
+The runtime per seed is summarized in Table~\ref{tab:runtime}. The
+uninformed methods are cheap, in which the classical oversamplers, the
+hybrids, and the SHS-RUS variants complete within seconds to a few
+minutes and stay within a factor of six of the baseline. The informed
+selectors are in a different class. ACO and SA require from 22 minutes
+per seed on NR up to approximately 52 hours per seed on IC, i.e., two to
+three orders of magnitude above the cheap methods, with a factor of up
+to 1,900 relative to the baseline. The factors on Enzyme are smaller
+(between 52 and 60) because the baseline itself is expensive on this
+dataset and the internal fitness uses the faster HistGB. The cost of SA
+equals that of ACO by construction, while halving the number of ants to
+$K = 10$ halves the cost without a measurable quality loss
+(Section~\ref{sec:ablation}).
+
+This cost has to be weighed against the gain. On GPCR and IC, the
+increments of the best informed arm over the best plain oversampler are
+$+0.006$ and $+0.005$ F1 at a cost of 15 to 52 hours per seed. On NR,
+the cheap SHS-RUS variant already exceeds the informed arms, and on
+Enzyme the honest outcome of a multi-hour search is to change nothing.
+Therefore, informed selection is justified mainly when the dataset is
+small enough that its absolute cost stays within minutes to an hour,
+which coincides with the extreme-scarcity regime where selection matters
+most. For larger datasets, a well-chosen plain oversampler delivers
+nearly the same performance at a negligible cost.
 
 \begin{table}[htbp]
 \centering
-\caption{\todocap{runtime per seed (sampling + training final), relatif thd
-baseline; mesin identik}}
+\caption{The mean runtime per seed of the 13 methods, in which the
+factor in parentheses denotes the ratio to the baseline of the same
+dataset.}
 \label{tab:runtime}
 \adjustbox{max width=\textwidth}{\input{tables/t_runtime}}
 \end{table}
