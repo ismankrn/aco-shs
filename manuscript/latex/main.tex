@@ -220,33 +220,57 @@ this paper.
 \end{figure}
 
 \subsection{ACO undersampler}
-\begin{poin}
-  \item Solusi = multiset indeks berukuran
-        ($n_{\text{mayoritas}}-n_{\text{minoritas}}$) atas pool sintetis.
-  \item Probabilitas seleksi $P_i = \tau_i / \sum_j \tau_j$ (roulette
-        wheel) \citep{dorigo2006ant}.
-  \item Update pheromone standar:
-        $\tau^{\text{new}} = (1-\rho)\,\tau^{\text{old}} + \Delta$;
-        $\Delta$ = akumulasi fitness semut pemilih.
-  \item Fitness = F1 rata-rata 5-fold CV stratified pada data latih asli;
-        sintetis hanya masuk fold-train.
-  \item Parameter: $\tau_0$=0,3; $\rho$=0,8; $K$ semut; $N$=10 iterasi;
-        early-stop idle 5.
-  \item Properti abstensi: bila tak ada semut yang mengalahkan fitness data
-        asli, ACO mengembalikan data latih tanpa modifikasi.
-\end{poin}
+% [Draf narasi — menunggu validasi penulis]
+The ACO undersampler searches for the subset of synthetic candidates that
+maximizes a cross-validated fitness \citep{dorigo2006ant,
+yu2013acosampling}. A solution is defined as a multiset of
+$n_{\mathrm{maj}} - n_{\min}$ indices over the synthetic pool, so that
+the union of the original training data and the selected candidates is
+balanced. Each of the $K$ ants constructs a solution by sampling
+candidate indices according to the selection probability expressed as
+\begin{equation}
+  P_i = \frac{\tau_i}{\sum_{j} \tau_j},
+  \label{eq:prob}
+\end{equation}
+where $\tau_i$ denotes the pheromone value of candidate $i$. The
+pheromone values were initialized uniformly at $\tau_0 = 0.3$. After all
+ants finish in one iteration, the pheromone values were updated by using
+the standard rule expressed as
+\begin{equation}
+  \tau_i^{(t+1)} = (1-\rho)\,\tau_i^{(t)} + \Delta_i,
+  \label{eq:pheromone}
+\end{equation}
+where $\rho$ denotes the evaporation rate and $\Delta_i$ denotes the
+fitness accumulated over the ants that selected candidate $i$. The
+fitness of a solution was defined as the mean F1 score of a stratified
+5-fold cross-validation on the original training data, in which the
+selected synthetic candidates were added to the training folds only. The
+search was run for $N = 10$ iterations with an early stop after five
+iterations without improvement. The evaporation rate was set to
+$\rho = 0.8$ following the tuning of the previous study, while the
+number of ants $K$ is discussed in Section~\ref{sec:design}. The best
+solution found across all iterations was returned as the final
+selection. In addition, the implementation has an abstention property.
+The fitness of the unmodified training data was evaluated as the initial
+reference, and if no ant solution exceeds this reference, the
+undersampler returns the original training data without any synthetic
+candidates.
 
-\subsubsection{Corrections to the paper-1 implementation}
-\begin{poin}
-  \item Tiga divergensi kode-vs-persamaan ditemukan di implementasi asli:
-        (a) update pheromone kode $(1-\rho\tau)+\Delta$ $\neq$ persamaan
-        publikasi; (b) CV fitness tanpa stratifikasi; (c) seleksi
-        with-replacement.
-  \item Ketiganya diablasi penuh $2\times2\times2$ (hasil
-        \S\ref{sec:ablation}: tidak ada yang signifikan $\rightarrow$
-        robust).
-  \item Konfigurasi final: rumus standar + stratified + with-replacement.
-\end{poin}
+\subsubsection{Corrections to the previous implementation}
+% [Draf narasi — menunggu validasi penulis]
+We found three divergences between the implementation of the previous
+study and the published equations. First, the pheromone update was
+implemented as $\tau^{(t+1)} = (1-\rho\,\tau^{(t)}) + \Delta$ instead of
+Eq.~(\ref{eq:pheromone}). Second, the cross-validation in the fitness
+function was not stratified, so that a fold may contain no positive
+instance under extreme imbalance. Third, the solution was constructed by
+sampling with replacement, so that a solution may contain duplicated
+candidates. We ablated the three factors in a full $2\times2\times2$
+factorial design, and the results show that none of them significantly
+affects the performance (Section~\ref{sec:ablation}). The final
+configuration follows the published equations, i.e., the standard
+pheromone update with stratified cross-validation, while the selection
+with replacement was retained.
 
 \subsection{Budget-matched SA comparator}
 \begin{poin}
@@ -271,6 +295,7 @@ this paper.
 \end{poin}
 
 \subsection{Experimental design}
+\label{sec:design}
 \begin{poin}
   \item P0 reproduksi: konfigurasi persis paper 1, 5 seed.
   \item P0b ekuivalensi GB vs HistGB (10 seed berpasangan).
