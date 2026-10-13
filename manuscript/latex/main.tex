@@ -66,29 +66,36 @@
 
 % =========================================================================
 \begin{abstract}
-\begin{poin}
-  \item Konteks: prediksi DTI penting untuk penemuan obat; dataset DTI
-        sangat imbalanced.
-  \item Masalah: banyak studi sampling-DTI dievaluasi dengan split
-        tunggal tanpa uji statistik $\rightarrow$ rapuh.
-  \item Metode: kerangka SHS (oversampling melebihi mayoritas $\rightarrow$
-        undersampling terinformasi ACO/SA); evaluasi 4 dataset Yamanishi,
-        protokol multi-seed, uji statistik berpasangan.
-  \item Kontribusi tambahan: ablasi menyeluruh komponen ACO + pembanding
-        SA budget-matched.
-  \item Hasil 1: evaluasi split tunggal sangat sensitif seed pada
-        konfigurasi yang sama (F1 0,267--0,431; SD melebihi selisih
-        antar-metode).
-  \item Hasil 2: ACO robust terhadap aturan/parameter; SA setara ACO
-        $\rightarrow$ nilai ada pada seleksi terinformasi.
-  \item Hasil 3: manfaat SHS bergantung dataset — nyata di NR, menyusut di
-        dataset besar; di Enzyme tidak ada metode yang mengalahkan baseline
-        dan ACO ``abstain''.
-  \item Hasil 4: biaya komputasi seleksi terinformasi 500--1.700$\times$
-        seleksi acak $\rightarrow$ trade-off eksplisit.
-  \item Kesimpulan: peta kapan SHS layak dipakai + protokol evaluasi yang
-        direkomendasikan.
-\end{poin}
+% [Draf narasi — menunggu validasi penulis]
+Drug--target interaction (DTI) datasets are extremely imbalanced, and
+resampling is the standard remedy. However, many resampling studies in
+this field rely on a single train--test split without statistical
+testing. We evaluated the sequential hybrid sampling (SHS) framework, in
+which the minority class is oversampled beyond the majority size and an
+undersampling stage then selects the balancing subset, with ant colony
+optimization (ACO) and simulated annealing (SA) as informed selectors
+and random selection as the uninformed control. Thirteen methods were
+compared on the four gold-standard Yamanishi datasets under a repeated
+multi-seed protocol with paired statistical tests, together with a full
+factorial ablation of the ACO undersampler and a budget-matched SA
+comparator. A single split proved unreliable, in which the F1 score of
+one configuration ranged from 0.267 to 0.431 across the splits,
+exceeding most differences between methods. The ACO undersampler was
+robust to its implementation details and parameters, and the
+budget-matched SA was statistically indistinguishable from it, so that
+the value lies in informed selection rather than in a particular
+metaheuristic. The benefit of resampling depends on the dataset, in
+which the winning oversampler shifts from ROS to SMOTE and ADASYN as the
+number of real positive training instances grows, and on the richest
+dataset no method beats the unsampled baseline. There, the ACO selector
+abstained in all runs and returned the original data, acting as a
+built-in safety valve. Informed selection costs up to three orders of
+magnitude more than random selection, and it pays off mainly under
+extreme scarcity. We provide a practical map matching the oversampler
+and the selector to the minority richness of the dataset, and we
+recommend repeated, statistically tested evaluation as the standard for
+DTI resampling studies. All code, data pipelines, and results are
+publicly available.
 \end{abstract}
 
 % =========================================================================
