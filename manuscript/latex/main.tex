@@ -703,22 +703,34 @@ critical difference.}
 
 \subsection{The ACO abstention property}
 \label{sec:abstention}
-\begin{poin}
-  \item Di Enzyme, fitness ACO tak pernah menemukan subset sintetis yang
-        mengalahkan data asli $\rightarrow$ fallback mengembalikan data
-        latih asli di 15/15 run (Tabel~\ref{tab:abstention}).
-  \item Verifikasi: confusion matrix identik dengan baseline di semua
-        15 run (3 arm $\times$ 5 seed).
-  \item SA tanpa opsi abstain terpaksa oversampling $\rightarrow$ sedikit
-        di bawah baseline (0,171 vs 0,185).
-  \item Interpretasi: seleksi terinformasi + aksi-nol = katup pengaman;
-        rekomendasi desain eksplisit.
-\end{poin}
+% [Draf narasi — menunggu validasi penulis]
+An unplanned finding emerged on Enzyme. In all 15 ACO runs on this
+dataset, i.e., the three oversampler arms with five seeds each, the
+search never found a synthetic subset whose internal fitness exceeded
+that of the unmodified training data. The abstention mechanism described
+in Section~2.3 was therefore triggered, and the undersampler returned
+the original training data. We verified this behavior on the test side,
+in which the confusion matrices of all 15 runs are identical to those of
+the baseline, as summarized in Table~\ref{tab:abstention}.
+
+The contrast with SA is instructive. SA has no abstention action and
+always returns a balanced training set, so that it was forced to add
+synthetic candidates on Enzyme. Its mean F1 score of 0.1707 lies below
+the baseline of 0.1854, and below the per-seed baseline in four of the
+five seeds. The gap is not statistically significant at five seeds
+($p$ = 0.125), yet the direction is consistent.
+
+This behavior shows that informed selection equipped with a null action
+doubles as a safety valve. When resampling is harmful, a selector that
+may decline to resample converts a potential loss into a no-operation,
+while a selector without this option inherits the harm. We therefore
+recommend the abstention action as an explicit design element for
+optimization-based resampling methods.
 
 \begin{table}[htbp]
 \centering
-\caption{\todocap{verifikasi abstensi per seed di Enzyme; 'identical' =
-confusion matrix sama dengan baseline}}
+\caption{The verification of the ACO abstention on Enzyme, in which
+identical denotes a confusion matrix equal to that of the baseline.}
 \label{tab:abstention}
 \adjustbox{max width=\textwidth}{\input{tables/t_abstention}}
 \end{table}
