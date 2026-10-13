@@ -237,56 +237,79 @@ def parse_sa(path):
     return seed, xs, best
 
 
+def _pad_mean(traces, evals_per_iter):
+    """Flat-pad monotone best-so-far traces to a common grid; return x, mean."""
+    n = max(len(b) for _, _, b in traces)
+    xs = np.arange(n) * evals_per_iter
+    mean = np.mean([np.pad(b, (0, n - len(b)), mode="edge")
+                    for _, _, b in traces], axis=0)
+    return xs, mean
+
+
 def fig_convergence():
     logdir = Path("logs-server")
     aco_files = sorted(logdir.glob(
         "*nr-method-shs-aco-smote-target-ratio-1-5-model-gb-verbose-seeds*"))
     sa_files = sorted(logdir.glob(
         "*nr-method-shs-sa-smote-target-ratio-1-5-model-gb-verbose-seeds*"))
+    k10_files = sorted(logdir.glob(
+        "*nr-method-shs-aco-smote-target-ratio-1-5-model-gb-verbose-ants-10*"))
+    k40_files = sorted(logdir.glob(
+        "*nr-method-shs-aco-smote-target-ratio-1-5-model-gb-verbose-ants-40*"))
     aco = [parse_aco(f, evals_per_iter=20) for f in aco_files]  # K=20
     sa = [parse_sa(f) for f in sa_files]
-    assert len(aco) == 5 and len(sa) == 5, (len(aco), len(sa))
+    k10 = [parse_aco(f, evals_per_iter=10) for f in k10_files]
+    k40 = [parse_aco(f, evals_per_iter=40) for f in k40_files]
+    assert len(aco) == len(sa) == len(k10) == len(k40) == 5
 
-    fig, ax = plt.subplots(figsize=(5.2, 3.9))
+    fig, (ax, bx) = plt.subplots(1, 2, figsize=(9.6, 3.7), sharey=True)
+
+    # ---- panel (a): budget-matched ACO vs SA ----
     for seed, xs, best in aco:
         ax.plot(xs, best, color="#0072B2", lw=0.7, alpha=0.35, zorder=2)
     for seed, xs, best in sa:
         ax.plot(xs, best, color="#E69F00", lw=0.7, alpha=0.4, zorder=2)
-
-    # Some seeds stop early (max_idle); extend best-so-far flat to the full
-    # grid, which is exact for a monotone best-so-far curve.
-    n_a = max(len(b) for _, _, b in aco)
-    xs_a = np.arange(n_a) * 20
-    mean_a = np.mean([np.pad(b, (0, n_a - len(b)), mode="edge")
-                      for _, _, b in aco], axis=0)
+    xs_a, mean_a = _pad_mean(aco, 20)
     ax.plot(xs_a, mean_a, color="#0072B2", lw=2.2, marker="o", ms=3.5,
-            label="ACO (K=20 ants × N=10 iterations)", zorder=4)
-
-    # SA logs print every 20 evals (20..180); align on the common grid.
+            label="ACO (K=20)", zorder=4)
     xs_s = sa[0][1]
     mean_s = np.mean([b for _, _, b in sa], axis=0)
     ax.plot(xs_s, mean_s, color="#E69F00", lw=2.2, marker="s", ms=3.5,
             label="SA (budget-matched)", zorder=4)
-
-    # Plain-data fitness reference (ACO's abstention threshold), mean of seeds.
     plain = np.mean([b[0] for _, _, b in aco])
     ax.axhline(plain, color="#555555", lw=0.9, ls="--", zorder=1)
-    ax.text(198, plain, "plain-data fitness (ACO abstention threshold)",
-            fontsize=7.5, color="#555555", ha="right", va="bottom")
-
+    ax.text(103, plain + 0.008, "plain-data fitness", fontsize=7.5,
+            color="#555555", ha="center", va="bottom")
     ax.set_xlim(0, 205)
     ax.set_xticks(range(0, 201, 40))
     ax.set_xlabel("Fitness evaluations (shared budget = 200)")
     ax.set_ylabel("Best-so-far internal CV fitness (F1)")
+    ax.set_title("(a) ACO vs budget-matched SA", fontsize=9, loc="left")
     ax.legend(frameon=False, fontsize=8, loc="lower right")
+
+    # ---- panel (b): number of ants ----
+    for traces, k, color in [(k10, 10, "#8FC3E4"), (aco, 20, "#0072B2"),
+                             (k40, 40, "#01395C")]:
+        xs, mean = _pad_mean(traces, k)
+        bx.plot(xs, mean, color=color, lw=1.9, marker="o", ms=3,
+                label=f"K = {k} (budget {10 * k})")
+    bx.axhline(plain, color="#555555", lw=0.9, ls="--", zorder=1)
+    bx.set_xlim(0, 410)
+    bx.set_xticks(range(0, 401, 100))
+    bx.set_xlabel("Fitness evaluations (N = 10 iterations)")
+    bx.set_title("(b) Effect of the number of ants", fontsize=9, loc="left")
+    bx.legend(frameon=False, fontsize=8, loc="center right")
+
     fig.tight_layout()
     for ext in ("pdf", "png"):
         fig.savefig(OUT / f"F3_convergence.{ext}")
     plt.close(fig)
-    print("written: F3_convergence.pdf/png")
+    print("written: F3_convergence.pdf/png (two panels)")
     print(f"  plain-data fitness (mean): {plain:.4f}")
-    print(f"  ACO final best (mean): {mean_a[-1]:.4f} at eval {xs_a[-1]}")
-    print(f"  SA last logged best (mean): {mean_s[-1]:.4f} at eval {xs_s[-1]}")
+    print(f"  final means: K20 {mean_a[-1]:.4f}; SA {mean_s[-1]:.4f}")
+    for traces, k in [(k10, 10), (k40, 40)]:
+        xs, mean = _pad_mean(traces, k)
+        print(f"  K{k} final: {mean[-1]:.4f} at eval {xs[-1]}")
 
 
 if __name__ == "__main__":
