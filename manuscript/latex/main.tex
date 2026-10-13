@@ -480,19 +480,23 @@ regenerated from the SRX-DTI source data by using the included scripts
 \section{Results}
 
 \subsection{Reproduction and seed sensitivity}
-\begin{poin}
-  \item Konfigurasi paper 1: F1 = $0{,}3606 \pm 0{,}0707$ (5 seed), rentang
-        0,2667--0,4314 (Tabel~\ref{tab:repro}).
-  \item 2/5 seed tepat di 0,4314 $\approx$ angka publikasi 0,4324
-        $\rightarrow$ tereproduksi, tapi ujung optimis.
-  \item 1 TP $\approx$ 4,3 poin recall di NR (27 positif test)
-        $\rightarrow$ argumen protokol berulang.
-\end{poin}
+% [Draf narasi — menunggu validasi penulis]
+We first reran the exact configuration of the previous study on NR with
+five random seeds, as summarized in Table~\ref{tab:repro}. The mean F1
+score is $0.3606 \pm 0.0707$, with a range of 0.2667 to 0.4314 across
+the seeds. Two of the five seeds reach an F1 score of 0.4314, which is
+close to the published value of 0.4324. Therefore, the result of the
+previous study is reproducible, although the published value lies at the
+optimistic end of the seed distribution. This sensitivity is explained
+by the size of the test set. The NR test set contains only 27 positive
+instances, so that a single additional true positive shifts the recall
+by approximately 3.7 percentage points. These observations motivate the
+repeated multi-seed protocol that is used throughout this study.
 
 \begin{table}[htbp]
 \centering
-\caption{\todocap{reproduksi konfigurasi tesis per seed; referensi split
-tunggal F1=0,4324}}
+\caption{The reproduction of the configuration of the previous study on
+NR over five seeds.}
 \label{tab:repro}
 \input{tables/t_reproduction}
 \end{table}
