@@ -477,7 +477,7 @@ regenerated from the SRX-DTI source data by using the included scripts
 \citep{khojasteh2023improving}.
 
 % =========================================================================
-\section{Results}
+\section{Results and Discussion}
 
 \subsection{Reproduction and seed sensitivity}
 % [Draf narasi — menunggu validasi penulis]
@@ -513,6 +513,9 @@ NR over five seeds.}
         kualitas $K$=20 pada separuh biaya (Tabel~\ref{tab:sensitivity}).
   \item Dari log konvergensi: fitness mendatar di iterasi $\sim$6--8
         $\rightarrow$ $N$=10 cukup (Gambar~\ref{fig:convergence}).
+  \item ANALISIS: robustness menyeluruh (aturan, parameter) = kabar baik
+        praktisi; koreksi kode-vs-persamaan dilaporkan sebagai praktik
+        transparansi, bukan ancaman validitas.
 \end{poin}
 
 \begin{table}[htbp]
@@ -572,6 +575,21 @@ oversampler; ACO naik dengan ukuran pool, RUS sebaliknya}}
         SHS-ACO-ADASYN 4,85 dan SHS-ACO-SMOTE 5,00; CD Nemenyi = 4,08:
         hanya baseline/ROS/SHS-RUS-ROS terpisah dari yang terbaik
         (Gambar~\ref{fig:ranks}).
+  \item ANALISIS (temuan payung): evaluasi split-tunggal menyesatkan —
+        kesimpulan studi sebelumnya (SMOTE+ACO juara) tidak bertahan di
+        bawah protokol berulang maupun lintas dataset.
+  \item ANALISIS (``ceiling hypothesis''): karakter oversampler
+        $\times$ dataset menentukan langit-langit kinerja; selektor hanya
+        menentukan seberapa dekat ke langit-langit itu.
+  \item ANALISIS (gradien): manfaat seleksi terinformasi menyusut saat
+        positif asli makin banyak (selisih selektor: $+0{,}015
+        \rightarrow +0{,}006 \rightarrow +0{,}005 \rightarrow$ abstain);
+        hipotesis: kualitas sintetis makin seragam sehingga memilih tidak
+        menambah nilai.
+  \item ANALISIS (catatan jujur): $\Delta$F1 keluarga thd baseline
+        bertahan 0,13--0,19 sampai IC lalu \emph{runtuh} di Enzyme —
+        yang monoton adalah selisih seleksi dan pergeseran juara, bukan
+        $\Delta$F1 itu sendiri.
 \end{poin}
 
 \begin{table}[htbp]
@@ -638,6 +656,10 @@ confusion matrix sama dengan baseline}}
         (Gambar~\ref{fig:convergence}).
   \item Kesimpulan: pilihan metaheuristik sekunder; asimetri abstensi yang
         membedakan desain ACO.
+  \item ANALISIS: jawaban langsung untuk pertanyaan ``mengapa ACO'' —
+        yang membedakan adalah aksi abstain, bukan strategi pencariannya
+        \citep{kirkpatrick1983optimization, chennuru2022simulated};
+        praktisi boleh memilih metaheuristik yang lebih sederhana.
 \end{poin}
 
 \begin{table}[htbp]
@@ -660,8 +682,9 @@ garis tipis = seed; garis putus = fitness data asli (ambang abstensi)}}
   \item RUS/hybrid murah 2\,s--2,5\,min/seed vs ACO/SA
         22\,min--20\,h/seed: 500--1.700$\times$ (Tabel~\ref{tab:runtime}).
   \item SA $\approx$ ACO (budget sama); $K$=10 separuh biaya $K$=20.
-  \item Sandingkan dengan $\Delta$F1 tipis $\rightarrow$ kerangka keputusan
-        biaya-manfaat di Discussion.
+  \item ANALISIS (trade-off): kapan belasan jam komputasi layak untuk
+        $\leq$1 poin F1? — berikan kerangka keputusan eksplisit bagi
+        pembaca (kecil/ekstrem: layak; besar: tidak).
 \end{poin}
 
 \begin{table}[htbp]
@@ -673,35 +696,16 @@ baseline; mesin identik}}
 \end{table}
 
 % =========================================================================
-\section{Discussion}
+\subsection{Threats to validity and future work}
 \begin{poin}
-  \item Temuan payung: evaluasi split-tunggal menyesatkan — kesimpulan
-        paper 1 (SMOTE+ACO juara) tidak bertahan di bawah protokol
-        berulang maupun lintas dataset.
-  \item ``Ceiling hypothesis'': karakter oversampler $\times$ dataset
-        menentukan langit-langit; selektor menentukan seberapa dekat ke
-        langit-langit.
-  \item Manfaat seleksi terinformasi menyusut saat positif asli cukup
-        banyak (selisih selektor: $+0{,}015 \rightarrow +0{,}006
-        \rightarrow +0{,}005 \rightarrow$ abstain); hipotesis: kualitas
-        sintetis lebih seragam $\rightarrow$ memilih tidak menambah nilai.
-  \item Catatan jujur: $\Delta$F1 keluarga thd baseline bertahan
-        0,13--0,19 sampai IC lalu \emph{runtuh} di Enzyme (bukan penurunan
-        monoton) — yang monoton adalah selisih seleksi dan pergeseran
-        juara.
-  \item ACO vs SA setara $\rightarrow$ jawaban langsung ``mengapa ACO'';
-        yang membedakan adalah aksi abstain, bukan pencariannya
-        \citep{kirkpatrick1983optimization, chennuru2022simulated}.
-  \item Robustness menyeluruh (aturan, parameter, optimizer) = kabar baik
-        praktisi; koreksi kode-vs-persamaan dilaporkan sebagai praktik
-        transparansi.
-  \item Trade-off biaya: kapan 15 jam komputasi layak untuk $\leq$1 poin
-        F1? — kerangka keputusan untuk pembaca.
-  \item Threats to validity: asumsi negatif; 5 seed untuk lengan mahal
-        ($p$ minimum 0,0625); HistGB fitness khusus Enzyme; satu
-        classifier; satu domain (DTI).
+  \item Asumsi pasangan tak berlabel = negatif (caveat standar bidang).
+  \item 5 seed untuk lengan mahal $\rightarrow$ daya uji terbatas
+        ($p$ minimum Wilcoxon 0,0625).
+  \item Fitness HistGB khusus Enzyme (seragam dalam dataset, tetap
+        disclosed).
+  \item Satu classifier (GB); satu domain (DTI).
   \item Future work: classifier lain, dataset non-DTI, surrogate fitness
-        murah, GA/PSO (disebut, tidak diuji).
+        murah, metaheuristik lain (GA/PSO) disebut tanpa diuji.
 \end{poin}
 
 % =========================================================================
