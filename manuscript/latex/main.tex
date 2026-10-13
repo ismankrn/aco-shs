@@ -509,34 +509,53 @@ configuration on NR over five seeds.}
 
 \subsection{ACO ablation and sensitivity}
 \label{sec:ablation}
-\begin{poin}
-  \item Per faktor ($n$=20 pasangan): legacy $p$=0,925; stratified
-        $p$=0,554; replacement $p$=0,112 (Tabel~\ref{tab:ablation}).
-  \item Konfigurasi standar vs varian alternatif (multiplicative +
-        plain KFold): $p$=1,0 $\rightarrow$ pilihan desain tidak mengubah
-        hasil (robustness).
-  \item Fitness: F1 0,3381 $\approx$ G-Mean 0,3389; BAS lebih buruk 0,3081.
-  \item $\rho$ \{0,5--0,95\} \& $K$ \{10--40\} tak signifikan; $K$=10 =
-        kualitas $K$=20 pada separuh biaya (Tabel~\ref{tab:sensitivity}).
-  \item Dari log konvergensi: fitness mendatar di iterasi $\sim$6--8
-        $\rightarrow$ $N$=10 cukup (Gambar~\ref{fig:convergence}).
-  \item ANALISIS: robustness menyeluruh (aturan update, stratifikasi,
-        replacement, parameter) = kabar baik praktisi — hasil tidak
-        bergantung pada detail implementasi ACO.
-\end{poin}
+% [Draf narasi — menunggu validasi penulis]
+We then examined whether the performance of the ACO undersampler depends
+on its implementation details. Three binary factors were ablated in a
+full factorial design on NR, i.e., the pheromone update rule (the
+standard rule in Eq.~(\ref{eq:pheromone}) against a multiplicative
+variant), the stratification of the fitness cross-validation, and the
+selection with or without replacement. The results are summarized in
+Table~\ref{tab:ablation}. None of the three factors shows a significant
+effect ($p$ = 0.925, 0.554, and 0.112, respectively, over 20 paired
+runs), and the default configuration is statistically indistinguishable
+from the fully alternative one ($p$ = 1.0). Among the fitness functions,
+F1 and G-Mean give nearly identical final performance (0.3381 and
+0.3389), while BAS is clearly worse (0.3081). Therefore, F1 was retained
+as the fitness function.
+
+The parameter sensitivity is summarized in Table~\ref{tab:sensitivity}.
+Neither the evaporation rate ($\rho \in \{0.5, 0.95\}$) nor the
+number of ants ($K \in \{10, 40\}$) differs significantly from the
+default ($p \geq 0.31$). However, the runtime differs substantially:
+$K = 10$ matches the quality of the default $K = 20$ at roughly half
+the cost (52.5~min against 1.9~h per seed), while $K = 40$ trends worse
+at twice the cost. The convergence traces support this observation, in
+which the best-so-far fitness flattens after approximately six to eight
+iterations (Figure~\ref{fig:convergence}). Therefore, $K = 10$ was
+adopted for the final comparison.
+
+These results have two implications. First, the ACO undersampler is
+robust: its performance depends on neither the exact update rule, the
+cross-validation scheme, the replacement scheme, nor the parameter
+values within reasonable ranges. This robustness is good news for
+practitioners, since careful tuning is not required to obtain a
+representative result. Second, the search budget saturates early, so
+that the computational cost can be halved without a measurable loss of
+quality.
 
 \begin{table}[htbp]
 \centering
-\caption{\todocap{ablasi 2$\times$2$\times$2 + fungsi fitness; variant A/B =
-False/True per faktor}}
+\caption{The ablation of the ACO implementation factors and fitness
+functions on NR.}
 \label{tab:ablation}
 \resizebox{\textwidth}{!}{\input{tables/t_ablation}}
 \end{table}
 
 \begin{table}[htbp]
 \centering
-\caption{\todocap{sensitivitas $\rho$/$K$ + SA budget-matched; NR,
-SHS-ACO-SMOTE rasio 1,5}}
+\caption{The sensitivity of the ACO parameters and the budget-matched SA
+comparison on NR.}
 \label{tab:sensitivity}
 \input{tables/t_sensitivity}
 \end{table}

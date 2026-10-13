@@ -102,7 +102,7 @@ def t_ablation():
     p1 = pd.read_csv("results/runs_p1_merged.csv")
     fact = p1[p1.fitness_fn == "f1"]
     rows = []
-    for factor, label in [("legacy", "Pheromone rule (standard vs legacy)"),
+    for factor, label in [("legacy", "Pheromone update (standard vs multiplicative)"),
                           ("stratified", "Fitness CV (plain vs stratified)"),
                           ("replacement",
                            "Selection (w/o vs with replacement)")]:
@@ -118,7 +118,7 @@ def t_ablation():
     piv = pd.merge(ref[["seed", "f1"]], leg[["seed", "f1"]], on="seed",
                    suffixes=("_ref", "_leg"))
     _, p = stats.wilcoxon(piv.f1_ref, piv.f1_leg)
-    rows.append(["Refined vs thesis-like configuration",
+    rows.append(["Default vs alternative configuration",
                  f"{piv.f1_leg.mean():.4f}", f"{piv.f1_ref.mean():.4f}",
                  len(piv), fmt_p(p)])
     rows.append("MIDRULE")
