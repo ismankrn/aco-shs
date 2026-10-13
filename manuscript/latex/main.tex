@@ -573,17 +573,31 @@ denotes the plain-data fitness, i.e., the ACO abstention threshold.}
 
 \subsection{Pool ratio $\times$ selector interaction}
 \label{sec:ratio}
-\begin{poin}
-  \item ACO terbaik selalu di rasio 1,5 (ketiga oversampler); RUS terbaik
-        di 1,0--1,25 (Tabel~\ref{tab:ratio}, Gambar~\ref{fig:ratio}).
-  \item Interpretasi mekanistik: surplus = ruang pilihan bagi selektor
-        terinformasi, noise bagi selektor acak.
-\end{poin}
+% [Draf narasi — menunggu validasi penulis]
+We next examined how the size of the synthetic pool interacts with the
+type of selector. The six SHS-RUS and SHS-ACO variants were run on NR
+with the three pool ratios, as summarized in Table~\ref{tab:ratio} and
+illustrated in Figure~\ref{fig:ratio}. The two selectors show opposite
+preferences. The best ratio of SHS-ACO is 1.5 for all three
+oversamplers, i.e., the largest pool considered. In contrast, the best
+ratio of SHS-RUS is 1.25 for the ROS and SMOTE arms and 1.0 for the
+ADASYN arm, and its performance declines at the ratio of 1.5 in all
+three arms.
+
+This interaction can be explained by the role of the surplus
+candidates. For an informed selector, a larger pool enlarges the choice
+space, so that the search can exploit the surplus to find a better
+subset. For a random selector, every candidate is equally likely to be
+drawn, so that the surplus merely increases the chance of including
+uninformative or noisy candidates. Therefore, the pool ratio is not a
+property of the dataset alone but has to be chosen jointly with the
+selector. This finding was used to set the per-arm ratios of the final
+comparison described in Section~\ref{sec:design}.
 
 \begin{table}[htbp]
 \centering
-\caption{\todocap{F1 per rasio pool (NR, 5 seed); tebal = rasio terbaik per
-metode}}
+\caption{The F1 scores of the SHS variants over the three pool ratios on
+NR, in which bold denotes the best ratio of each method.}
 \label{tab:ratio}
 \resizebox{\textwidth}{!}{\input{tables/t_ratio}}
 \end{table}
@@ -591,8 +605,7 @@ metode}}
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.75\textwidth]{F2_ratio_interaction.pdf}
-\caption{\todocap{solid = SHS-ACO, putus-putus = SHS-RUS; warna = arm
-oversampler; ACO naik dengan ukuran pool, RUS sebaliknya}}
+\caption{The interaction between the pool ratio and the selector on NR.}
 \label{fig:ratio}
 \end{figure}
 
