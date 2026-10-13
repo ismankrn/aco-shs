@@ -68,15 +68,16 @@
 \begin{poin}
   \item Konteks: prediksi DTI penting untuk penemuan obat; dataset DTI
         sangat imbalanced.
-  \item Masalah: studi sebelumnya (termasuk paper 1) mengevaluasi dengan
-        split tunggal $\rightarrow$ rapuh.
+  \item Masalah: banyak studi sampling-DTI dievaluasi dengan split
+        tunggal tanpa uji statistik $\rightarrow$ rapuh.
   \item Metode: kerangka SHS (oversampling melebihi mayoritas $\rightarrow$
         undersampling terinformasi ACO/SA); evaluasi 4 dataset Yamanishi,
         protokol multi-seed, uji statistik berpasangan.
-  \item Kontribusi tambahan: koreksi implementasi ACO paper 1 + ablasi
-        menyeluruh + pembanding SA budget-matched.
-  \item Hasil 1: hasil paper 1 tereproduksi tetapi sensitif seed
-        (F1 $0{,}361 \pm 0{,}071$; angka tesis = ujung optimis).
+  \item Kontribusi tambahan: ablasi menyeluruh komponen ACO + pembanding
+        SA budget-matched.
+  \item Hasil 1: evaluasi split tunggal sangat sensitif seed pada
+        konfigurasi yang sama (F1 0,267--0,431; SD melebihi selisih
+        antar-metode).
   \item Hasil 2: ACO robust terhadap aturan/parameter; SA setara ACO
         $\rightarrow$ nilai ada pada seleksi terinformasi.
   \item Hasil 3: manfaat SHS bergantung dataset — nyata di NR, menyusut di
@@ -119,12 +120,11 @@
 
 % --- Par. 3: celah yang ditinggalkan paper 1 (motivasi inti) ---
 \begin{poin}
-  \item Paper 1: satu dataset (NR), satu split, tanpa uji statistik, tanpa
-        pembanding hybrid mapan.
+  \item Celah di literatur sampling-DTI: evaluasi umumnya satu dataset,
+        satu split, tanpa uji statistik, tanpa pembanding hybrid mapan.
   \item Tidak diketahui: generalisasi lintas dataset, sensitivitas seed,
-        apakah ACO spesifik atau seleksi terinformasi generik.
-  \item Framing positif: ``extend and stress-test'' — bukan menjatuhkan
-        paper 1.
+        apakah manfaat berasal dari metaheuristik spesifik (ACO) atau
+        seleksi terinformasi generik.
 \end{poin}
 
 % --- Par. 4: pertanyaan riset ---
@@ -138,7 +138,9 @@
 \begin{poin}
   \item Protokol evaluasi berulang + statistik berpasangan untuk SHS-DTI
         (pertama untuk keluarga metode ini).
-  \item Koreksi implementasi tervalidasi reproduksi + temuan robustness.
+  \item Ablasi menyeluruh komponen ACO (aturan pheromone, stratifikasi
+        CV, replacement) + sensitivitas parameter $\rightarrow$ temuan
+        robustness.
   \item Pembanding SA budget-matched $\rightarrow$ klaim ``informed
         selection, not the metaheuristic''.
   \item Temuan properti abstensi ACO sebagai katup pengaman.
@@ -172,10 +174,9 @@ of the four datasets are summarized in Table~\ref{tab:datasets}. The
 positive rate ranges from 6.41\% in NR to 0.99\% in Enzyme, while the
 number of real positive pairs in the training split increases from 63 in
 NR to 2{,}048 in Enzyme. We refer to this gradient throughout the
-Discussion. The NR dataset is identical to the one used in the previous
-study, which was verified by checksum. We did not apply any feature
-selection in order to isolate the effect of the sampling strategies,
-following the design of the previous study.
+Discussion. We did not apply any feature selection, so that the feature
+representation is fixed and any performance difference is attributable
+to the sampling strategies.
 
 \begin{table}[htbp]
 \centering
@@ -199,9 +200,8 @@ classical hybrid methods such as SMOTE-ENN and SMOTE-Tomek
 \citep{batista2004study}, which clean noisy instances after oversampling.
 In contrast, SHS selects the subset of synthetic candidates by using an
 optimization procedure. We considered three pool ratios, i.e., 1.0, 1.25,
-and 1.5. The ratio-based formulation was adopted instead of the absolute
-pool size used in the previous study so that the framework is portable
-across datasets. The ratio of 1.0 serves as a degenerate control, in
+and 1.5. A ratio-based formulation was adopted, rather than an absolute pool
+size, so that the framework is portable across datasets. The ratio of 1.0 serves as a degenerate control, in
 which the pool size is close to the required number of samples and the
 selector has almost no choice. Three oversamplers were employed to build
 the pool, i.e., random oversampling (ROS), SMOTE with $k=11$
@@ -278,9 +278,9 @@ candidates were added to the training folds only. The solution
 representation and the search cycle are illustrated in
 Figure~\ref{fig:aco}. The search was run for $N = 10$ iterations with an
 early stop after five
-iterations without improvement. The evaporation rate was set to
-$\rho = 0.8$ following the tuning of the previous study, while the
-number of ants $K$ is discussed in Section~\ref{sec:design}. The best
+iterations without improvement. The evaporation rate was set to $\rho = 0.8$, and its sensitivity is
+examined in Section~\ref{sec:ablation}, while the number of ants $K$ is
+discussed in Section~\ref{sec:design}. The best
 solution found across all iterations was returned as the final
 selection. In addition, the implementation has an abstention property.
 The fitness of the unmodified training data was evaluated as the initial
@@ -349,9 +349,9 @@ edited nearest neighbours and Tomek links, respectively. The fourth
 group consists of seven SHS variants, i.e., SHS-RUS and SHS-ACO, each
 combined with ROS, SMOTE, and ADASYN, along with SHS-SA (SMOTE). The SA
 selector was paired with the SMOTE arm only in order to limit the
-computational cost. Gradient Boosting \citep{friedman2001greedy} was
-used as the final classifier for all methods, since it was the
-best-performing classifier in the previous study. We did not vary the
+computational cost. Gradient Boosting \citep{friedman2001greedy} was used as the final
+classifier for all methods, as it is a strong and widely used learner
+for tabular data. We did not vary the
 classifier in order to isolate the effect of the sampling strategies.
 
 \begin{table}[htbp]
@@ -366,15 +366,15 @@ classifier in order to isolate the effect of the sampling strategies.
 % [Draf narasi — menunggu validasi penulis]
 The experiments were organized into staged phases, in which the design
 decisions of the later phases were based on the results of the earlier
-phases, as summarized in Table~\ref{tab:phases}. In the reproduction phase, the exact configuration of the
-previous study was rerun with five different random seeds to quantify
-the sensitivity of a single-split evaluation. We also examined the
+phases, as summarized in Table~\ref{tab:phases}. In the seed-sensitivity phase, a reference SHS-ACO (SMOTE)
+configuration was run with five different random seeds to quantify the
+sensitivity of a single-split evaluation. We also examined the
 equivalence between GB and the histogram-based gradient boosting
 (HistGB) on ten paired seeds. In the ablation phase, three
 implementation factors of the ACO undersampler were examined in a full
 $2\times2\times2$ factorial design on NR with five seeds, i.e., the
 pheromone update rule (the standard rule in Eq.~(\ref{eq:pheromone})
-against the variant implemented in the previous study), the
+against a multiplicative variant), the
 stratification of the fitness cross-validation, and the selection with
 or without replacement. Three fitness functions, i.e., F1, G-Mean, and
 balanced accuracy, were also compared in this phase. In the pilot phase,
@@ -479,15 +479,15 @@ regenerated from the SRX-DTI source data by using the included scripts
 % =========================================================================
 \section{Results and Discussion}
 
-\subsection{Reproduction and seed sensitivity}
+\subsection{Seed sensitivity of single-split evaluation}
 % [Draf narasi — menunggu validasi penulis]
-We first reran the exact configuration of the previous study on NR with
-five random seeds, as summarized in Table~\ref{tab:repro}. The mean F1
-score is $0.3606 \pm 0.0707$, with a range of 0.2667 to 0.4314 across
-the seeds. Two of the five seeds reach an F1 score of 0.4314, which is
-close to the published value of 0.4324. Therefore, the result of the
-previous study is reproducible, although the published value lies at the
-optimistic end of the seed distribution. This sensitivity is explained
+We first quantified the variability of a single-split evaluation. A
+reference SHS-ACO (SMOTE) configuration was run on NR with five random
+seeds, in which the train--test split is regenerated by each seed, as
+summarized in Table~\ref{tab:repro}. The F1 score ranges from 0.2667 to
+0.4314 across the seeds, with a mean of $0.3606 \pm 0.0707$. Therefore,
+two evaluations of the same method that differ only in the split can
+diverge by up to 16 percentage points of F1. This sensitivity is explained
 by the size of the test set. The NR test set contains only 27 positive
 instances, so that a single additional true positive shifts the recall
 by approximately 3.7 percentage points. Moreover, the seed-to-seed
@@ -501,8 +501,8 @@ throughout this study.
 
 \begin{table}[htbp]
 \centering
-\caption{The reproduction of the configuration of the previous study on
-NR over five seeds.}
+\caption{The seed sensitivity of a reference SHS-ACO (SMOTE)
+configuration on NR over five seeds.}
 \label{tab:repro}
 \input{tables/t_reproduction}
 \end{table}
@@ -583,8 +583,8 @@ oversampler; ACO naik dengan ukuran pool, RUS sebaliknya}}
         hanya baseline/ROS/SHS-RUS-ROS terpisah dari yang terbaik
         (Gambar~\ref{fig:ranks}).
   \item ANALISIS (temuan payung): evaluasi split-tunggal menyesatkan —
-        kesimpulan studi sebelumnya (SMOTE+ACO juara) tidak bertahan di
-        bawah protokol berulang maupun lintas dataset.
+        juara pada satu split atau satu dataset tidak bertahan di bawah
+        protokol berulang maupun lintas dataset.
   \item ANALISIS (``ceiling hypothesis''): karakter oversampler
         $\times$ dataset menentukan langit-langit kinerja; selektor hanya
         menentukan seberapa dekat ke langit-langit itu.
