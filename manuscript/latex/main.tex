@@ -809,16 +809,30 @@ dataset.}
 
 % =========================================================================
 \subsection{Threats to validity and future work}
-\begin{poin}
-  \item Asumsi pasangan tak berlabel = negatif (caveat standar bidang).
-  \item 5 seed untuk lengan mahal $\rightarrow$ daya uji terbatas
-        ($p$ minimum Wilcoxon 0,0625).
-  \item Fitness HistGB khusus Enzyme (seragam dalam dataset, tetap
-        disclosed).
-  \item Satu classifier (GB); satu domain (DTI).
-  \item Future work: classifier lain, dataset non-DTI, surrogate fitness
-        murah, metaheuristik lain (GA/PSO) disebut tanpa diuji.
-\end{poin}
+% [Draf narasi — menunggu validasi penulis]
+Several limitations qualify these findings. First, the unlabeled pairs
+were treated as negatives, so that some true interactions may be
+mislabeled. This assumption is shared by most studies on these datasets,
+but it may compress the measurable differences between methods. Second,
+the expensive arms were run with five seeds, which limits the
+statistical power, in which the minimum attainable Wilcoxon $p$ value is
+0.0625. The consistent directions of the differences across datasets
+partly compensate for this limit. Third, the internal fitness on Enzyme
+used HistGB instead of GB for feasibility. The substitution was uniform
+within the dataset, yet it may interact with the abstention behavior.
+Fourth, all conclusions rest on a single classifier and a single domain,
+so that the gradient observed here should be confirmed beyond GB and
+beyond DTI data.
+
+These limitations suggest several directions. The evaluation can be
+extended to other classifiers and to imbalanced domains outside DTI to
+test the generality of the minority-richness gradient. The main obstacle
+of informed selection is its cost, so that a cheap surrogate fitness,
+e.g., a subsampled or lower-fidelity estimate, is an attractive
+direction. Finally, other metaheuristics such as genetic algorithms or
+particle swarm optimization can be equipped with the same abstention
+action, which we expect to matter more than the choice of the search
+strategy itself.
 
 % =========================================================================
 \section{Conclusions}
