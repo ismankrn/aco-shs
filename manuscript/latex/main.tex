@@ -490,8 +490,14 @@ previous study is reproducible, although the published value lies at the
 optimistic end of the seed distribution. This sensitivity is explained
 by the size of the test set. The NR test set contains only 27 positive
 instances, so that a single additional true positive shifts the recall
-by approximately 3.7 percentage points. These observations motivate the
-repeated multi-seed protocol that is used throughout this study.
+by approximately 3.7 percentage points. Moreover, the seed-to-seed
+variation is large relative to the differences between methods: the
+standard deviation of 0.0707 exceeds most of the method-to-method gaps
+observed in the main comparison (Section~\ref{sec:main}). Therefore, a
+single-split evaluation can reorder the methods by chance alone, and a
+favorable split can be mistaken for a methodological improvement. These
+observations motivate the repeated multi-seed protocol that is used
+throughout this study.
 
 \begin{table}[htbp]
 \centering
@@ -560,6 +566,7 @@ oversampler; ACO naik dengan ukuran pool, RUS sebaliknya}}
 \end{figure}
 
 \subsection{Main comparison across four datasets}
+\label{sec:main}
 \begin{poin}
   \item Tabel inti: Tabel~\ref{tab:main} (G-Mean/BAS/AUPRC di suplemen).
   \item NR: keluarga ROS dominan (RUS-ROS 0,473) $\gg$ SMOTE; GPCR: ROS
