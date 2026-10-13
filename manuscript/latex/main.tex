@@ -421,16 +421,42 @@ with 12 vCPUs. Each seed was run as a separate job in parallel with
 comparable within the same machine.
 
 \subsection{Metrics and statistical tests}
-\begin{poin}
-  \item Metrik: F1 (primer), G-Mean, BAS \citep{cahyana2019improving};
-        + AUPRC (threshold-free) \citep{saito2015precision}.
-  \item Semua dari confusion matrix pada test set tak tersentuh.
-  \item Per dataset: Wilcoxon signed-rank berpasangan (seed sama),
-        $\alpha$=0,05.
-  \item Lintas dataset: Friedman + post-hoc Nemenyi pada blok
-        dataset$\times$seed, mean ranks \citep{demsar2006statistical}.
-  \item Runtime dilaporkan per metode (mesin sama, disclaimer paralelisme).
-\end{poin}
+% [Draf narasi — menunggu validasi penulis]
+The performance was evaluated on the untouched test set by using four
+metrics derived from the confusion matrix \citep{cahyana2019improving}.
+Let TP, TN, FP, and FN denote the numbers of true positives, true
+negatives, false positives, and false negatives, respectively. The
+primary metric is the F1 score, i.e., the harmonic mean of precision and
+recall, expressed as
+\begin{equation}
+  \mathrm{F1} = \frac{2\,\mathrm{TP}}
+  {2\,\mathrm{TP} + \mathrm{FP} + \mathrm{FN}}.
+  \label{eq:f1}
+\end{equation}
+We also report the geometric mean (G-Mean) and the balanced accuracy
+score (BAS) expressed as
+\begin{equation}
+  \text{G-Mean} = \sqrt{\mathrm{TPR} \times \mathrm{TNR}},
+  \qquad
+  \mathrm{BAS} = \frac{\mathrm{TPR} + \mathrm{TNR}}{2},
+  \label{eq:gmean_bas}
+\end{equation}
+where $\mathrm{TPR} = \mathrm{TP}/(\mathrm{TP}+\mathrm{FN})$ and
+$\mathrm{TNR} = \mathrm{TN}/(\mathrm{TN}+\mathrm{FP})$ denote the
+true positive rate and the true negative rate, respectively. In
+addition, we report the area under the precision--recall curve (AUPRC),
+which is threshold-free and informative under class imbalance
+\citep{saito2015precision}. Accuracy was recorded only to illustrate
+its weakness under extreme imbalance.
+
+For the comparison within a dataset, the two-sided Wilcoxon signed-rank
+test was applied to the paired F1 scores over the common seeds with
+$\alpha = 0.05$. For the comparison across datasets, the Friedman test
+was applied to the ranks of the 13 methods over the
+dataset~$\times$~seed blocks, followed by the Nemenyi post-hoc test on
+the mean ranks \citep{demsar2006statistical}. The runtime of each
+method was also recorded, and the runtime comparison is restricted to
+runs on the same machine since the jobs were executed in parallel.
 
 \subsection{Implementation and reproducibility}
 \begin{poin}
