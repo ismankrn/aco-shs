@@ -258,10 +258,25 @@ the standard rule expressed as
 \end{equation}
 where $\rho$ denotes the evaporation rate and $\Delta_i$ denotes the
 fitness accumulated over the ants that selected candidate $i$. The
-fitness of a solution was defined as the mean F1 score of a stratified
-5-fold cross-validation on the original training data, in which the
-selected synthetic candidates were added to the training folds only. The
-search was run for $N = 10$ iterations with an early stop after five
+quality of a solution was measured by the objective function expressed
+as
+\begin{equation}
+  \max_{\mathbf{s}}\; f(\mathbf{s}) = \frac{1}{5}\sum_{k=1}^{5}
+  \mathrm{F1}\!\left(h_{\mathbf{s}}^{(k)},\,
+  \mathcal{D}_{\mathrm{val}}^{(k)}\right)
+  \quad \text{subject to} \quad
+  \sum_{i=1}^{M} s_i = n_{\mathrm{maj}} - n_{\min},
+  \label{eq:objective}
+\end{equation}
+where $M$ denotes the pool size, $h_{\mathbf{s}}^{(k)}$ denotes the
+classifier trained on the $k$-th training folds of the original training
+data augmented with the candidates selected by $\mathbf{s}$, and
+$\mathcal{D}_{\mathrm{val}}^{(k)}$ denotes the $k$-th validation fold.
+The folds were stratified on the class label, and the synthetic
+candidates were added to the training folds only. The solution
+representation and the search cycle are illustrated in
+Figure~\ref{fig:aco}. The search was run for $N = 10$ iterations with an
+early stop after five
 iterations without improvement. The evaporation rate was set to
 $\rho = 0.8$ following the tuning of the previous study, while the
 number of ants $K$ is discussed in Section~\ref{sec:design}. The best
@@ -271,6 +286,14 @@ The fitness of the unmodified training data was evaluated as the initial
 reference, and if no ant solution exceeds this reference, the
 undersampler returns the original training data without any synthetic
 candidates.
+
+\begin{figure}[htbp]
+\centering
+% Sumber: figures/F0b_aco.tex (TikZ standalone); build lihat README.
+\includegraphics[width=0.95\textwidth]{F0b_aco.pdf}
+\caption{The illustration of the ACO undersampler.}
+\label{fig:aco}
+\end{figure}
 
 % [Draf narasi — menunggu validasi penulis]
 We found three divergences between the implementation of the previous
