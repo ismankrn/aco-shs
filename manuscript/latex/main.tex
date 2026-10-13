@@ -836,16 +836,26 @@ strategy itself.
 
 % =========================================================================
 \section{Conclusions}
-\begin{poin}
-  \item SHS valid tetapi kondisional — peta kapan-apa (dataset
-        kecil/ekstrem: ya; besar: oversampler sederhana cukup; sangat
-        kaya: jangan sampling, dan ACO tahu kapan tidak).
-  \item Seleksi terinformasi $>$ acak pada kondisi yang tepat;
-        metaheuristiknya bebas dipilih.
-  \item Protokol evaluasi berulang + statistik = rekomendasi baku untuk
-        riset sampling-DTI ke depan.
-  \item Kode/data terbuka.
-\end{poin}
+% [Draf narasi — menunggu validasi penulis]
+This study evaluated the sequential hybrid sampling framework with
+informed undersampling on four DTI datasets under a repeated and
+statistically tested protocol. The framework is valid but conditional.
+On the smallest and most positive-scarce dataset, resampling lifts F1 by
+up to 15 points and the selection stage adds a further increment, while
+on the larger datasets a well-chosen plain oversampler is nearly
+optimal, and on the richest dataset the best action is not to resample
+at all, which the ACO undersampler discovers by itself through its
+abstention action. The winning oversampler shifts from ROS to SMOTE and
+ADASYN along the growing number of real positives, so that the
+oversampler should be matched to the minority richness of the dataset.
+The choice of the metaheuristic is secondary, in which a budget-matched
+SA performs on par with ACO, while the abstention action is the design
+element worth keeping. We also showed that a single-split evaluation can
+reorder the methods by chance alone. We therefore recommend repeated
+multi-seed evaluation with paired statistical tests as the standard
+protocol for resampling studies in DTI prediction. All code, data
+pipelines, and results are publicly available to support reproduction
+and extension.
 
 % =========================================================================
 \section*{Acknowledgements}
