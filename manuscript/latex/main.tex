@@ -93,62 +93,74 @@
 
 % =========================================================================
 \section{Introduction}
+% [Draf narasi — menunggu validasi penulis]
 
-% --- Par. 1: konteks DTI (ringkas; jangan ulang paper 1 panjang-panjang) ---
-\begin{poin}
-  \item DTI = interaksi obat--protein target; kunci drug
-        discovery/repositioning \citep{azlimkhan2023comparative,
-        bagherian2021machine}.
-  \item Eksperimen laboratorium mahal/lambat $\rightarrow$ prediksi
-        komputasional \citep{you2018drug}.
-  \item Karakter data: negatif tak terverifikasi + imbalance ekstrem
-        (NR: 6\% positif) \citep{shi2019predicting}.
-\end{poin}
+Drug--target interaction (DTI) prediction identifies pairs of drugs and
+target proteins that are likely to interact, and it is a key step in
+drug discovery and drug repositioning \citep{azlimkhan2023comparative,
+bagherian2021machine}. Since the experimental validation of interactions
+is costly and slow, computational prediction is widely used to
+prioritize candidate pairs \citep{you2018drug}. The resulting datasets
+have two inconvenient properties. The negatives are unverified, since
+the pairs that are not listed in a gold standard are merely unlabeled,
+and the class distribution is extremely imbalanced, in which the
+positive rate of the gold-standard DTI datasets ranges from
+approximately 6\% down to below 1\% \citep{shi2019predicting}.
 
-% --- Par. 2: penanganan imbalance & posisi SHS ---
-\begin{poin}
-  \item Tiga keluarga data-level: oversampling, undersampling, hybrid
-        \citep{wongvorachan2023comparison, mohammed2020machine}.
-  \item Oversampling klasik: ROS/SMOTE/ADASYN \citep{chawla2002smote,
-        he2008adasyn}; hybrid mapan: SMOTE-ENN, SMOTE-Tomek
-        \citep{batista2004study}.
-  \item SHS (paper 1): oversampling \emph{melebihi} mayoritas $\rightarrow$
-        undersampling memangkas kembali; pembeda vs hybrid biasa.
-  \item Seleksi terinformasi via metaheuristik: ACOSampling
-        \citep{yu2013acosampling}, SAUS \citep{chennuru2022simulated},
-        FF-SMOTE \citep{kaur2019ffsmote}.
-\end{poin}
+Class imbalance is commonly handled at the data level by oversampling
+the minority class, undersampling the majority class, or combining both
+\citep{wongvorachan2023comparison, mohammed2020machine}. Classical
+oversamplers include random oversampling (ROS), SMOTE
+\citep{chawla2002smote}, and ADASYN \citep{he2008adasyn}, while
+SMOTE-ENN and SMOTE-Tomek are established hybrids that clean the
+oversampled data afterwards \citep{batista2004study}. A different line
+of work selects the retained instances by using a metaheuristic search,
+such as ACOSampling \citep{yu2013acosampling}, SAUS
+\citep{chennuru2022simulated}, and FF-SMOTE \citep{kaur2019ffsmote}.
+In this study, we consider the sequential hybrid sampling (SHS)
+framework, in which the minority class is first oversampled beyond the
+majority size to build a pool of synthetic candidates, and an
+undersampling stage then selects the subset that balances the data. In
+contrast to the classical hybrids, the selection can be informed, i.e.,
+driven by a cross-validated objective rather than by local cleaning
+rules.
 
-% --- Par. 3: celah yang ditinggalkan paper 1 (motivasi inti) ---
-\begin{poin}
-  \item Celah di literatur sampling-DTI: evaluasi umumnya satu dataset,
-        satu split, tanpa uji statistik, tanpa pembanding hybrid mapan.
-  \item Tidak diketahui: generalisasi lintas dataset, sensitivitas seed,
-        apakah manfaat berasal dari metaheuristik spesifik (ACO) atau
-        seleksi terinformasi generik.
-\end{poin}
+Despite this methodological variety, the evidence in the DTI-resampling
+literature is thin. Most studies evaluate on one dataset with a single
+train--test split, rarely report statistical tests, and seldom include
+the established hybrid baselines. Consequently, three issues remain
+open, i.e., whether the reported benefits generalize across datasets,
+how sensitive the conclusions are to the split, and whether the gains of
+metaheuristic selection come from the specific algorithm or from
+informed selection in general.
 
-% --- Par. 4: pertanyaan riset ---
-\begin{poin}
-  \item RQ1 generalisasi 4 dataset; RQ2 vs hybrid mapan; RQ3 koreksi \&
-        ablasi implementasi ACO; RQ4 fungsi fitness; RQ5 ACO vs SA
-        budget-matched.
-\end{poin}
+This study addresses five research questions. RQ1 asks whether the SHS
+framework generalizes across the four gold-standard DTI datasets. RQ2
+asks how SHS compares with the established hybrid methods. RQ3 asks how
+sensitive the ACO undersampler is to its implementation choices and
+parameters. RQ4 asks which fitness function should drive the selection.
+RQ5 asks whether a budget-matched SA matches ACO, i.e., whether the
+metaheuristic itself matters.
 
-% --- Par. 5: kontribusi (bullet list di paper) ---
-\begin{poin}
-  \item Protokol evaluasi berulang + statistik berpasangan untuk SHS-DTI
-        (pertama untuk keluarga metode ini).
-  \item Ablasi menyeluruh komponen ACO (aturan pheromone, stratifikasi
-        CV, replacement) + sensitivitas parameter $\rightarrow$ temuan
-        robustness.
-  \item Pembanding SA budget-matched $\rightarrow$ klaim ``informed
-        selection, not the metaheuristic''.
-  \item Temuan properti abstensi ACO sebagai katup pengaman.
-  \item Peta praktis: pasangan oversampler$\times$selektor$\times$rasio per
-        karakter dataset + biaya runtime.
-  \item Kode \& data publik (GitHub) $\rightarrow$ reproducibility penuh.
-\end{poin}
+The contributions of this study are as follows.
+\begin{itemize}
+  \item A repeated, multi-seed evaluation protocol with paired
+        statistical tests for SHS-style resampling in DTI prediction,
+        covering 13 methods on four datasets (725 runs in total).
+  \item A full factorial ablation of the ACO undersampler together with
+        a parameter-sensitivity analysis, which shows that the method is
+        robust to its implementation details.
+  \item A budget-matched SA comparator, which shows that the value lies
+        in informed selection itself rather than in the specific
+        metaheuristic.
+  \item The identification and verification of the abstention property,
+        in which the informed selector declines to resample when
+        resampling is harmful.
+  \item A practical map that matches the oversampler, the selector, and
+        the pool ratio to the minority richness of the dataset, together
+        with the associated computational costs.
+  \item Publicly available code, data pipeline, and complete results.
+\end{itemize}
 
 % =========================================================================
 \section{Materials \& Methods}
