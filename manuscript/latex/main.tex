@@ -335,13 +335,22 @@ contrast to ACO, SA has no abstention action, so that it always returns
 a balanced training set.
 
 \subsection{Compared methods}
-\begin{poin}
-  \item 13 metode per dataset: baseline GB; ROS/SMOTE/ADASYN klasik;
-        SMOTE-ENN, SMOTE-Tomek \citep{batista2004study}; SHS-RUS $\times$3;
-        SHS-ACO $\times$3; SHS-SA (SMOTE).
-  \item Classifier seragam: Gradient Boosting \citep{friedman2001greedy}.
-  \item Alasan tidak menambah classifier lain: isolasi efek sampling.
-\end{poin}
+% [Draf narasi — menunggu validasi penulis]
+We compared 13 methods on each dataset. The first method is the
+baseline, in which the classifier was trained on the imbalanced data
+without any resampling. The second group consists of three classical
+oversamplers, i.e., ROS, SMOTE, and ADASYN, which balance the training
+data without exceeding the majority size. The third group consists of
+two established hybrid methods, i.e., SMOTE-ENN and SMOTE-Tomek
+\citep{batista2004study}, which clean the oversampled data by using
+edited nearest neighbours and Tomek links, respectively. The fourth
+group consists of seven SHS variants, i.e., SHS-RUS and SHS-ACO, each
+combined with ROS, SMOTE, and ADASYN, along with SHS-SA (SMOTE). The SA
+selector was paired with the SMOTE arm only in order to limit the
+computational cost. Gradient Boosting \citep{friedman2001greedy} was
+used as the final classifier for all methods, since it was the
+best-performing classifier in the previous study. We did not vary the
+classifier in order to isolate the effect of the sampling strategies.
 
 \subsection{Experimental design}
 \label{sec:design}
