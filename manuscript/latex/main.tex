@@ -491,7 +491,7 @@ diverge by up to 16 percentage points of F1. This sensitivity is explained
 by the size of the test set. The NR test set contains only 27 positive
 instances, so that a single additional true positive shifts the recall
 by approximately 3.7 percentage points. Moreover, the seed-to-seed
-variation is large relative to the differences between methods: the
+variation is large relative to the differences between methods. The
 standard deviation of 0.0707 exceeds most of the method-to-method gaps
 observed in the main comparison (Section~\ref{sec:main}). Therefore, a
 single-split evaluation can reorder the methods by chance alone, and a
@@ -527,16 +527,16 @@ as the fitness function.
 The parameter sensitivity is summarized in Table~\ref{tab:sensitivity}.
 Neither the evaporation rate ($\rho \in \{0.5, 0.95\}$) nor the
 number of ants ($K \in \{10, 40\}$) differs significantly from the
-default ($p \geq 0.31$). However, the runtime differs substantially:
-$K = 10$ matches the quality of the default $K = 20$ at roughly half
-the cost (52.5~min against 1.9~h per seed), while $K = 40$ trends worse
-at twice the cost. The convergence traces support this observation, in
+default ($p \geq 0.31$). However, the runtime differs substantially. The setting $K = 10$
+matches the quality of the default $K = 20$ at roughly half the cost
+(52.5~min against 1.9~h per seed), while $K = 40$ trends worse at twice
+the cost. The convergence traces support this observation, in
 which the best-so-far fitness flattens after approximately six to eight
 iterations (Figure~\ref{fig:convergence}). Therefore, $K = 10$ was
 adopted for the final comparison.
 
 These results have two implications. First, the ACO undersampler is
-robust: its performance depends on neither the exact update rule, the
+robust. Its performance depends on neither the exact update rule, the
 cross-validation scheme, the replacement scheme, nor the parameter
 values within reasonable ranges. This robustness is good news for
 practitioners, since careful tuning is not required to obtain a
@@ -564,9 +564,9 @@ comparison on NR.}
 \centering
 \includegraphics[width=\textwidth]{F3_convergence.pdf}
 \caption{The convergence of the undersampling search on NR. (a) ACO
-against the budget-matched SA (thin lines: individual seeds). (b) ACO
-with $K \in \{10, 20, 40\}$ ants. The dashed line denotes the
-plain-data fitness, i.e., the ACO abstention threshold.}
+against the budget-matched SA, in which the thin lines denote individual
+seeds. (b) ACO with $K \in \{10, 20, 40\}$ ants. The dashed line
+denotes the plain-data fitness, i.e., the ACO abstention threshold.}
 \label{fig:convergence}
 \end{figure}
 
