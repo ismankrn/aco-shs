@@ -459,15 +459,22 @@ method was also recorded, and the runtime comparison is restricted to
 runs on the same machine since the jobs were executed in parallel.
 
 \subsection{Implementation and reproducibility}
-\begin{poin}
-  \item Python 3.12; scikit-learn \citep{pedregosa2011scikit},
-        imbalanced-learn \citep{lemaitre2017imbalanced}.
-  \item Semua run ber-seed penuh $\rightarrow$ deterministik (baris identik
-        lintas mesin/waktu).
-  \item Kode, pipeline data, seluruh CSV hasil: repositori publik
-        (\url{https://github.com/ismankrn/aco-shs}; buat rilis/tag saat
-        submit).
-\end{poin}
+% [Draf narasi — menunggu validasi penulis]
+% TODO sebelum submit: buat tag/rilis GitHub (+ opsional DOI Zenodo) dan
+% rujuk versinya di kalimat repositori.
+All methods were implemented in Python 3.12. The classifiers and the
+evaluation metrics were based on scikit-learn
+\citep{pedregosa2011scikit}, while the oversamplers and the classical
+hybrid methods were based on imbalanced-learn
+\citep{lemaitre2017imbalanced}. The ACO and SA undersamplers were
+implemented following the formulations in Sections~2.3 and~2.4. Every
+run was fully seeded, so that the results are deterministic; we verified
+that repeated runs produce identical result rows across different
+machines. The source code, the data preparation pipeline, and all result
+files are publicly available at
+\url{https://github.com/ismankrn/aco-shs}. The feature matrices can be
+regenerated from the SRX-DTI source data by using the included scripts
+\citep{khojasteh2023improving}.
 
 % =========================================================================
 \section{Results}
