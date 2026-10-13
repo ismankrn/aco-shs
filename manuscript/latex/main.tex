@@ -365,7 +365,7 @@ classifier in order to isolate the effect of the sampling strategies.
 % [Draf narasi — menunggu validasi penulis]
 The experiments were organized into staged phases, in which the design
 decisions of the later phases were based on the results of the earlier
-phases. In the reproduction phase, the exact configuration of the
+phases, as summarized in Table~\ref{tab:phases}. In the reproduction phase, the exact configuration of the
 previous study was rerun with five different random seeds to quantify
 the sensitivity of a single-split evaluation. We also examined the
 equivalence between GB and the histogram-based gradient boosting
@@ -383,6 +383,13 @@ the ACO parameters, i.e., $\rho \in \{0.5, 0.95\}$ and
 $K \in \{10, 40\}$, was then examined along with the budget-matched SA
 comparator. In the final phase, all 13 methods were compared on the four
 datasets.
+
+\begin{table}[htbp]
+\centering
+\caption{The staged experimental design.}
+\label{tab:phases}
+\resizebox{\textwidth}{!}{\input{tables/t_phases}}
+\end{table}
 
 In every run, the dataset was split into 70\% training and 30\% test
 sets by using stratified sampling, and the split was regenerated for
