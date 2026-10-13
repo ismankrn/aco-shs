@@ -481,6 +481,7 @@ regenerated from the SRX-DTI source data by using the included scripts
 \section{Results and Discussion}
 
 \subsection{Seed sensitivity of single-split evaluation}
+\label{sec:seed}
 % [Draf narasi — menunggu validasi penulis]
 We first quantified the variability of a single-split evaluation. A
 reference SHS-ACO (SMOTE) configuration was run on NR with five random
@@ -612,50 +613,73 @@ NR, in which bold denotes the best ratio of each method.}
 
 \subsection{Main comparison across four datasets}
 \label{sec:main}
-\begin{poin}
-  \item Tabel inti: Tabel~\ref{tab:main} (G-Mean/BAS/AUPRC di suplemen).
-  \item NR: keluarga ROS dominan (RUS-ROS 0,473) $\gg$ SMOTE; GPCR: ROS
-        runtuh, SHS-SA-SMOTE 0,365 memimpin tipis atas SMOTE-Tomek 0,361;
-        IC: SHS-ACO-ADASYN 0,346; Enzyme: baseline 0,185 tak terkalahkan.
-  \item Tidak ada juara universal; juara oversampler bergeser
-        ROS $\rightarrow$ SMOTE $\rightarrow$ ADASYN $\rightarrow$ tanpa
-        sampling mengikuti kekayaan positif asli
-        (Gambar~\ref{fig:gradient}).
-  \item Uji per dataset: Tabel~\ref{tab:tests}; $n$=5 memberi $p$ minimum
-        0,0625 (GPCR/IC mencapainya).
-  \item Friedman $\chi^2$=42,5, $p$=2,7$\times10^{-5}$; rank teratas
-        SHS-ACO-ADASYN 4,85 dan SHS-ACO-SMOTE 5,00; CD Nemenyi = 4,08:
-        hanya baseline/ROS/SHS-RUS-ROS terpisah dari yang terbaik
-        (Gambar~\ref{fig:ranks}).
-  \item ANALISIS (temuan payung): evaluasi split-tunggal menyesatkan —
-        juara pada satu split atau satu dataset tidak bertahan di bawah
-        protokol berulang maupun lintas dataset.
-  \item ANALISIS (``ceiling hypothesis''): karakter oversampler
-        $\times$ dataset menentukan langit-langit kinerja; selektor hanya
-        menentukan seberapa dekat ke langit-langit itu.
-  \item ANALISIS (gradien): manfaat seleksi terinformasi menyusut saat
-        positif asli makin banyak (selisih selektor: $+0{,}015
-        \rightarrow +0{,}006 \rightarrow +0{,}005 \rightarrow$ abstain);
-        hipotesis: kualitas sintetis makin seragam sehingga memilih tidak
-        menambah nilai.
-  \item ANALISIS (catatan jujur): $\Delta$F1 keluarga thd baseline
-        bertahan 0,13--0,19 sampai IC lalu \emph{runtuh} di Enzyme —
-        yang monoton adalah selisih seleksi dan pergeseran juara, bukan
-        $\Delta$F1 itu sendiri.
-\end{poin}
+% [Draf narasi — menunggu validasi penulis]
+The main comparison of the 13 methods on the four datasets is summarized
+in Table~\ref{tab:main}, and the per-dataset winners with their
+statistical tests are given in Table~\ref{tab:tests}. Resampling pays
+off substantially on three of the four datasets. On NR, the ROS family
+dominates, in which SHS-RUS (ROS) reaches an F1 score of 0.4725 against
+the baseline of 0.3235. On GPCR, the ROS family collapses to
+approximately 0.24, while SHS-SA (SMOTE) leads with 0.3645, slightly
+ahead of SMOTE-Tomek with 0.3614. On IC, SHS-ACO (ADASYN) leads with
+0.3461 against the baseline of 0.1600. On Enzyme, no resampling method
+beats the baseline of 0.1854, in which the closest competitors are the
+SHS-ACO variants with 0.1840 owing to the abstention described in
+Section~\ref{sec:abstention}.
+
+Two patterns emerge across the datasets. First, there is no universal
+winner. The winning oversampler shifts from ROS on NR to SMOTE on GPCR,
+ADASYN on IC, and no resampling on Enzyme, which follows the increasing
+number of real positive training instances (63, 444, 1{,}033, and
+2{,}048, respectively), as illustrated in Figure~\ref{fig:gradient}.
+Second, the magnitude of the benefit does not decay gradually. The best
+family keeps a margin of 0.13 to 0.19 F1 points over the baseline up to
+IC and then collapses to zero or below on Enzyme.
+
+The statistical tests support these observations. The winner differs
+significantly from the baseline on NR ($p$ = 0.0059 over ten paired
+seeds) and reaches the minimum attainable $p$ value of 0.0625 on GPCR
+and IC with five paired seeds. In contrast, the winner is never
+significantly different from the runner-up ($p \geq 0.44$), so that the
+top of each dataset is occupied by a tight cluster of methods rather
+than a single winner. Across the datasets, the Friedman test rejects the
+equality of the 13 methods ($\chi^2$ = 42.5, $p$ = $2.7 \times
+10^{-5}$ over 20 blocks). The best mean ranks belong to SHS-ACO (ADASYN)
+with 4.85 and SHS-ACO (SMOTE) with 5.00, as shown in
+Figure~\ref{fig:ranks}. However, the Nemenyi critical difference of
+4.08 separates only the baseline, ROS, and SHS-RUS (ROS) from the
+top-ranked method.
+
+These results carry three messages. First, a winner identified on a
+single split or a single dataset does not transfer, which confirms the
+concern raised in Section~\ref{sec:seed} and underlines the need for repeated,
+multi-dataset evaluation in this field. Second, the results suggest a
+two-level explanation, in which the pairing between the oversampler and
+the dataset sets the attainable performance ceiling, while the selector
+only determines how closely that ceiling is approached. The informed
+selection increment on top of the best plain oversampler shrinks
+monotonically, i.e., $+0.015$ on NR, $+0.006$ on GPCR, and $+0.005$ on
+IC, and turns into abstention on Enzyme. We hypothesize that the quality
+of the synthetic candidates becomes more uniform when more real
+positives are available, so that choosing among them adds little value.
+Third, from a practical point of view, the oversampler should be matched
+to the minority richness of the dataset, while an informed selector is
+worth its cost only under extreme scarcity. If a single method must be
+chosen blindly, SHS-ACO offers the best average rank together with a
+built-in safety valve.
 
 \begin{table}[htbp]
 \centering
-\caption{\todocap{tabel inti F1 mean$\pm$SD, 13 metode $\times$ 4 dataset;
-tebal = terbaik per dataset}}
+\caption{The F1 scores (mean $\pm$ SD) of the 13 methods on the four
+datasets, in which bold denotes the best method of each dataset.}
 \label{tab:main}
 \adjustbox{max width=\textwidth}{\input{tables/t_main_f1}}
 \end{table}
 
 \begin{table}[htbp]
 \centering
-\caption{\todocap{pemenang per dataset + Wilcoxon berpasangan; '--' Enzyme =
-skor identik karena abstensi}}
+\caption{The best methods per dataset with the paired Wilcoxon
+signed-rank tests on F1.}
 \label{tab:tests}
 \adjustbox{max width=\textwidth}{\input{tables/t_tests}}
 \end{table}
@@ -663,21 +687,22 @@ skor identik karena abstensi}}
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.9\textwidth]{F1_gradient.pdf}
-\caption{\todocap{$\Delta$F1 metode terbaik per keluarga vs baseline; sumbu-x
-log positif asli train; label atas = oversampler juara; titik ACO-Enzyme =
-abstensi}}
+\caption{The gain of the best method in each family over the baseline
+across the four datasets, ordered by the number of real positive
+training instances.}
 \label{fig:gradient}
 \end{figure}
 
 \begin{figure}[htbp]
 \centering
 \includegraphics[width=0.8\textwidth]{F4_friedman_ranks.pdf}
-\caption{\todocap{mean rank Friedman 20 blok; garis putus = best + CD
-Nemenyi $\alpha$=0,05; kiri garis = tak terbedakan dari terbaik}}
+\caption{The mean Friedman ranks of the 13 methods with the Nemenyi
+critical difference.}
 \label{fig:ranks}
 \end{figure}
 
 \subsection{The ACO abstention property}
+\label{sec:abstention}
 \begin{poin}
   \item Di Enzyme, fitness ACO tak pernah menemukan subset sintetis yang
         mengalahkan data asli $\rightarrow$ fallback mengembalikan data
