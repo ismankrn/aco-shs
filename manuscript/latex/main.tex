@@ -336,7 +336,8 @@ a balanced training set.
 
 \subsection{Compared methods}
 % [Draf narasi — menunggu validasi penulis]
-We compared 13 methods on each dataset. The first method is the
+We compared 13 methods on each dataset, as summarized in
+Table~\ref{tab:methods}. The first method is the
 baseline, in which the classifier was trained on the imbalanced data
 without any resampling. The second group consists of three classical
 oversamplers, i.e., ROS, SMOTE, and ADASYN, which balance the training
@@ -351,6 +352,13 @@ computational cost. Gradient Boosting \citep{friedman2001greedy} was
 used as the final classifier for all methods, since it was the
 best-performing classifier in the previous study. We did not vary the
 classifier in order to isolate the effect of the sampling strategies.
+
+\begin{table}[htbp]
+\centering
+\caption{The 13 compared methods.}
+\label{tab:methods}
+\resizebox{\textwidth}{!}{\input{tables/t_methods}}
+\end{table}
 
 \subsection{Experimental design}
 \label{sec:design}
