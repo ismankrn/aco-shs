@@ -24,6 +24,7 @@ python scripts/export_latex_tables.py
 
 | File | Isi | Sumber |
 |---|---|---|
+| t_methods | Taksonomi 13 metode (STATIS, edit langsung) | — |
 | t_datasets | Statistik 4 dataset + positif train/test | runs_p3 + fakta Yamanishi |
 | t_reproduction | Reproduksi konfigurasi tesis per seed | runs_p0 |
 | t_ablation | Ablasi 2×2×2 + fungsi fitness | runs_p1_merged |
