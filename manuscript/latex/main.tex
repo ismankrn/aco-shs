@@ -22,6 +22,7 @@
 \usepackage{graphicx}
 \usepackage{booktabs}
 \usepackage{array}
+\usepackage{adjustbox}
 \usepackage{amsmath}
 \usepackage{xcolor}
 \usepackage{enumitem}
@@ -183,7 +184,7 @@ to the sampling strategies.
 \caption{The statistics of the four gold-standard DTI datasets with the
 stratified 70/30 split.}
 \label{tab:datasets}
-\resizebox{\textwidth}{!}{\input{tables/t_datasets}}
+\adjustbox{max width=\textwidth}{\input{tables/t_datasets}}
 \end{table}
 
 \subsection{Sequential hybrid sampling framework}
@@ -358,7 +359,7 @@ classifier in order to isolate the effect of the sampling strategies.
 \centering
 \caption{The 13 compared methods.}
 \label{tab:methods}
-\resizebox{\textwidth}{!}{\input{tables/t_methods}}
+\adjustbox{max width=\textwidth}{\input{tables/t_methods}}
 \end{table}
 
 \subsection{Experimental design}
@@ -389,7 +390,7 @@ datasets.
 \centering
 \caption{The staged experimental design.}
 \label{tab:phases}
-\resizebox{\textwidth}{!}{\input{tables/t_phases}}
+\adjustbox{max width=\textwidth}{\input{tables/t_phases}}
 \end{table}
 
 In every run, the dataset was split into 70\% training and 30\% test
@@ -549,7 +550,7 @@ quality.
 \caption{The ablation of the ACO implementation factors and fitness
 functions on NR.}
 \label{tab:ablation}
-\resizebox{\textwidth}{!}{\input{tables/t_ablation}}
+\adjustbox{max width=\textwidth}{\input{tables/t_ablation}}
 \end{table}
 
 \begin{table}[htbp]
@@ -599,7 +600,7 @@ comparison described in Section~\ref{sec:design}.
 \caption{The F1 scores of the SHS variants over the three pool ratios on
 NR, in which bold denotes the best ratio of each method.}
 \label{tab:ratio}
-\resizebox{\textwidth}{!}{\input{tables/t_ratio}}
+\adjustbox{max width=\textwidth}{\input{tables/t_ratio}}
 \end{table}
 
 \begin{figure}[htbp]
@@ -648,7 +649,7 @@ NR, in which bold denotes the best ratio of each method.}
 \caption{\todocap{tabel inti F1 mean$\pm$SD, 13 metode $\times$ 4 dataset;
 tebal = terbaik per dataset}}
 \label{tab:main}
-\resizebox{\textwidth}{!}{\input{tables/t_main_f1}}
+\adjustbox{max width=\textwidth}{\input{tables/t_main_f1}}
 \end{table}
 
 \begin{table}[htbp]
@@ -656,7 +657,7 @@ tebal = terbaik per dataset}}
 \caption{\todocap{pemenang per dataset + Wilcoxon berpasangan; '--' Enzyme =
 skor identik karena abstensi}}
 \label{tab:tests}
-\resizebox{\textwidth}{!}{\input{tables/t_tests}}
+\adjustbox{max width=\textwidth}{\input{tables/t_tests}}
 \end{table}
 
 \begin{figure}[htbp]
@@ -694,7 +695,7 @@ Nemenyi $\alpha$=0,05; kiri garis = tak terbedakan dari terbaik}}
 \caption{\todocap{verifikasi abstensi per seed di Enzyme; 'identical' =
 confusion matrix sama dengan baseline}}
 \label{tab:abstention}
-\resizebox{\textwidth}{!}{\input{tables/t_abstention}}
+\adjustbox{max width=\textwidth}{\input{tables/t_abstention}}
 \end{table}
 
 \subsection{ACO versus SA}
@@ -717,7 +718,7 @@ confusion matrix sama dengan baseline}}
 \centering
 \caption{\todocap{SA vs ACO per dataset, arm SMOTE, seed berpasangan}}
 \label{tab:savsaco}
-\resizebox{\textwidth}{!}{\input{tables/t_sa_vs_aco}}
+\adjustbox{max width=\textwidth}{\input{tables/t_sa_vs_aco}}
 \end{table}
 
 \subsection{Computational cost}
@@ -735,7 +736,7 @@ confusion matrix sama dengan baseline}}
 \caption{\todocap{runtime per seed (sampling + training final), relatif thd
 baseline; mesin identik}}
 \label{tab:runtime}
-\resizebox{\textwidth}{!}{\input{tables/t_runtime}}
+\adjustbox{max width=\textwidth}{\input{tables/t_runtime}}
 \end{table}
 
 % =========================================================================
@@ -789,19 +790,19 @@ baseline; mesin identik}}
 \begin{table}[htbp]
 \centering
 \caption{G-Mean (mean $\pm$ SD), 13 methods $\times$ 4 datasets.}
-\resizebox{\textwidth}{!}{\input{tables/s_gmean}}
+\adjustbox{max width=\textwidth}{\input{tables/s_gmean}}
 \end{table}
 
 \begin{table}[htbp]
 \centering
 \caption{Balanced accuracy (mean $\pm$ SD), 13 methods $\times$ 4 datasets.}
-\resizebox{\textwidth}{!}{\input{tables/s_bas}}
+\adjustbox{max width=\textwidth}{\input{tables/s_bas}}
 \end{table}
 
 \begin{table}[htbp]
 \centering
 \caption{AUPRC (mean $\pm$ SD), 13 methods $\times$ 4 datasets.}
-\resizebox{\textwidth}{!}{\input{tables/s_auprc}}
+\adjustbox{max width=\textwidth}{\input{tables/s_auprc}}
 \end{table}
 
 \end{document}
