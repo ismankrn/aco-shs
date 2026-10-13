@@ -223,11 +223,27 @@ this paper.
 % [Draf narasi — menunggu validasi penulis]
 The ACO undersampler searches for the subset of synthetic candidates that
 maximizes a cross-validated fitness \citep{dorigo2006ant,
-yu2013acosampling}. A solution is defined as a multiset of
-$n_{\mathrm{maj}} - n_{\min}$ indices over the synthetic pool, so that
-the union of the original training data and the selected candidates is
-balanced. Each of the $K$ ants constructs a solution by sampling
-candidate indices according to the selection probability expressed as
+yu2013acosampling}. The undersampling is formulated as a combinatorial
+selection over the oversampled pool. A solution is represented as a
+binary vector, analogous to a chromosome in evolutionary algorithms,
+whose length equals the number of synthetic candidates in the pool. A
+value of 1 indicates that the corresponding candidate is included in the
+training data, while a value of 0 indicates that the candidate is
+excluded. The core of the optimization is therefore to find the
+combination of 1 and 0 values that yields the highest fitness. To ensure
+that the minority size matches the majority size after the selection,
+the number of 1 values is constrained to $n_{\mathrm{maj}} - n_{\min}$,
+so that the selected candidates together with the $n_{\min}$ original
+minority instances balance the $n_{\mathrm{maj}}$ majority instances.
+This constraint is enforced by construction rather than by a penalty
+term, in which each ant builds a solution by sampling exactly
+$n_{\mathrm{maj}} - n_{\min}$ candidate indices from the pool. Since the
+sampling was performed with replacement, a candidate may be selected
+more than once, so that an entry of the solution vector may take an
+integer count larger than 1; the effect of this choice was examined in
+the ablation described at the end of this section. Each of the $K$ ants
+samples these candidate indices according to the selection probability
+expressed as
 \begin{equation}
   P_i = \frac{\tau_i}{\sum_{j} \tau_j},
   \label{eq:prob}
@@ -256,7 +272,6 @@ reference, and if no ant solution exceeds this reference, the
 undersampler returns the original training data without any synthetic
 candidates.
 
-\subsubsection{Corrections to the previous implementation}
 % [Draf narasi — menunggu validasi penulis]
 We found three divergences between the implementation of the previous
 study and the published equations. First, the pheromone update was
