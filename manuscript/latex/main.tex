@@ -128,45 +128,63 @@ balancing combined with feature selection \citep{redkar2020machine},
 and comparative studies of resampling techniques for DTI models
 \citep{azlimkhan2023comparative}.
 
-At the data level, the remedies fall into three families, i.e.,
-oversampling the minority class, undersampling the majority class, and
-hybrids of both \citep{wongvorachan2023comparison, mohammed2020machine,
-devi2020review}. Classical oversamplers include random oversampling
-(ROS), SMOTE \citep{chawla2002smote}, and ADASYN \citep{he2008adasyn},
-and the behavior of these methods has been studied extensively
-\citep{fernandez2018smote, kim2022empirical}. SMOTE-ENN and SMOTE-Tomek
-are established hybrids that first oversample and then clean the result
-by using edited nearest neighbours or Tomek links
-\citep{batista2004study}. The cleaning in these hybrids is local and
-rule-based, so that it does not optimize any global objective.
+Resampling-based DTI prediction has advanced considerably on this
+benchmark. \citet{shi2019predicting} combined evolutionary and
+chemical-structure features with Lasso dimension reduction, SMOTE, and a
+random forest, and reported accuracies between 94.88\% on NR and
+98.09\% on Enzyme. \citet{mahmud2019idti} paired SMOTE with XGBoost in
+iDTi-CSsmoteB and obtained average auROC values between 0.9459 on NR and
+0.9860 on Enzyme. \citet{redkar2020machine} combined wrapper feature
+selection with SMOTE and several classifiers, and achieved accuracies
+between 90.6\% and 95.9\% on the same four datasets after 10-fold
+cross-validation. More recently, \citet{azlimkhan2023comparative}
+compared resampling techniques across machine learning and deep learning
+DTI models and confirmed that the choice of the resampling technique
+materially affects the predictive performance.
 
-A different line of work treats the choice of the retained instances as
-a search problem and solves it with a metaheuristic, such as ACOSampling
-for undersampling imbalanced microarray data \citep{yu2013acosampling},
-SAUS based on simulated annealing \citep{chennuru2022simulated}, and
-FF-SMOTE based on the firefly algorithm \citep{kaur2019ffsmote}. In
-this study, we consider the sequential hybrid sampling (SHS) framework,
-in which the minority class is first oversampled beyond the majority
-size to build a pool of synthetic candidates, and an undersampling stage
-then selects the subset that balances the data. In contrast to the
-classical hybrids, the selection can be informed, i.e., driven by a
-cross-validated objective rather than by local cleaning rules. The
-framework also admits a random selector as its uninformed control, so
-that the value of the informed search can be isolated.
+In parallel, the resampling methods themselves have evolved. Random
+over- and undersampling were followed by SMOTE, which interpolates
+between minority neighbours \citep{chawla2002smote}, by the hybrid
+SMOTE-ENN and SMOTE-Tomek methods, which clean the oversampled data by
+using edited nearest neighbours or Tomek links \citep{batista2004study},
+and by ADASYN, which concentrates the synthesis on the minority samples
+that are harder to learn \citep{he2008adasyn}. The behavior of this
+family has been studied extensively \citep{fernandez2018smote,
+kim2022empirical, wongvorachan2023comparison, mohammed2020machine,
+devi2020review}. A younger line treats the choice of the retained
+instances as a search problem, in which ACOSampling selects majority
+subsets by using an ant colony \citep{yu2013acosampling}, FF-SMOTE
+tunes the synthetic values by using the firefly algorithm
+\citep{kaur2019ffsmote}, and SAUS searches majority subsets by using
+simulated annealing \citep{chennuru2022simulated}. The sequential
+hybrid sampling (SHS) framework considered in this study belongs to this
+line, in which the minority class is first oversampled beyond the
+majority size and an undersampling stage then selects the balancing
+subset by using a cross-validated objective. In contrast to the
+rule-based cleaning of the classical hybrids, the selection is informed
+by a global objective, and a random selector serves as the uninformed
+control.
 
-Despite this methodological variety, the supporting evidence in the
-DTI-resampling literature is thin. Many studies evaluate on one dataset
-with a single train--test split, rarely report statistical tests, and
-seldom include the established hybrid baselines. A single split is
-particularly fragile on the small DTI datasets, in which the test set
-contains only a few dozen positives and a single additional true
-positive moves the recall by several points. Consequently, three issues
-remain open, i.e., whether the reported benefits generalize across
-datasets, how sensitive the conclusions are to the split, and whether
-the gains of metaheuristic selection come from the specific algorithm or
-from informed selection in general.
+A closer look at this state of the art reveals four gaps. First, the
+reported figures rely on accuracy or auROC, which remain optimistic
+under extreme imbalance and can mask poor minority performance
+\citep{saito2015precision}; on these datasets, an accuracy above 93\%
+is attainable by always predicting the majority class. Second, each
+study evaluates under a single protocol, in which one split or one
+cross-validation round is used without statistical testing, so that the
+stability of the conclusions is unknown. Third, the proposed resampling
+methods are rarely compared head-to-head with the established hybrid
+baselines under one common protocol. Fourth, the metaheuristic-selection
+line was developed largely outside DTI and has not been evaluated across
+the DTI datasets, so that it is unclear whether its gains generalize and
+whether they come from the specific algorithm or from informed selection
+in general.
 
-This study addresses five research questions. RQ1 asks whether the SHS
+These gaps motivate the present study. The objective of this study is
+to establish, under a repeated and statistically tested protocol, when
+the SHS framework with informed undersampling pays off across the four
+gold-standard DTI datasets, and which of its components are responsible
+for the benefit. This study addresses five research questions. RQ1 asks whether the SHS
 framework generalizes across the four gold-standard DTI datasets. RQ2
 asks how SHS compares with the established hybrid methods. RQ3 asks how
 sensitive the ACO undersampler is to its implementation choices and
