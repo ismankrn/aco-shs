@@ -951,23 +951,30 @@ strategy itself.
 \section{Conclusions}
 This study evaluated the sequential hybrid sampling framework with
 informed undersampling on four DTI datasets under a repeated and
-statistically tested protocol. The framework is valid but conditional.
-On the smallest and most positive-scarce dataset, resampling lifts F1 by
-up to 15 points and the selection stage adds a further increment, while
-on the larger datasets a well-chosen plain oversampler is nearly
-optimal, and on the richest dataset the best action is not to resample
-at all, which the ACO undersampler discovers by itself through its
-abstention action. The winning oversampler shifts from ROS to SMOTE and
-ADASYN along the growing number of real positives, so that the
-oversampler should be matched to the minority richness of the dataset.
-The choice of the metaheuristic is secondary, in which a budget-matched
-SA performs on par with ACO, while the abstention action is the design
-element worth keeping. We also showed that a single-split evaluation can
-reorder the methods by chance alone. We therefore recommend repeated
-multi-seed evaluation with paired statistical tests as the standard
-protocol for resampling studies in DTI prediction. All code, data
-pipelines, and results are publicly available to support reproduction
-and extension.
+statistically tested protocol of 725 runs. The framework is valid but
+conditional. On the smallest and most positive-scarce dataset,
+resampling lifts the best F1 score from 0.32 to 0.47 and the selection
+stage adds a further increment, while on the larger datasets a
+well-chosen plain oversampler is nearly optimal, and on the richest
+dataset the best action is not to resample at all, in which no method
+beats the baseline F1 score of 0.19 and the ACO undersampler discovers
+this by itself through its abstention action in all 15 runs. The winning
+oversampler shifts from ROS to SMOTE and ADASYN along the growing number
+of real positives, so that the oversampler should be matched to the
+minority richness of the dataset, and the SHS-ACO variants offer the
+safest blind choice with the best mean Friedman ranks of 4.85 and 5.00
+among the 13 methods. The choice of the metaheuristic is secondary, in
+which a budget-matched SA performs on par with ACO ($p \geq 0.125$ on
+every dataset), while the abstention action is the design element worth
+keeping. Informed selection costs up to three orders of magnitude more
+than random selection, so that it pays off mainly under extreme
+scarcity. We also showed that a single-split evaluation can reorder the
+methods by chance alone, in which the F1 score of one configuration
+varied from 0.27 to 0.43 across the splits. We therefore recommend
+repeated multi-seed evaluation with paired statistical tests as the
+standard protocol for resampling studies in DTI prediction. All code,
+data pipelines, and results are publicly available to support
+reproduction and extension.
 
 % =========================================================================
 \section*{Data Availability}
