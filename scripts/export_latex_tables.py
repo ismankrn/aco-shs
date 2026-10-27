@@ -119,16 +119,16 @@ def t_ablation():
                    suffixes=("_ref", "_leg"))
     _, p = stats.wilcoxon(piv.f1_ref, piv.f1_leg)
     rows.append(["Default vs alternative configuration",
-                 f"{piv.f1_leg.mean():.4f}", f"{piv.f1_ref.mean():.4f}",
+                 f"{piv.f1_ref.mean():.4f}", f"{piv.f1_leg.mean():.4f}",
                  len(piv), fmt_p(p)])
     rows.append("MIDRULE")
     for fn in ["f1", "gmean", "bas"]:
         sub = p1[(p1.fitness_fn == fn) & (~p1.legacy) & (p1.stratified)
                  & (p1.replacement)]
-        rows.append([f"Fitness function = {fn.upper()}", "--",
-                     f"{sub.f1.mean():.4f}", len(sub), "--"])
+        rows.append([f"Fitness function = {fn.upper()}",
+                     f"{sub.f1.mean():.4f}", "--", len(sub), "--"])
     write("t_ablation.tex", tabular(
-        ["Comparison", "F1 (variant A)", "F1 (variant B)", "$n$",
+        ["Comparison", "F1 (A)", "F1 (B)", "$n$",
          "$p$ (Wilcoxon)"], rows))
 
 
