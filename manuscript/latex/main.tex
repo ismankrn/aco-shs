@@ -68,7 +68,9 @@ and random selection as the uninformed control. Thirteen methods were
 compared on the four gold-standard Yamanishi datasets under a repeated
 multi-seed protocol with paired statistical tests, together with a full
 factorial ablation of the ACO undersampler and a budget-matched SA
-comparator. A single split proved unreliable, in which the F1 score of
+comparator. To our knowledge, this is the first systematic evaluation
+of the overproduce-and-choose resampling paradigm in DTI prediction. A
+single split proved unreliable, in which the F1 score of
 one configuration ranged from 0.267 to 0.431 across the splits,
 exceeding most differences between methods. The ACO undersampler was
 robust to its implementation details and parameters, and the
@@ -181,13 +183,18 @@ instances as a search problem, in which ACOSampling selects majority
 subsets by using an ant colony \citep{yu2013acosampling}, FF-SMOTE
 tunes the synthetic values by using the firefly algorithm
 \citep{kaur2019ffsmote}, and SAUS searches majority subsets by using
-simulated annealing \citep{chennuru2022simulated}. A natural extension of
-this line is a sequential hybrid sampling (SHS) scheme, in which the
-minority class is first oversampled beyond the majority size and an
-undersampling stage then selects the balancing subset by using a
-cross-validated objective. In contrast to the rule-based cleaning of the
-classical hybrids, the selection is informed by a global objective, and
-a random selector can serve as the uninformed control.
+simulated annealing \citep{chennuru2022simulated}. Most recently, ESMOTE
+introduced an overproduce-and-choose strategy on general benchmark data,
+in which a large set of synthetic examples is generated first and an
+evolutionary search then keeps the helpful ones \citep{zhang2023esmote}.
+A sequential hybrid sampling (SHS) scheme follows the same paradigm, in
+which the minority class is oversampled beyond the majority size to a
+controlled pool ratio and an undersampling stage then selects the
+exactly balancing subset by using a cross-validated objective. In
+contrast to the rule-based cleaning of the classical hybrids, the
+selection is informed by a global objective, a random selector can serve
+as the uninformed control, and the selector may abstain when no subset
+improves on the original data.
 
 A two-stage framework of this kind opens a considerable design space.
 The practitioner has to choose the oversampler that builds the pool, the
@@ -211,10 +218,11 @@ cross-validation round is used without statistical testing, so that the
 stability of the conclusions is unknown. Third, the proposed resampling
 methods are rarely compared head-to-head with the established hybrid
 baselines under one common protocol. Fourth, the metaheuristic-selection
-line was developed largely outside DTI and has not been evaluated across
-the DTI datasets, so that it is unclear whether its gains generalize and
-whether they come from the specific algorithm or from informed selection
-in general.
+line, including the recent overproduce-and-choose strategy, was
+developed largely outside DTI and has not been evaluated across the DTI
+datasets, so that it is unclear whether its gains generalize and whether
+they come from the specific algorithm or from informed selection in
+general.
 
 These gaps motivate the present study. The objective of this study is
 to establish, under a repeated and statistically tested protocol, when
@@ -230,18 +238,21 @@ metaheuristic itself matters.
 
 The contributions of this study are as follows.
 \begin{itemize}
-  \item A repeated, multi-seed evaluation protocol with paired
-        statistical tests for SHS-style resampling in DTI prediction,
-        covering 13 methods on four datasets (725 runs in total).
+  \item To our knowledge, the first systematic evaluation of the
+        overproduce-and-choose resampling paradigm in DTI prediction,
+        covering 13 methods on the four gold-standard datasets under a
+        repeated, multi-seed protocol with paired statistical tests
+        (725 runs in total).
+  \item The identification and verification of the abstention property,
+        in which the informed selector declines to resample when
+        resampling is harmful, proposed here as an explicit design
+        element for optimization-based resampling.
+  \item A budget-matched SA comparator with a random-selection control,
+        which shows that the value lies in informed selection itself
+        rather than in the specific metaheuristic.
   \item A full factorial ablation of the ACO undersampler together with
         a parameter-sensitivity analysis, which shows that the method is
         robust to its implementation details.
-  \item A budget-matched SA comparator, which shows that the value lies
-        in informed selection itself rather than in the specific
-        metaheuristic.
-  \item The identification and verification of the abstention property,
-        in which the informed selector declines to resample when
-        resampling is harmful.
   \item A practical map that matches the oversampler, the selector, and
         the pool ratio to the minority richness of the dataset, together
         with the associated computational costs.
