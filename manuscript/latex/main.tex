@@ -273,7 +273,7 @@ The contributions of this study are as follows.
 \end{itemize}
 
 % =========================================================================
-\section{Materials \& Methods}
+\section{Materials and Methods}
 
 \subsection{Datasets}
 % [Draf narasi — menunggu validasi penulis; gaya mengikuti
@@ -543,7 +543,7 @@ with 12 vCPUs. Each seed was run as a separate job in parallel with
 \texttt{OMP\_NUM\_THREADS} set to 1, so that the reported runtimes are
 comparable within the same machine.
 
-\subsection{Metrics and statistical tests}
+\subsection{Evaluation metrics and statistical analysis}
 % [Draf narasi — menunggu validasi penulis]
 The performance was evaluated on the untouched test set by using four
 metrics derived from the confusion matrix \citep{cahyana2019improving}.
@@ -602,7 +602,7 @@ regenerated from the SRX-DTI source data by using the included scripts
 % =========================================================================
 \section{Results and Discussion}
 
-\subsection{Seed sensitivity of single-split evaluation}
+\subsection{Seed sensitivity of the single-split evaluation}
 \label{sec:seed}
 % [Draf narasi — menunggu validasi penulis]
 We first quantified the variability of a single-split evaluation. A
@@ -631,7 +631,7 @@ configuration on NR over five seeds.}
 \input{tables/t_reproduction}
 \end{table}
 
-\subsection{ACO ablation and sensitivity}
+\subsection{Ablation and parameter sensitivity of the ACO undersampler}
 \label{sec:ablation}
 % [Draf narasi — menunggu validasi penulis]
 We then examined whether the performance of the ACO undersampler depends
@@ -696,7 +696,7 @@ denotes the plain-data fitness, i.e., the ACO abstention threshold.}
 \end{figure}
 
 
-\subsection{Pool ratio $\times$ selector interaction}
+\subsection{Interaction between the pool ratio and the selector}
 \label{sec:ratio}
 % [Draf narasi — menunggu validasi penulis]
 We next examined how the size of the synthetic pool interacts with the
@@ -734,7 +734,7 @@ NR, in which bold denotes the best ratio of each method.}
 \label{fig:ratio}
 \end{figure}
 
-\subsection{Main comparison across four datasets}
+\subsection{Main comparison across the four datasets}
 \label{sec:main}
 % [Draf narasi — menunggu validasi penulis]
 The main comparison of the 13 methods on the four datasets is summarized
@@ -827,7 +827,7 @@ critical difference.}
 \label{fig:ranks}
 \end{figure}
 
-\subsection{The ACO abstention property}
+\subsection{Abstention property of the ACO undersampler}
 \label{sec:abstention}
 % [Draf narasi — menunggu validasi penulis]
 An unplanned finding emerged on Enzyme. In all 15 ACO runs on this
@@ -861,7 +861,7 @@ identical denotes a confusion matrix equal to that of the baseline.}
 \adjustbox{max width=\textwidth}{\input{tables/t_abstention}}
 \end{table}
 
-\subsection{ACO versus SA}
+\subsection{Comparison between ACO and SA}
 % [Draf narasi — menunggu validasi penulis]
 The direct comparison between ACO and SA on the SMOTE arm is summarized
 in Table~\ref{tab:savsaco}. The difference is not significant on any
@@ -933,7 +933,7 @@ dataset.}
 \end{table}
 
 % =========================================================================
-\subsection{Threats to validity and future work}
+\subsection{Limitations and future work}
 % [Draf narasi — menunggu validasi penulis]
 Several limitations qualify these findings. First, the unlabeled pairs
 were treated as negatives, so that some true interactions may be
