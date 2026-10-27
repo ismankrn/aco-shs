@@ -204,7 +204,7 @@ attribute the reported gains to a specific component.
 A closer look at this state of the art reveals four gaps. First, the
 reported figures rely on accuracy or auROC, which remain optimistic
 under extreme imbalance and can mask poor minority performance
-\citep{saito2015precision}; on these datasets, an accuracy above 93\%
+\citep{saito2015precision}. On these datasets, an accuracy above 93\%
 is attainable by always predicting the majority class. Second, each
 study evaluates under a single protocol, in which one split or one
 cross-validation round is used without statistical testing, so that the
@@ -340,7 +340,7 @@ term, in which each ant builds a solution by sampling exactly
 $n_{\mathrm{maj}} - n_{\min}$ candidate indices from the pool. Since the
 sampling was performed with replacement, a candidate may be selected
 more than once, so that an entry of the solution vector may take an
-integer count larger than 1; the effect of this choice was examined in
+integer count larger than 1. The effect of this choice was examined in
 the ablation study (Section~\ref{sec:ablation}). Each of the $K$ ants
 samples these candidate indices according to the selection probability
 expressed as
@@ -567,9 +567,9 @@ evaluation metrics were based on scikit-learn
 hybrid methods were based on imbalanced-learn
 \citep{lemaitre2017imbalanced}. The ACO and SA undersamplers were
 implemented following the formulations in Sections~2.3 and~2.4. Every
-run was fully seeded, so that the results are deterministic; we verified
-that repeated runs produce identical result rows across different
-machines. The source code, the data preparation pipeline, and all result
+run was fully seeded, so that the results are deterministic. We
+verified that repeated runs produce identical result rows across
+different machines. The source code, the data preparation pipeline, and all result
 files are publicly available at
 \url{https://github.com/ismankrn/aco-shs}. The feature matrices can be
 regenerated from the SRX-DTI source data by using the included scripts
@@ -757,7 +757,7 @@ the dataset sets the attainable performance ceiling, while the selector
 only determines how closely that ceiling is approached. The increment of the
 selection stage on top of the best plain oversampler shrinks
 monotonically, i.e., $+0.015$ on NR, $+0.006$ on GPCR, and $+0.005$ on
-IC, and turns into abstention on Enzyme; notably, on NR this increment
+IC, and turns into abstention on Enzyme. Notably, on NR this increment
 is already achieved by the random selector. We hypothesize that the quality
 of the synthetic candidates becomes more uniform when more real
 positives are available, so that choosing among them adds little value.
