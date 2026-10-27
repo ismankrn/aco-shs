@@ -224,17 +224,27 @@ datasets, so that it is unclear whether its gains generalize and whether
 they come from the specific algorithm or from informed selection in
 general.
 
-These gaps motivate the present study. The objective of this study is
-to establish, under a repeated and statistically tested protocol, when
-the SHS framework with informed undersampling pays off across the four
-gold-standard DTI datasets, and which of its components are responsible
-for the benefit. This study addresses five research questions. RQ1 asks whether the SHS
-framework generalizes across the four gold-standard DTI datasets. RQ2
-asks how SHS compares with the established hybrid methods. RQ3 asks how
-sensitive the ACO undersampler is to its implementation choices and
-parameters. RQ4 asks which fitness function should drive the selection.
-RQ5 asks whether a budget-matched SA matches ACO, i.e., whether the
-metaheuristic itself matters.
+Addressing these gaps requires a particular evaluation design rather
+than a new algorithm alone. The optimism of accuracy-based reporting can
+be avoided by measuring the minority performance directly through F1,
+G-Mean, balanced accuracy, and the area under the precision--recall
+curve. The fragility of a single split can be exposed and controlled by
+repeating every experiment over multiple random splits and by comparing
+the methods with paired statistical tests. The missing baselines can be
+restored by evaluating the classical oversamplers and the established
+hybrids side by side with the metaheuristic variants under one common
+protocol. The remaining uncertainty about the source of the gains can be
+resolved by ablating the components of the search and by matching its
+budget against an alternative metaheuristic and a random control.
+
+Accordingly, the objective of this study is to establish when the SHS
+framework with informed undersampling pays off in DTI prediction.
+Specifically, this study aims to evaluate the generalization of the
+framework across the four gold-standard datasets against the classical
+and hybrid baselines, to examine the robustness of the ACO undersampler
+to its implementation choices, parameters, and fitness function, and to
+determine whether the benefit originates from informed selection itself
+rather than from a particular metaheuristic.
 
 The contributions of this study are as follows.
 \begin{itemize}
