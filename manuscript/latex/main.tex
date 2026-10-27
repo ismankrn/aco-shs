@@ -98,19 +98,32 @@ simulated annealing; SMOTE; gradient boosting
 \section{Introduction}
 % [Draf narasi — menunggu validasi penulis]
 
-Drug--target interaction (DTI) prediction identifies pairs of drugs and
-target proteins that are likely to interact, and it is a key step in
-drug discovery and drug repositioning \citep{azlimkhan2023comparative,
-bagherian2021machine}. Since the experimental validation of interactions
-is costly and slow, computational prediction is widely used to
-prioritize candidate pairs before laboratory testing
-\citep{you2018drug}. Among the computational approaches, feature-based
+A drug--target interaction (DTI) is the binding of a drug to a
+selective target site that modifies the function or behavior of the
+target \citep{azlimkhan2023comparative}. The drug is a chemical
+compound that induces a physiological change once it enters the body,
+while the target is a biological macromolecule, typically a protein,
+that produces this change upon binding \citep{you2018drug}. Identifying
+DTIs is therefore central to understanding the mechanism of action of a
+drug, anticipating its side effects, and finding new uses for approved
+compounds through drug repositioning \citep{bagherian2021machine,
+azlimkhan2023comparative}. The main druggable target families are
+enzymes, ion channels, G-protein-coupled receptors, and nuclear
+receptors, and the gold-standard datasets compiled by
+\citet{yamanishi2008prediction} for these four families serve as the
+common benchmark for DTI prediction.
+
+In the laboratory, DTIs are identified through experimental techniques
+such as high-throughput screening and biochemical assays. These
+techniques provide reliable evidence, yet they are time-consuming,
+labor-intensive, and costly, while the space of candidate drug--protein
+pairs is enormous \citep{you2018drug, barkat2021drug}. Computational
+prediction is therefore widely used to prioritize candidate pairs before
+laboratory testing. Among the computational approaches, feature-based
 machine learning represents each drug--protein pair by chemical and
-sequence descriptors and casts the task as binary classification
-\citep{chen2018machine, barkat2021drug}. The gold-standard datasets
-compiled by \citet{yamanishi2008prediction} serve as the common
-benchmark for this task, and recent pipelines such as SRX-DTI provide
-standardized feature representations for them
+sequence descriptors and casts the prediction as binary classification
+\citep{chen2018machine}, and recent pipelines such as SRX-DTI provide
+standardized feature representations for the benchmark datasets
 \citep{khojasteh2023improving}.
 
 These datasets have two inconvenient properties. First, the negatives
