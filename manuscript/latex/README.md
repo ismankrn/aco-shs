@@ -11,7 +11,8 @@ menghapus blok POIN tersebut. Placeholder merah = keputusan penulis
 
 ```
 cd manuscript/latex
-latexmk -pdf main.tex
+latexmk -pdf main.tex        # naskah utama
+latexmk -pdf supplement.tex  # Supplemental Information (tabel S1-S3)
 ```
 
 ## Tabel (jangan diedit manual)
@@ -64,4 +65,4 @@ dan figur bisa dipakai langsung tanpa perubahan.
 - [ ] Afiliasi kedua IK dikonfirmasi/dihapus
 - [ ] Author contributions (CRediT) difinalkan
 - [ ] Tag/rilis GitHub + (opsional) DOI Zenodo untuk Data Availability
-- [ ] Tabel suplemen dipisah ke file supplemental PeerJ
+- [x] Tabel suplemen dipisah ke file supplemental (supplement.tex)

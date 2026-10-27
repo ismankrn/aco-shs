@@ -735,7 +735,9 @@ NR, in which bold denotes the best ratio of each method.}
 % [Draf narasi — menunggu validasi penulis]
 The main comparison of the 13 methods on the four datasets is summarized
 in Table~\ref{tab:main}, and the per-dataset winners with their
-statistical tests are given in Table~\ref{tab:tests}. Resampling pays
+statistical tests are given in Table~\ref{tab:tests}. The corresponding
+G-Mean, balanced accuracy, and AUPRC matrices are provided in the
+Supplemental Information. Resampling pays
 off substantially on three of the four datasets. On NR, the ROS family
 dominates, in which SHS-RUS (ROS) reaches an F1 score of 0.4725 against
 the baseline of 0.3235. On GPCR, the ROS family collapses to
@@ -992,28 +994,5 @@ and extension.
 
 \bibliographystyle{unsrtnat}
 \bibliography{references}
-
-% =========================================================================
-\appendix
-\section{Supplemental tables}
-% Pindahkan ke file suplemen terpisah saat submission PeerJ.
-
-\begin{table}[htbp]
-\centering
-\caption{G-Mean (mean $\pm$ SD), 13 methods $\times$ 4 datasets.}
-\adjustbox{max width=\textwidth}{\input{tables/s_gmean}}
-\end{table}
-
-\begin{table}[htbp]
-\centering
-\caption{Balanced accuracy (mean $\pm$ SD), 13 methods $\times$ 4 datasets.}
-\adjustbox{max width=\textwidth}{\input{tables/s_bas}}
-\end{table}
-
-\begin{table}[htbp]
-\centering
-\caption{AUPRC (mean $\pm$ SD), 13 methods $\times$ 4 datasets.}
-\adjustbox{max width=\textwidth}{\input{tables/s_auprc}}
-\end{table}
 
 \end{document}
