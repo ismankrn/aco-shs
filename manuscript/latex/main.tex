@@ -74,14 +74,17 @@ single split proved unreliable, in which the F1 score of
 one configuration ranged from 0.267 to 0.431 across the splits,
 exceeding most differences between methods. The ACO undersampler was
 robust to its implementation details and parameters, and the
-budget-matched SA was statistically indistinguishable from it, so that
-the value lies in informed selection rather than in a particular
-metaheuristic. The benefit of resampling depends on the dataset, in
-which the winning oversampler shifts from ROS to SMOTE and ADASYN as the
-number of real positive training instances grows, and on the richest
-dataset no method beats the unsampled baseline. There, the ACO selector
-abstained in all runs and returned the original data, acting as a
-built-in safety valve. Informed selection costs up to three orders of
+budget-matched SA was statistically indistinguishable from it
+($p \geq 0.125$ on every dataset), so that the value lies in informed
+selection rather than in a particular metaheuristic. The benefit of resampling depends on the dataset. On the
+smallest and most positive-scarce dataset, resampling lifts the best F1
+score from 0.32 to 0.47, the winning oversampler shifts from ROS to
+SMOTE and ADASYN as the number of real positive training instances
+grows, and on the richest dataset no method beats the unsampled baseline
+F1 score of 0.19. There, the ACO selector abstained in all 15 runs and
+returned the original data, acting as a built-in safety valve. Across
+the datasets, the SHS-ACO variants attain the best mean Friedman ranks
+(4.85 and 5.00 of the 13 methods). Informed selection costs up to three orders of
 magnitude more than random selection, and it pays off mainly under
 extreme scarcity. We provide a practical map matching the oversampler
 and the selector to the minority richness of the dataset, and we
