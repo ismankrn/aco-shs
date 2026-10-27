@@ -1,0 +1,21 @@
+% Tabel statis (taksonomi metode) — TIDAK dihasilkan oleh
+% scripts/export_latex_tables.py; edit langsung di sini.
+\begin{tabular}{llll}
+\toprule
+Method & Stage 1: oversampling & Stage 2: selection/cleaning & Type \\
+\midrule
+Baseline & -- & -- & no resampling \\
+ROS & ROS to $n_{\mathrm{maj}}$ & -- & oversampling \\
+SMOTE & SMOTE to $n_{\mathrm{maj}}$ & -- & oversampling \\
+ADASYN & ADASYN to $n_{\mathrm{maj}}$ & -- & oversampling \\
+SMOTE-ENN & SMOTE to $n_{\mathrm{maj}}$ & ENN cleaning & hybrid \\
+SMOTE-Tomek & SMOTE to $n_{\mathrm{maj}}$ & Tomek-link removal & hybrid \\
+SHS-RUS (ROS) & ROS to $r \times n_{\mathrm{maj}}$ & random (RUS) & SHS \\
+SHS-RUS (SMOTE) & SMOTE to $r \times n_{\mathrm{maj}}$ & random (RUS) & SHS \\
+SHS-RUS (ADASYN) & ADASYN to $r \times n_{\mathrm{maj}}$ & random (RUS) & SHS \\
+SHS-ACO (ROS) & ROS to $r \times n_{\mathrm{maj}}$ & informed (ACO, Eqs.~1--3) & SHS \\
+SHS-ACO (SMOTE) & SMOTE to $r \times n_{\mathrm{maj}}$ & informed (ACO, Eqs.~1--3) & SHS \\
+SHS-ACO (ADASYN) & ADASYN to $r \times n_{\mathrm{maj}}$ & informed (ACO, Eqs.~1--3) & SHS \\
+SHS-SA (SMOTE) & SMOTE to $r \times n_{\mathrm{maj}}$ & informed (SA, Eqs.~4--5) & SHS \\
+\bottomrule
+\end{tabular}

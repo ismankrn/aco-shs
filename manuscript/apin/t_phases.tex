@@ -1,0 +1,32 @@
+% Tabel statis (desain fase eksperimen) — TIDAK dihasilkan oleh
+% scripts/export_latex_tables.py; edit langsung di sini.
+% Jumlah run = jumlah baris CSV per fase: runs_p0=75, runs_p1_merged=50,
+% runs_p2=135, runs_p2b=25, runs_p3=440.
+\begin{tabular}{>{\raggedright\arraybackslash}p{23mm}>{\raggedright\arraybackslash}p{12mm}>{\raggedright\arraybackslash}p{52mm}r>{\raggedright\arraybackslash}p{40mm}}
+\toprule
+Phase & Dataset & Examined factors & Runs & Decision carried forward \\
+\midrule
+Seed sensitivity & NR &
+  a reference SHS-ACO (SMOTE) configuration (5 seeds); GB vs HistGB
+  equivalence (10 paired seeds) & 75 &
+  multi-seed protocol; GB as the final classifier \\
+\addlinespace[2pt]
+Ablation & NR &
+  pheromone rule $\times$ CV stratification $\times$ replacement
+  ($2\times2\times2$); fitness F1 / G-Mean / BAS & 50 &
+  refined configuration; fitness = F1 \\
+\addlinespace[2pt]
+Ratio pilot & NR &
+  pool ratio $r \in \{1.0, 1.25, 1.5\}$ on the six SHS-RUS and SHS-ACO
+  variants & 135 &
+  per-arm ratios: RUS 1.25/1.25/1.0 (ROS/SMOTE/ADASYN); ACO and SA 1.5 \\
+\addlinespace[2pt]
+Sensitivity pilot & NR &
+  $\rho \in \{0.5, 0.95\}$; $K \in \{10, 40\}$; budget-matched SA & 25 &
+  $K = 10$; SA included in the final comparison \\
+\addlinespace[2pt]
+Final comparison & all four &
+  13 methods (Table~\ref{tab:methods}); 10 seeds for the cheap methods,
+  5 seeds for ACO and SA & 440 & -- \\
+\bottomrule
+\end{tabular}

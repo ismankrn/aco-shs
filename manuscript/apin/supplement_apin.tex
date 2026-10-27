@@ -1,0 +1,55 @@
+% =========================================================================
+% Supplemental Information — file terpisah untuk submission.
+% Build: latexmk -pdf supplement.tex   (di folder manuscript/latex/)
+% Tabel diambil dari tables/s_*.tex (hasil scripts/export_latex_tables.py).
+% =========================================================================
+\documentclass[10pt,a4paper]{article}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{adjustbox}
+\usepackage[labelfont=bf,font=small]{caption}
+
+\renewcommand{\thetable}{S\arabic{table}}
+
+\title{Online Resource 1\\ Supplemental tables for\\
+  \emph{Sequential Hybrid Sampling with Informed Undersampling for
+  Imbalanced Drug--Target Interaction Prediction}}
+\author{Isman Kurniawan \and Rizky Nurhaliza Harahap \and Fhira Nhita}
+\date{}
+
+\begin{document}
+\maketitle
+
+The following tables complement the main comparison of the 13 methods on
+the four gold-standard DTI datasets. They report the remaining three
+evaluation metrics, in which each cell gives the mean $\pm$ standard
+deviation over the seeds and bold denotes the best method of each
+dataset. The F1 matrix and all statistical tests are given in the main
+text.
+
+\begin{table}[htbp]
+\centering
+\caption{The G-Mean scores (mean $\pm$ SD) of the 13 methods on the four
+datasets.}
+\adjustbox{max width=\textwidth}{\input{../latex/tables/s_gmean}}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{The balanced accuracy scores (mean $\pm$ SD) of the 13 methods
+on the four datasets.}
+\adjustbox{max width=\textwidth}{\input{../latex/tables/s_bas}}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{The AUPRC values (mean $\pm$ SD) of the 13 methods on the four
+datasets.}
+\adjustbox{max width=\textwidth}{\input{../latex/tables/s_auprc}}
+\end{table}
+
+\end{document}

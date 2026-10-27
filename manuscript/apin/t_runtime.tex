@@ -1,0 +1,19 @@
+\begin{tabular}{lrrrr}
+\toprule
+Method & NR & GPCR & IC & Enzyme \\
+\midrule
+Baseline (no resampling) & 2.1\,s (1$\times$) & 39.1\,s (1$\times$) & 1.6\,min (1$\times$) & 13.0\,min (1$\times$) \\
+ROS & 3.4\,s (2$\times$) & 1.2\,min (2$\times$) & 2.9\,min (2$\times$) & 25.0\,min (2$\times$) \\
+SMOTE & 7.6\,s (4$\times$) & 2.2\,min (3$\times$) & 6.8\,min (4$\times$) & 1.0\,h (5$\times$) \\
+ADASYN & 7.1\,s (3$\times$) & 2.1\,min (3$\times$) & 6.2\,min (4$\times$) & 57.0\,min (4$\times$) \\
+SMOTE-ENN & 7.3\,s (3$\times$) & 2.5\,min (4$\times$) & 8.3\,min (5$\times$) & 1.2\,h (6$\times$) \\
+SMOTE-Tomek & 7.7\,s (4$\times$) & 2.6\,min (4$\times$) & 8.5\,min (5$\times$) & 1.2\,h (5$\times$) \\
+SHS-RUS (ROS) & 3.5\,s (2$\times$) & 1.2\,min (2$\times$) & 2.9\,min (2$\times$) & 25.2\,min (2$\times$) \\
+SHS-RUS (SMOTE) & 7.8\,s (4$\times$) & 2.2\,min (3$\times$) & 6.9\,min (4$\times$) & 1.0\,h (5$\times$) \\
+SHS-RUS (ADASYN) & 6.9\,s (3$\times$) & 2.1\,min (3$\times$) & 6.2\,min (4$\times$) & 58.8\,min (5$\times$) \\
+SHS-ACO (ROS) & 22.5\,min (635$\times$) & 8.6\,h (790$\times$) & 20.8\,h (779$\times$) & 11.2\,h (52$\times$) \\
+SHS-ACO (SMOTE) & 49.4\,min (1394$\times$) & 15.4\,h (1419$\times$) & 45.1\,h (1691$\times$) & 12.1\,h (56$\times$) \\
+SHS-ACO (ADASYN) & 48.2\,min (1360$\times$) & 13.3\,h (1225$\times$) & 43.2\,h (1621$\times$) & 12.3\,h (57$\times$) \\
+SHS-SA (SMOTE) & 58.0\,min (1634$\times$) & 17.2\,h (1583$\times$) & 51.5\,h (1930$\times$) & 12.9\,h (60$\times$) \\
+\bottomrule
+\end{tabular}

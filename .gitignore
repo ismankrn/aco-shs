@@ -25,3 +25,13 @@ manuscript/latex/figures/*.aux
 manuscript/latex/figures/*.log
 manuscript/latex/figures/*.pdf
 manuscript/latex/supplement.pdf
+manuscript/apin/*.aux
+manuscript/apin/*.log
+manuscript/apin/*.bbl
+manuscript/apin/*.blg
+manuscript/apin/*.fdb_latexmk
+manuscript/apin/*.fls
+manuscript/apin/*.out
+manuscript/apin/main.pdf
+manuscript/apin/supplement_apin.pdf
+manuscript/apin/ESM_1.pdf

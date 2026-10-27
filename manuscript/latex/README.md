@@ -66,3 +66,21 @@ dan figur bisa dipakai langsung tanpa perubahan.
 - [ ] Author contributions (CRediT) difinalkan
 - [ ] Tag/rilis GitHub + (opsional) DOI Zenodo untuk Data Availability
 - [x] Tabel suplemen dipisah ke file supplemental (supplement.tex)
+
+## Versi Applied Intelligence (Springer)
+
+`manuscript/apin/` berisi port submission untuk Applied Intelligence
+(template sn-jnl, sitasi bernomor sn-basic, satu file .tex tanpa
+subfolder sesuai aturan Springer):
+
+- `main.tex` — naskah lengkap, tabel di-inline, figur `Fig1..Fig6.pdf`,
+  abstrak 250 kata, 6 keyword, bagian Declarations (Funding, Competing
+  interests, Data & code availability, Author contributions).
+- `supplement_apin.tex` -> `ESM_1.pdf` — Online Resource 1 (Tabel S1-S3).
+- Build: `cd manuscript/apin && latexmk -pdf main.tex`.
+- Catatan porting: adjustbox tidak kompatibel dengan tabular sn-jnl
+  (diganti `\footnotesize` + `\tabcolsep`); kelas meredefinisi
+  `\scriptsize` menjadi 9pt; amsmath harus dimuat manual.
+
+`manuscript/latex/` tetap menjadi sumber kebenaran (master); perubahan
+konten dilakukan di sana lalu diport.
