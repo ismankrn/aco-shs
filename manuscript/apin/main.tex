@@ -26,10 +26,8 @@ testing. We evaluated the sequential hybrid sampling (SHS) framework, in
 which the minority class is oversampled beyond the majority size and an
 undersampling stage then selects the balancing subset, with ant colony
 optimization (ACO) and simulated annealing (SA) as informed
-selectors and random selection as the control. Thirteen methods were
-compared on the four gold-standard Yamanishi datasets under a repeated
-multi-seed protocol with paired statistical tests, together with a full
-factorial ablation of the ACO undersampler and a budget-matched SA
+selectors and random selection as the control. Thirteen methods were compared on four gold-standard Yamanishi datasets under a repeated
+multi-seed protocol with paired statistical tests, with a full factorial ablation of the ACO undersampler and a budget-matched SA
 comparator. To our knowledge, this is the first systematic evaluation of
 the overproduce-and-choose resampling paradigm in DTI prediction. A
 single split proved unreliable, in which the F1 score of one
@@ -40,8 +38,7 @@ rather than in a particular metaheuristic. The winning oversampler shifts from R
 ADASYN as the minority grows, resampling lifts the best F1 from 0.32
 to 0.47 on the smallest dataset, and no method beats the baseline
 on the richest one, where ACO abstained in all runs,
-acting as a safety valve. Informed selection costs up to three orders of
-magnitude more and pays off mainly under extreme
+acting as a safety valve. Informed selection costs up to about 460 times more than random selection and pays off mainly under extreme
 scarcity. Code, data, and results are publicly available.}
 
 \keywords{drug--target interaction, class imbalance, hybrid sampling, informed undersampling, ant colony optimization, simulated annealing}
@@ -352,9 +349,7 @@ $\mathcal{D}_{\mathrm{val}}^{(k)}$ denotes the $k$-th validation fold.
 The folds were stratified on the class label, and the synthetic
 candidates were added to the training folds only. The solution
 representation and the search cycle are illustrated in
-Figure~\ref{fig:aco}. The search was run for $N = 10$ iterations with an
-early stop after five
-iterations without improvement. The evaporation rate was set to $\rho = 0.8$, and its sensitivity is
+Figure~\ref{fig:aco}. The search was run for $N = 10$ iterations, or $N = 5$ on Enzyme for feasibility (Section~\ref{sec:design}), with an early stop after five iterations without improvement. The evaporation rate was set to $\rho = 0.8$, and its sensitivity is
 examined in Section~\ref{sec:ablation}, while the number of ants $K$ is
 discussed in Section~\ref{sec:design}. The best
 solution found across all iterations was returned as the final
@@ -457,8 +452,7 @@ SHS-SA (SMOTE) & SMOTE to $r \times n_{\mathrm{maj}}$ & informed (SA, Eqs.~4--5)
 \label{sec:design}
 The experiments were organized into staged phases, in which the design
 decisions of the later phases were based on the results of the earlier
-phases, as summarized in Table~\ref{tab:phases}. In the seed-sensitivity phase, a reference SHS-ACO (SMOTE)
-configuration was run with five different random seeds to quantify the
+phases, as summarized in Table~\ref{tab:phases}. In the seed-sensitivity phase, a reference SHS-ACO (SMOTE) configuration with the multiplicative pheromone update, plain cross-validation, and a pool of 1,500 candidates was run with five different random seeds to quantify the
 sensitivity of a single-split evaluation. We also examined the
 equivalence between GB and the histogram-based gradient boosting
 (HistGB) on ten paired seeds. In the ablation phase, three
@@ -506,7 +500,7 @@ Sensitivity pilot & NR &
 \addlinespace[2pt]
 Final comparison & all four &
   13 methods (Table~\ref{tab:methods}); 10 seeds for the cheap methods,
-  5 seeds for ACO and SA & 440 & -- \\
+  5 seeds for ACO and SA ($N = 5$ on Enzyme) & 440 & -- \\
 \bottomrule
 \end{tabular}
 \end{table}
@@ -531,11 +525,9 @@ that the informed selectors benefit from a larger pool
 On the Enzyme dataset, a single GB fit takes approximately 810~s, so
 that the cross-validated fitness evaluation of ACO and SA becomes
 infeasible. Therefore, the internal fitness on Enzyme was evaluated by
-using HistGB \citep{ke2017lightgbm}, which takes 82.7~s per fit, while
-GB was retained as the final classifier. This substitution was applied
+using HistGB \citep{ke2017lightgbm}, which takes 82.7~s per fit, while GB was retained as the final classifier. For the same reason, the number of iterations on Enzyme was reduced to $N = 5$, which gives a budget of 50 fitness evaluations for both ACO and SA. This substitution was applied
 uniformly to all ACO and SA runs on Enzyme, so that the internal
-comparison remains fair. All experiments were executed on a cloud server
-with 12 vCPUs. Each seed was run as a separate job in parallel with
+comparison remains fair. The final comparison was executed on a cloud server with 12 vCPUs, while the pilot phases were executed on a smaller cloud server and the seed-sensitivity phase on a local workstation. Each seed was run as a separate job in parallel with
 \texttt{OMP\_NUM\_THREADS} set to 1, so that the reported runtimes are
 comparable within the same machine.
 
@@ -657,8 +649,7 @@ Neither the evaporation rate ($\rho \in \{0.5, 0.95\}$) nor the
 number of ants ($K \in \{10, 40\}$) differs significantly from the
 default ($p \geq 0.31$). However, the runtime differs substantially. The setting $K = 10$
 matches the quality of the default $K = 20$ at roughly half the cost
-(52.5~min against 1.9~h per seed), while $K = 40$ trends worse at twice
-the cost. The convergence traces support this observation, in
+(52.5~min against 1.9~h per seed), while $K = 40$ trends worse at about 1.7 times the cost. The convergence traces support this observation, in
 which the best-so-far fitness flattens after approximately six to eight
 iterations (Figure~\ref{fig:convergence}). Therefore, $K = 10$ was
 adopted for the final comparison.
@@ -753,8 +744,7 @@ comparison described in Section~\ref{sec:design}.
 
 \begin{table}[htbp]
 \centering
-\caption{The F1 scores of the SHS variants over the three pool ratios on
-NR, in which bold denotes the best ratio of each method.}
+\caption{The F1 scores of the SHS variants over the three pool ratios on NR (ten seeds for SHS-RUS and five for SHS-ACO), in which bold denotes the best ratio of each method.}
 \label{tab:ratio}
 \footnotesize
 \begin{tabular}{lccc}
@@ -791,8 +781,7 @@ the baseline of 0.3235. On GPCR, the ROS family collapses to
 approximately 0.24, while SHS-SA (SMOTE) leads with 0.3645, slightly
 ahead of SMOTE-Tomek with 0.3614. On IC, SHS-ACO (ADASYN) leads with
 0.3461 against the baseline of 0.1600. On Enzyme, no resampling method
-beats the baseline of 0.1854, in which the closest competitors are the
-SHS-ACO variants with 0.1840 owing to the abstention described in
+beats the baseline of 0.1854, in which the closest competitors are the SHS-ACO variants with 0.1840, which equals the baseline mean over the same five seeds owing to the abstention described in
 Section~\ref{sec:abstention}.
 
 Two patterns emerge across the datasets. First, there is no universal
@@ -801,14 +790,14 @@ ADASYN on IC, and no resampling on Enzyme, which follows the increasing
 number of real positive training instances (63, 444, 1{,}033, and
 2{,}048, respectively), as illustrated in Figure~\ref{fig:gradient}.
 Second, the magnitude of the benefit does not decay gradually. The best
-family keeps a margin of 0.13 to 0.19 F1 points over the baseline up to
+family keeps a margin of 0.15 to 0.19 F1 points over the baseline up to
 IC and then collapses to zero or below on Enzyme.
 
 The statistical tests support these observations. The winner differs
 significantly from the baseline on NR ($p$ = 0.0059 over ten paired
 seeds) and reaches the minimum attainable $p$ value of 0.0625 on GPCR
 and IC with five paired seeds. In contrast, the winner is never
-significantly different from the runner-up ($p \geq 0.44$), so that the
+significantly different from the runner-up ($p \geq 0.43$), so that the
 top of each dataset is occupied by a tight cluster of methods rather
 than a single winner. Across the datasets, the Friedman test rejects the
 equality of the 13 methods ($\chi^2$ = 42.5, $p$ = $2.7 \times
@@ -914,8 +903,7 @@ the baseline, as summarized in Table~\ref{tab:abstention}.
 
 The contrast with SA is instructive. SA has no abstention action and
 always returns a balanced training set, so that it was forced to add
-synthetic candidates on Enzyme. Its mean F1 score of 0.1707 lies below
-the baseline of 0.1854, and below the per-seed baseline in four of the
+synthetic candidates on Enzyme. Its mean F1 score of 0.1707 lies below the baseline mean of 0.1840 over the same five seeds, and below the per-seed baseline in four of the
 five seeds. The gap is not statistically significant at five seeds
 ($p$ = 0.125), yet the direction is consistent.
 
@@ -996,17 +984,16 @@ hybrids, and the SHS-RUS variants complete within seconds to a few
 minutes and stay within a factor of six of the baseline. The informed
 selectors are in a different class. ACO and SA require from 22 minutes
 per seed on NR up to approximately 52 hours per seed on IC, i.e., two to
-three orders of magnitude above the cheap methods, with a factor of up
-to 1,900 relative to the baseline. The factors on Enzyme are smaller
+three orders of magnitude above the cheap methods, with a factor of up to approximately 1,930 relative to the baseline. The factors on Enzyme are smaller
 (between 52 and 60) because the baseline itself is expensive on this
-dataset and the internal fitness uses the faster HistGB. The cost of SA
+dataset and the search uses the faster HistGB fitness with only $N = 5$ iterations. The cost of SA
 equals that of ACO by construction, while halving the number of ants to
 $K = 10$ halves the cost without a measurable quality loss
 (Section~\ref{sec:ablation}).
 
 This cost has to be weighed against the gain. On GPCR and IC, the
 increments of the best informed arm over the best plain oversampler are
-$+0.006$ and $+0.005$ F1 at a cost of 15 to 52 hours per seed. On NR,
+$+0.006$ and $+0.005$ F1 at a cost of 17 and 43 hours per seed, respectively. On NR,
 the cheap SHS-RUS variant already exceeds the informed arms, and on
 Enzyme the honest outcome of a multi-hour search is to change nothing.
 Therefore, informed selection is justified mainly when the dataset is
@@ -1088,8 +1075,7 @@ safest blind choice with the best mean Friedman ranks of 4.85 and 5.00
 among the 13 methods. The choice of the metaheuristic is secondary, in
 which a budget-matched SA performs on par with ACO ($p \geq 0.125$ on
 every dataset), while the abstention action is the design element worth
-keeping. Informed selection costs up to three orders of magnitude more
-than random selection, so that it pays off mainly under extreme
+keeping. Informed selection costs up to about 460 times more than random selection, so that it pays off mainly under extreme
 scarcity. We also showed that a single-split evaluation can reorder the
 methods by chance alone, in which the F1 score of one configuration
 varied from 0.27 to 0.43 across the splits. We therefore recommend

@@ -134,7 +134,7 @@ def fig_ratio():
     ax.set_xticks([1.0, 1.25, 1.5])
     ax.set_xlabel("Synthetic pool size ratio "
                   "(pool size / majority training size)")
-    ax.set_ylabel("F1 (mean of 5 seeds)")
+    ax.set_ylabel("F1 (mean over seeds)")
     ax.legend(frameon=False, fontsize="x-small", ncol=2, loc="lower center",
               bbox_to_anchor=(0.5, 1.0))
     fig.tight_layout()
