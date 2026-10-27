@@ -128,6 +128,18 @@ balancing combined with feature selection \citep{redkar2020machine},
 and comparative studies of resampling techniques for DTI models
 \citep{azlimkhan2023comparative}.
 
+Remedies for class imbalance operate at two levels. Algorithm-level
+approaches modify the learner itself, e.g., through cost-sensitive
+losses, decision-threshold adjustment, or ensemble schemes, while
+data-level approaches modify the training distribution before any
+learner is applied \citep{mohammed2020machine, devi2020review}. The
+data-level route is attractive in practice because it is
+classifier-agnostic, in which the same balanced training set can feed
+any downstream model, and because its effect can be examined
+independently of the learner \citep{kim2022empirical}. For these
+reasons, most DTI studies adopt data-level resampling, and this study
+follows the same route while keeping the classifier fixed.
+
 Resampling-based DTI prediction has advanced considerably on this
 benchmark. \citet{shi2019predicting} combined evolutionary and
 chemical-structure features with Lasso dimension reduction, SMOTE, and a
@@ -164,6 +176,18 @@ subset by using a cross-validated objective. In contrast to the
 rule-based cleaning of the classical hybrids, the selection is informed
 by a global objective, and a random selector serves as the uninformed
 control.
+
+A two-stage framework of this kind opens a considerable design space.
+The practitioner has to choose the oversampler that builds the pool, the
+size of the pool relative to the majority class, the selector together
+with its search budget, and the objective that drives the selection.
+These choices interact, e.g., a larger pool offers more room to an
+informed selector but merely more noise to a random one, and the search
+budget directly multiplies the computational cost, since every candidate
+subset is evaluated by cross-validation. In the existing
+metaheuristic-sampling studies, these components are usually fixed in an
+ad hoc manner and are rarely ablated, so that it is difficult to
+attribute the reported gains to a specific component.
 
 A closer look at this state of the art reveals four gaps. First, the
 reported figures rely on accuracy or auROC, which remain optimistic
