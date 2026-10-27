@@ -150,8 +150,8 @@ data-level route is attractive in practice because it is
 classifier-agnostic, in which the same balanced training set can feed
 any downstream model, and because its effect can be examined
 independently of the learner \citep{kim2022empirical}. For these
-reasons, most DTI studies adopt data-level resampling, and this study
-follows the same route while keeping the classifier fixed.
+reasons, data-level resampling has become the dominant route in DTI
+prediction.
 
 Resampling-based DTI prediction has advanced considerably on this
 benchmark. \citet{shi2019predicting} combined evolutionary and
@@ -181,14 +181,13 @@ instances as a search problem, in which ACOSampling selects majority
 subsets by using an ant colony \citep{yu2013acosampling}, FF-SMOTE
 tunes the synthetic values by using the firefly algorithm
 \citep{kaur2019ffsmote}, and SAUS searches majority subsets by using
-simulated annealing \citep{chennuru2022simulated}. The sequential
-hybrid sampling (SHS) framework considered in this study belongs to this
-line, in which the minority class is first oversampled beyond the
-majority size and an undersampling stage then selects the balancing
-subset by using a cross-validated objective. In contrast to the
-rule-based cleaning of the classical hybrids, the selection is informed
-by a global objective, and a random selector serves as the uninformed
-control.
+simulated annealing \citep{chennuru2022simulated}. A natural extension of
+this line is a sequential hybrid sampling (SHS) scheme, in which the
+minority class is first oversampled beyond the majority size and an
+undersampling stage then selects the balancing subset by using a
+cross-validated objective. In contrast to the rule-based cleaning of the
+classical hybrids, the selection is informed by a global objective, and
+a random selector can serve as the uninformed control.
 
 A two-stage framework of this kind opens a considerable design space.
 The practitioner has to choose the oversampler that builds the pool, the
