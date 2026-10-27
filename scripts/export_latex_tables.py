@@ -102,34 +102,39 @@ def t_ablation():
     p1 = pd.read_csv("results/runs_p1_merged.csv")
     fact = p1[p1.fitness_fn == "f1"]
     rows = []
-    for factor, label in [("legacy", "Pheromone update (standard vs multiplicative)"),
-                          ("stratified", "Fitness CV (plain vs stratified)"),
-                          ("replacement",
-                           "Selection (w/o vs with replacement)")]:
+    factors = [("legacy", "Pheromone update", "standard", "multiplicative"),
+               ("stratified", "Fitness cross-validation", "plain",
+                "stratified"),
+               ("replacement", "Selection", "without replacement",
+                "with replacement")]
+    for factor, label, opt_a, opt_b in factors:
         others = [f for f in ["legacy", "stratified", "replacement"]
                   if f != factor]
         piv = fact.pivot_table(index=others + ["seed"], columns=factor,
                                values="f1").dropna()
         _, p = stats.wilcoxon(piv[False], piv[True])
-        rows.append([label, f"{piv[False].mean():.4f}",
-                     f"{piv[True].mean():.4f}", len(piv), fmt_p(p)])
+        rows.append([label, opt_a, f"{piv[False].mean():.4f}", len(piv),
+                     fmt_p(p)])
+        rows.append(["", opt_b, f"{piv[True].mean():.4f}", "", ""])
     ref = fact[(~fact.legacy) & (fact.stratified) & (fact.replacement)]
     leg = fact[(fact.legacy) & (~fact.stratified) & (fact.replacement)]
     piv = pd.merge(ref[["seed", "f1"]], leg[["seed", "f1"]], on="seed",
                    suffixes=("_ref", "_leg"))
     _, p = stats.wilcoxon(piv.f1_ref, piv.f1_leg)
-    rows.append(["Default vs alternative configuration",
-                 f"{piv.f1_ref.mean():.4f}", f"{piv.f1_leg.mean():.4f}",
-                 len(piv), fmt_p(p)])
+    rows.append(["Full configuration", "default",
+                 f"{piv.f1_ref.mean():.4f}", len(piv), fmt_p(p)])
+    rows.append(["", "alternative", f"{piv.f1_leg.mean():.4f}", "", ""])
     rows.append("MIDRULE")
-    for fn in ["f1", "gmean", "bas"]:
+    for i, fn in enumerate(["f1", "gmean", "bas"]):
         sub = p1[(p1.fitness_fn == fn) & (~p1.legacy) & (p1.stratified)
                  & (p1.replacement)]
-        rows.append([f"Fitness function = {fn.upper()}",
-                     f"{sub.f1.mean():.4f}", "--", len(sub), "--"])
+        name = {"f1": "F1", "gmean": "G-Mean", "bas": "BAS"}[fn]
+        rows.append(["Fitness function" if i == 0 else "", name,
+                     f"{sub.f1.mean():.4f}", len(sub) if i == 0 else "",
+                     "--" if i == 0 else ""])
     write("t_ablation.tex", tabular(
-        ["Comparison", "F1 (A)", "F1 (B)", "$n$",
-         "$p$ (Wilcoxon)"], rows))
+        ["Factor", "Option", "F1", "$n$", "$p$ (Wilcoxon)"], rows,
+        align="llccc"))
 
 
 def t_sensitivity():
