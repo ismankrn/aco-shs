@@ -298,6 +298,7 @@ this paper.
 \end{figure}
 
 \subsection{ACO undersampler}
+\label{sec:aco}
 The ACO undersampler searches for the subset of synthetic candidates that
 maximizes a cross-validated fitness \citep{dorigo2006ant,
 yu2013acosampling}. The undersampling is formulated as a combinatorial
@@ -370,6 +371,7 @@ candidates.
 \end{figure}
 
 \subsection{Budget-matched SA comparator}
+\label{sec:sa}
 To examine whether the benefit of informed selection is specific to ACO,
 we compared it with simulated annealing (SA) as an alternative search
 strategy \citep{kirkpatrick1983optimization, chennuru2022simulated}. SA
@@ -579,7 +581,7 @@ evaluation metrics were based on scikit-learn
 \citep{pedregosa2011scikit}, while the oversamplers and the classical
 hybrid methods were based on imbalanced-learn
 \citep{lemaitre2017imbalanced}. The ACO and SA undersamplers were
-implemented following the formulations in Sections~2.3 and~2.4. Every
+implemented following the formulations in Sections~\ref{sec:aco} and~\ref{sec:sa}. Every
 run was fully seeded, so that the results are deterministic. We
 verified that repeated runs produce identical result rows across
 different machines. The source code, the data preparation pipeline, and all result
@@ -895,12 +897,12 @@ critical difference}
 
 \subsection{Abstention property of the ACO undersampler}
 \label{sec:abstention}
-An unplanned finding emerged on Enzyme. In all 15 ACO runs on this
-dataset, i.e., the three oversampler arms with five seeds each, the
-search never found a synthetic subset whose internal fitness exceeded
-that of the unmodified training data. The abstention mechanism described
-in Section~2.3 was therefore triggered, and the undersampler returned
-the original training data. We verified this behavior on the test side,
+On Enzyme, the abstention mechanism described in
+Section~\ref{sec:aco} was triggered in every run. In all 15 ACO runs on
+this dataset, i.e., the three oversampler arms with five seeds each,
+the search never found a synthetic subset whose internal fitness
+exceeded that of the unmodified training data, so that the
+undersampler returned the original training data. We verified this behavior on the test side,
 in which the confusion matrices of all 15 runs are identical to those of
 the baseline, as summarized in Table~\ref{tab:abstention}.
 
