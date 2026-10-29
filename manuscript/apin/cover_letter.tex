@@ -1,0 +1,116 @@
+% Cover letter — Applied Intelligence submission.
+% Build: latexmk -pdf cover_letter.tex
+% Teks merah = keputusan/isian penulis sebelum dikirim.
+\documentclass[11pt,a4paper]{article}
+\usepackage[T1]{fontenc}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{xcolor}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt}
+\newcommand{\todo}[1]{\textcolor{red!70!black}{[#1]}}
+
+\begin{document}
+
+\begin{flushright}
+29 October 2026
+\end{flushright}
+
+The Editor-in-Chief\\
+\emph{Applied Intelligence}\\
+Springer Nature
+
+Dear Editor-in-Chief,
+
+On behalf of all authors, I am pleased to submit our original research
+article entitled \textbf{``Sequential Hybrid Sampling with Informed
+Undersampling for Imbalanced Drug--Target Interaction Prediction''} for
+consideration for publication in \emph{Applied Intelligence}.
+
+Drug--target interaction (DTI) prediction is a real-life problem in which
+the positive class is extremely scarce, with positive rates between 6\%
+and below 1\% on the standard benchmark. Resampling is the usual remedy,
+yet most resampling studies in this field rely on a single train--test
+split without statistical testing. Our manuscript evaluates a sequential
+hybrid sampling framework, in which the minority class is oversampled
+beyond the majority size and an undersampling stage then selects the
+balancing subset by using ant colony optimization (ACO), simulated
+annealing (SA), or random selection as an uninformed control. To our
+knowledge, this is the first systematic evaluation of this
+overproduce-and-choose resampling paradigm in DTI prediction.
+
+We compared 13 methods on the four gold-standard Yamanishi datasets in
+725 runs under a repeated multi-seed protocol with paired statistical
+tests, a full factorial ablation of the ACO undersampler, and a
+budget-matched SA comparator. The main findings are as follows.
+\begin{itemize}[nosep]
+  \item A single split is unreliable, in which the F1 score of one
+        configuration ranged from 0.267 to 0.431 across splits.
+  \item The benefit of resampling depends on the minority richness of the
+        dataset, in which the best F1 score rises from 0.32 to 0.47 on the
+        smallest dataset, while no method beats the baseline on the
+        richest one.
+  \item On that dataset, the ACO undersampler abstained in all 15 runs and
+        returned the original training data, which we identify and verify
+        as a built-in safety valve for optimization-based resampling.
+  \item The budget-matched SA is statistically indistinguishable from ACO
+        on every dataset ($p \geq 0.125$), so that the value lies in
+        informed selection rather than in a particular metaheuristic,
+        while informed selection costs up to about 460 times more than
+        random selection.
+\end{itemize}
+
+We believe the manuscript fits the scope of \emph{Applied Intelligence}
+as it applies metaheuristic search to a complex real-life problem and
+reports its benefits, its failure modes, and its computational cost
+with equal care. It also directly extends a line of work that the
+journal has published, i.e., simulated-annealing-based undersampling
+(SAUS), which serves as the basis of our SA comparator. All code, data
+pipelines, and results are publicly available on GitHub and archived on
+Zenodo (DOI \href{https://doi.org/10.5281/zenodo.23686130}{10.5281/zenodo.23686130}).
+
+We confirm that this manuscript is original, has not been published
+elsewhere, and is not under consideration by any other journal. All
+authors have approved the manuscript and agree with its submission to
+\emph{Applied Intelligence}. The authors declare no competing interests.
+
+\todo{KEPUTUSAN PENULIS --- pengungkapan karya terkait. Panduan jurnal
+meminta corresponding author menyebut materi terkait yang belum terbit.
+Usulan kalimat: ``A related but distinct manuscript by our group, which
+reports a single-split evaluation of an ACO-based sequential hybrid
+sampling on one dataset, is currently under review at the IAES
+International Journal of Artificial Intelligence. The present manuscript
+differs in its datasets, protocol, comparators, and findings, and it
+does not reproduce any text, table, or figure from that manuscript.''
+Hapus blok ini bila diputuskan tidak relevan.}
+
+\todo{KEPUTUSAN PENULIS --- pengungkapan penggunaan AI. Kebijakan
+Springer Nature mewajibkan penggunaan LLM di luar copy editing
+didokumentasikan di bagian Methods. Bila disetujui, tambahkan satu
+kalimat di Methods dan kalimat berikut di sini: ``The use of a large
+language model during the preparation of this work is described in the
+Methods section, and the authors take full responsibility for the
+content of the manuscript.''}
+
+\textbf{Suggested reviewers.} \todo{Verifikasi independensi (bukan
+kolaborator, bukan satu institusi), afiliasi terkini, dan email
+institusional sebelum diisi. Kandidat dari literatur yang disitasi
+naskah: penulis ESMOTE (Zhang et al., Neural Computing and
+Applications, 2023), penulis SAUS (Chennuru and Timmappareddy, Applied
+Intelligence, 2022), penulis FF-SMOTE (Kaur and Gosain, Applied
+Artificial Intelligence, 2019), dan penulis ACOSampling (Yu et al.,
+Neurocomputing, 2013). Panduan jurnal menganjurkan campuran negara dan
+institusi.}
+
+Thank you for considering our manuscript. We look forward to hearing
+from you.
+
+Sincerely,
+
+\medskip
+\textbf{Isman Kurniawan} (corresponding author)\\
+School of Computing, Telkom University, Bandung, Indonesia\\
+\href{mailto:ismankrn@telkomuniversity.ac.id}{ismankrn@telkomuniversity.ac.id}
+
+\end{document}
