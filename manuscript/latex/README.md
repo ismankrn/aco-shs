@@ -76,7 +76,9 @@ subfolder sesuai aturan Springer):
 - `main.tex` — naskah lengkap, tabel di-inline, figur `Fig1..Fig6.pdf`,
   abstrak 250 kata, 6 keyword, bagian Declarations (Funding, Competing
   interests, Data & code availability, Author contributions).
-- `supplement_apin.tex` -> `ESM_1.pdf` — Online Resource 1 (Tabel S1-S3).
+- Tabel metrik tambahan (G-Mean/BAS/AUPRC) ada sebagai Appendix A (Tabel A1-A3)
+  di dalam `main.tex`, karena Editorial Manager jurnal ini tidak menyediakan
+  item type Supplementary Material. `supplement_apin.tex` tidak dipakai lagi.
 - Build: `cd manuscript/apin && latexmk -pdf main.tex`.
 - Catatan porting: adjustbox tidak kompatibel dengan tabular sn-jnl
   (diganti `\footnotesize` + `\tabcolsep`); kelas meredefinisi

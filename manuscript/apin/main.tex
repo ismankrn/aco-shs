@@ -782,8 +782,8 @@ SHS-ACO (ADASYN) & 0.3451 $\pm$ 0.0822 & 0.3276 $\pm$ 0.1264 & \textbf{0.3603 $\
 The main comparison of the 13 methods on the four datasets is summarized
 in Table~\ref{tab:main}, and the per-dataset winners with their
 statistical tests are given in Table~\ref{tab:tests}. The corresponding
-G-Mean, balanced accuracy, and AUPRC matrices are provided in the
-Online Resource~1. Resampling pays
+G-Mean, balanced accuracy, and AUPRC
+matrices are provided in Appendix~\ref{secA1}. Resampling pays
 off substantially on three of the four datasets. On NR, the ROS family
 dominates, in which SHS-RUS (ROS) reaches an F1 score of 0.4725 against
 the baseline of 0.3235. On GPCR, the ROS family collapses to
@@ -1107,8 +1107,7 @@ the content of this article.
 \bmhead{Data and code availability}
 The source code, the data preparation pipeline, all result files, and
 the scripts that regenerate every table and figure of this article are
-available at \url{https://github.com/ismankrn/aco-shs} (release
-v1.0.0). An archived snapshot of the repository is deposited on Zenodo
+available at \url{https://github.com/ismankrn/aco-shs} (release v1.0.1). An archived snapshot of the repository is deposited on Zenodo
 (DOI \href{https://doi.org/10.5281/zenodo.23686130}%
 {10.5281/zenodo.23686130}). The feature
 matrices can be regenerated from the SRX-DTI source data by using the
@@ -1124,6 +1123,98 @@ review and editing of the manuscript. Fhira Nhita contributed to the supervision
 and editing of the manuscript. Afizan Azman contributed to the
 validation of the study and to the review and editing of the
 manuscript. All authors read and approved the final manuscript.
+
+\begin{appendices}
+
+\section{Additional evaluation metrics}\label{secA1}
+
+Tables~\ref{tab:sgmean}--\ref{tab:sauprc} complement the main comparison in
+Table~\ref{tab:main} with the remaining three evaluation metrics. Each cell
+gives the mean $\pm$ standard deviation over the seeds, and bold denotes
+the best method of each dataset.
+
+\begin{table}[htbp]
+\centering
+\caption{The G-Mean scores (mean $\pm$ SD) of the 13 methods on the four datasets.}
+\label{tab:sgmean}
+\setlength{\tabcolsep}{3pt}%
+\footnotesize
+\begin{tabular}{lccccc}
+\toprule
+Method & $n$ & NR & GPCR & IC & Enzyme \\
+\midrule
+Baseline & 10 & 0.4709 $\pm$ 0.0754 & 0.3332 $\pm$ 0.0386 & 0.3004 $\pm$ 0.0260 & 0.3272 $\pm$ 0.0149 \\
+ROS & 10 & 0.7296 $\pm$ 0.0490 & 0.7925 $\pm$ 0.0131 & 0.8265 $\pm$ 0.0076 & \textbf{0.8456 $\pm$ 0.0071} \\
+SMOTE & 10 & 0.5498 $\pm$ 0.0733 & 0.5511 $\pm$ 0.0367 & 0.6519 $\pm$ 0.0121 & 0.6554 $\pm$ 0.0150 \\
+ADASYN & 10 & 0.5438 $\pm$ 0.0855 & 0.5054 $\pm$ 0.0404 & 0.6560 $\pm$ 0.0164 & 0.6402 $\pm$ 0.0119 \\
+SMOTE-ENN & 10 & 0.6364 $\pm$ 0.0525 & 0.6879 $\pm$ 0.0212 & 0.7080 $\pm$ 0.0143 & 0.6612 $\pm$ 0.0217 \\
+SMOTE-Tomek & 10 & 0.5609 $\pm$ 0.0632 & 0.5527 $\pm$ 0.0343 & 0.6473 $\pm$ 0.0148 & 0.6551 $\pm$ 0.0150 \\
+SHS-RUS (ROS) & 10 & \textbf{0.7358 $\pm$ 0.0503} & \textbf{0.7933 $\pm$ 0.0141} & 0.8286 $\pm$ 0.0085 & 0.8449 $\pm$ 0.0081 \\
+SHS-RUS (SMOTE) & 10 & 0.5442 $\pm$ 0.0693 & 0.5314 $\pm$ 0.0359 & 0.6451 $\pm$ 0.0122 & 0.6579 $\pm$ 0.0138 \\
+SHS-RUS (ADASYN) & 10 & 0.5621 $\pm$ 0.0720 & 0.5130 $\pm$ 0.0415 & 0.6561 $\pm$ 0.0201 & 0.6449 $\pm$ 0.0158 \\
+SHS-ACO (ROS) & 5 & 0.7134 $\pm$ 0.0581 & 0.7898 $\pm$ 0.0100 & \textbf{0.8296 $\pm$ 0.0096} & 0.3260 $\pm$ 0.0095 \\
+SHS-ACO (SMOTE) & 5 & 0.5382 $\pm$ 0.0820 & 0.5478 $\pm$ 0.0575 & 0.6525 $\pm$ 0.0210 & 0.3260 $\pm$ 0.0095 \\
+SHS-ACO (ADASYN) & 5 & 0.5837 $\pm$ 0.0729 & 0.4872 $\pm$ 0.0541 & 0.6684 $\pm$ 0.0196 & 0.3260 $\pm$ 0.0095 \\
+SHS-SA (SMOTE) & 5 & 0.5344 $\pm$ 0.0548 & 0.5581 $\pm$ 0.0576 & 0.6458 $\pm$ 0.0165 & 0.6474 $\pm$ 0.0059 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{The balanced accuracy scores (mean $\pm$ SD) of the 13 methods on the four datasets.}
+\label{tab:sbas}
+\setlength{\tabcolsep}{3pt}%
+\footnotesize
+\begin{tabular}{lccccc}
+\toprule
+Method & $n$ & NR & GPCR & IC & Enzyme \\
+\midrule
+Baseline & 10 & 0.6087 $\pm$ 0.0359 & 0.5555 $\pm$ 0.0124 & 0.5447 $\pm$ 0.0079 & 0.5534 $\pm$ 0.0048 \\
+ROS & 10 & 0.7537 $\pm$ 0.0390 & 0.7957 $\pm$ 0.0120 & 0.8267 $\pm$ 0.0075 & \textbf{0.8461 $\pm$ 0.0069} \\
+SMOTE & 10 & 0.6449 $\pm$ 0.0424 & 0.6481 $\pm$ 0.0203 & 0.6995 $\pm$ 0.0084 & 0.7046 $\pm$ 0.0100 \\
+ADASYN & 10 & 0.6413 $\pm$ 0.0498 & 0.6237 $\pm$ 0.0208 & 0.7036 $\pm$ 0.0110 & 0.6926 $\pm$ 0.0079 \\
+SMOTE-ENN & 10 & 0.6829 $\pm$ 0.0365 & 0.7241 $\pm$ 0.0155 & 0.7341 $\pm$ 0.0111 & 0.7084 $\pm$ 0.0144 \\
+SMOTE-Tomek & 10 & 0.6509 $\pm$ 0.0379 & 0.6490 $\pm$ 0.0189 & 0.6965 $\pm$ 0.0101 & 0.7044 $\pm$ 0.0101 \\
+SHS-RUS (ROS) & 10 & \textbf{0.7591 $\pm$ 0.0401} & \textbf{0.7964 $\pm$ 0.0126} & 0.8288 $\pm$ 0.0082 & 0.8454 $\pm$ 0.0078 \\
+SHS-RUS (SMOTE) & 10 & 0.6423 $\pm$ 0.0401 & 0.6376 $\pm$ 0.0193 & 0.6952 $\pm$ 0.0085 & 0.7063 $\pm$ 0.0092 \\
+SHS-RUS (ADASYN) & 10 & 0.6510 $\pm$ 0.0425 & 0.6278 $\pm$ 0.0210 & 0.7040 $\pm$ 0.0135 & 0.6958 $\pm$ 0.0105 \\
+SHS-ACO (ROS) & 5 & 0.7407 $\pm$ 0.0450 & 0.7930 $\pm$ 0.0093 & \textbf{0.8299 $\pm$ 0.0094} & 0.5529 $\pm$ 0.0031 \\
+SHS-ACO (SMOTE) & 5 & 0.6369 $\pm$ 0.0491 & 0.6468 $\pm$ 0.0316 & 0.7001 $\pm$ 0.0145 & 0.5529 $\pm$ 0.0031 \\
+SHS-ACO (ADASYN) & 5 & 0.6626 $\pm$ 0.0479 & 0.6148 $\pm$ 0.0268 & 0.7118 $\pm$ 0.0140 & 0.5529 $\pm$ 0.0031 \\
+SHS-SA (SMOTE) & 5 & 0.6337 $\pm$ 0.0320 & 0.6527 $\pm$ 0.0312 & 0.6957 $\pm$ 0.0112 & 0.6992 $\pm$ 0.0036 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\centering
+\caption{The AUPRC values (mean $\pm$ SD) of the 13 methods on the four datasets.}
+\label{tab:sauprc}
+\setlength{\tabcolsep}{3pt}%
+\footnotesize
+\begin{tabular}{lccccc}
+\toprule
+Method & $n$ & NR & GPCR & IC & Enzyme \\
+\midrule
+Baseline & 10 & 0.4015 $\pm$ 0.0816 & \textbf{0.3439 $\pm$ 0.0300} & \textbf{0.4081 $\pm$ 0.0337} & \textbf{0.3191 $\pm$ 0.0131} \\
+ROS & 10 & 0.4038 $\pm$ 0.0720 & 0.3091 $\pm$ 0.0323 & 0.3636 $\pm$ 0.0289 & 0.1643 $\pm$ 0.0092 \\
+SMOTE & 10 & 0.3665 $\pm$ 0.0816 & 0.3241 $\pm$ 0.0333 & 0.2663 $\pm$ 0.0307 & 0.0958 $\pm$ 0.0055 \\
+ADASYN & 10 & 0.3400 $\pm$ 0.0625 & 0.2829 $\pm$ 0.0261 & 0.2511 $\pm$ 0.0235 & 0.0816 $\pm$ 0.0035 \\
+SMOTE-ENN & 10 & 0.2739 $\pm$ 0.0505 & 0.2884 $\pm$ 0.0272 & 0.2513 $\pm$ 0.0188 & 0.0967 $\pm$ 0.0066 \\
+SMOTE-Tomek & 10 & 0.3645 $\pm$ 0.0847 & 0.3242 $\pm$ 0.0327 & 0.2638 $\pm$ 0.0271 & 0.0960 $\pm$ 0.0056 \\
+SHS-RUS (ROS) & 10 & \textbf{0.4240 $\pm$ 0.0734} & 0.3121 $\pm$ 0.0260 & 0.3617 $\pm$ 0.0289 & 0.1634 $\pm$ 0.0077 \\
+SHS-RUS (SMOTE) & 10 & 0.3612 $\pm$ 0.0861 & 0.3158 $\pm$ 0.0290 & 0.2597 $\pm$ 0.0243 & 0.0966 $\pm$ 0.0042 \\
+SHS-RUS (ADASYN) & 10 & 0.3557 $\pm$ 0.0636 & 0.2801 $\pm$ 0.0257 & 0.2533 $\pm$ 0.0241 & 0.0837 $\pm$ 0.0034 \\
+SHS-ACO (ROS) & 5 & 0.3763 $\pm$ 0.0565 & 0.2935 $\pm$ 0.0358 & 0.3779 $\pm$ 0.0218 & 0.3188 $\pm$ 0.0185 \\
+SHS-ACO (SMOTE) & 5 & 0.3326 $\pm$ 0.0677 & 0.3104 $\pm$ 0.0425 & 0.2708 $\pm$ 0.0256 & 0.3188 $\pm$ 0.0185 \\
+SHS-ACO (ADASYN) & 5 & 0.3209 $\pm$ 0.0551 & 0.2800 $\pm$ 0.0352 & 0.2609 $\pm$ 0.0234 & 0.3188 $\pm$ 0.0185 \\
+SHS-SA (SMOTE) & 5 & 0.3436 $\pm$ 0.0850 & 0.3204 $\pm$ 0.0391 & 0.2735 $\pm$ 0.0214 & 0.0954 $\pm$ 0.0027 \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\end{appendices}
 
 \bibliography{references}
 
